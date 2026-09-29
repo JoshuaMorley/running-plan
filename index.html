@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Auckland Marathon Build</title>
+<meta name="description" content="Five-week branching training plan to the Auckland Marathon on 1 November 2026, with decision tests, gel plans and race-day tools.">
+<meta name="theme-color" content="#0B6B73">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230B6B73'/%3E%3Ctext x='32' y='43' font-family='Arial Narrow,Arial,sans-serif' font-size='30' font-weight='700' fill='white' text-anchor='middle'%3E42%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Public+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <div class="brand">
+      <span class="eyebrow">Race A · Devonport to the city</span>
+      <h1>Auckland Marathon</h1>
+      <span class="meta">Sunday 1 November 2026 · 42.2 km · about 217 m of climbing</span>
+    </div>
+    <div class="top-right">
+      <div class="count">
+        <b class="num" id="countdown">32</b>
+        <span class="eyebrow" id="countdown-label">days to go</span>
+      </div>
+      <button type="button" class="theme-btn" id="theme-btn" aria-label="Change colour theme">Theme: auto</button>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs" aria-label="Sections">
+  <div class="tabs-in" role="tablist" id="tablist">
+    <button type="button" class="tab" role="tab" id="tab-overview" aria-controls="p-overview" data-tab="overview">Overview</button>
+    <button type="button" class="tab" role="tab" id="tab-plan" aria-controls="p-plan" data-tab="plan">Plan</button>
+    <button type="button" class="tab" role="tab" id="tab-decisions" aria-controls="p-decisions" data-tab="decisions">Decisions</button>
+    <button type="button" class="tab" role="tab" id="tab-fuel" aria-controls="p-fuel" data-tab="fuel">Fuel</button>
+    <button type="button" class="tab" role="tab" id="tab-race" aria-controls="p-race" data-tab="race">Race day</button>
+    <button type="button" class="tab" role="tab" id="tab-rules" aria-controls="p-rules" data-tab="rules">Stay healthy</button>
+  </div>
+  <div class="route-bar">
+    <span class="lbl">Your route</span>
+    <span id="route" style="display:flex;flex-wrap:wrap;gap:6px;align-items:center"></span>
+    <span class="lbl" style="margin-left:auto">Target</span>
+    <strong class="num" id="target-read">2:59:20 · 4:15/km</strong>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <!-- OVERVIEW -->
+  <section class="panel" id="p-overview" role="tabpanel" aria-labelledby="tab-overview">
+    <div class="grid2" id="today-cards"></div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Decision map</h2>
+        <span class="focus">Three decisions between now and race day. Tap a box to try a different route. Every session in the plan follows the highlighted one.</span>
+      </div>
+      <div class="card tree-box"><svg id="tree" viewBox="0 0 862 332" role="group" aria-label="Decision map"></svg></div>
+    </div>
+
+    <div class="grid2">
+      <div class="block">
+        <div class="sec-head"><h2>Weekly volume</h2></div>
+        <div class="card vol" id="volume"></div>
+      </div>
+      <div class="block">
+        <div class="sec-head"><h2>Key dates</h2></div>
+        <div class="card dates" id="dates"></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <span class="eyebrow">Pace zones · from your 17:44 5k and recent runs</span>
+      <div class="zones">
+        <div class="zone" style="--zc: var(--c-easy)"><span class="eyebrow">Easy</span><span class="z-pace num">5:20–5:45</span><span class="z-sub">per km · HR under 150</span></div>
+        <div class="zone" style="--zc: var(--accent)"><span class="eyebrow">Marathon</span><span class="z-pace num" data-tpl="{mp}">4:15</span><span class="z-sub">per km · HR 165–172</span></div>
+        <div class="zone" style="--zc: var(--c-int)"><span class="eyebrow">Threshold</span><span class="z-pace num">3:50–4:05</span><span class="z-sub">per km · hard but steady</span></div>
+        <div class="zone" style="--zc: var(--key)"><span class="eyebrow">Interval · 5k</span><span class="z-pace num">3:32–3:45</span><span class="z-sub">per km · short reps only</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLAN -->
+  <section class="panel" id="p-plan" role="tabpanel" aria-labelledby="tab-plan" hidden>
+    <div class="week-pick" id="week-pick" role="group" aria-label="Choose a week"></div>
+    <div id="week-view" class="block"></div>
+    <div class="week-nav">
+      <button type="button" class="nav-btn" id="wk-prev">← Previous week</button>
+      <button type="button" class="nav-btn" id="wk-next">Next week →</button>
+    </div>
+  </section>
+
+  <!-- DECISIONS -->
+  <section class="panel" id="p-decisions" role="tabpanel" aria-labelledby="tab-decisions" hidden>
+    <div class="sec-head">
+      <h2>Decisions</h2>
+      <span class="focus">Enter your numbers after each test and the checker suggests a branch. It's a guide. You make the call.</span>
+    </div>
+    <div id="decision-list" class="block" style="gap:20px"></div>
+    <div class="block">
+      <div class="sec-head">
+        <h2>What changes on each build</h2>
+        <span class="focus">Everything else in the plan is the same on both builds.</span>
+      </div>
+      <div class="card table-box">
+        <table>
+          <thead><tr><th>Day</th><th>Sub-3 build</th><th>3:10 build</th></tr></thead>
+          <tbody>
+            <tr><td>Wednesdays, weeks 1–3</td><td>Easy 5–6 km, every week</td><td class="muted">Rest or optional easy 30 min</td></tr>
+            <tr><td>Sun 4 Oct · 29 km</td><td>Last 5 km at 4:20/km if recovered</td><td class="muted">All easy</td></tr>
+            <tr><td>Tue 6 Oct · 5k</td><td>Steady at about 4:00/km</td><td class="muted">Race it or run steady</td></tr>
+            <tr><td>Thu 8 Oct · intervals</td><td>3 × 3 km at 4:05/km</td><td class="muted">3 × 2 km at 3:55/km</td></tr>
+            <tr><td>Sun 11 Oct · 33 km</td><td>Last 8 km at 4:15/km (Test 1)</td><td class="muted">Last 5–6 km at 4:35/km if good</td></tr>
+            <tr><td>Sun 18 Oct · half</td><td>16 km at 4:15/km (if Test 1 held)</td><td class="muted">14 km at 4:30/km</td></tr>
+            <tr><td>Weeks 1 and 2 total</td><td>55.5 km and 61 km</td><td class="muted">49.5 km and 54 km</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- FUEL -->
+  <section class="panel" id="p-fuel" role="tabpanel" aria-labelledby="tab-fuel" hidden>
+    <div class="sec-head">
+      <h2>Gel calculator</h2>
+      <span class="focus">At marathon pace you burn through your stored carbs in about 90–120 minutes. Set your gel and your carb target, and the race schedule updates.</span>
+    </div>
+    <div class="card pad">
+      <div class="fields">
+        <div class="field"><label for="f-gel">Carbs per gel (g)</label><input type="number" id="f-gel" min="10" max="50" step="1" value="22" data-inp="gel"></div>
+        <div class="field"><label for="f-gph">Carbs per hour: <span id="f-gph-out">70</span> g</label><input type="range" id="f-gph" min="50" max="90" step="5" value="70" data-inp="gph"></div>
+        <div class="field"><label for="f-kg">Body weight (kg)</label><input type="number" id="f-kg" min="40" max="130" step="1" value="70" data-inp="kg"></div>
+      </div>
+      <div class="stats" id="fuel-stats"></div>
+    </div>
+    <div class="grid2">
+      <div class="card table-box">
+        <table>
+          <thead><tr><th>Race gel plan</th><th>Where</th><th class="r">Clock</th></tr></thead>
+          <tbody id="gel-table"></tbody>
+        </table>
+      </div>
+      <div class="card pad">
+        <h3>How to take gels</h3>
+        <ul>
+          <li><b>Take each gel with water,</b> a few mouthfuls. Don't take a gel with sports drink as well, because the extra sugar can upset your stomach.</li>
+          <li><b>Open it a minute before</b> the aid station or your km mark and take it over 20–30 seconds. Don't slow down to take it.</li>
+          <li><b>Build up in training:</b> about 60 g per hour in the 29 km, then your race amount in the 33 km. Your gut adapts with practice.</li>
+          <li><b>Caffeine gels:</b> 1 or 2 at most, from halfway on. Only use them if you tried them in the 33 km first.</li>
+          <li><b>Carry your own.</b> Check <a href="https://aucklandmarathon.co.nz" target="_blank" rel="noopener">aucklandmarathon.co.nz</a> for what is handed out on course, and don't rely on a brand you haven't tried.</li>
+          <li><b>Stomach trouble in training?</b> Space gels out more and use more water. Don't give up on them. This is exactly what the practice runs are for.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="card pad">
+        <h3>Carb load · Fri 30 &amp; Sat 31 Oct</h3>
+        <p id="carb-load" class="muted"></p>
+        <ul>
+          <li>Rice, pasta, bread, bagels, potatoes, pancakes, juice, lollies.</li>
+          <li>Cut back on fibre, fat and big salads, so your stomach feels light.</li>
+          <li>You'll put on 1–2 kg of water with the stored carbs. That's normal, and it's fuel.</li>
+        </ul>
+      </div>
+      <div class="card pad">
+        <h3>Race breakfast</h3>
+        <p id="breakfast" class="muted"></p>
+        <ul>
+          <li>Something you've tested, such as white toast or a bagel with honey or jam, a banana, and juice.</li>
+          <li>About 500 ml of water or electrolyte drink with it, then sip until 30 min before the start.</li>
+          <li>Eat exactly the same breakfast before the 33 km, the half and the 13 km race practice.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="block">
+      <div class="sec-head"><h2>Carbs in common foods</h2><span class="focus">Rough amounts. Check labels for your own brands.</span></div>
+      <div class="card table-box">
+        <table>
+          <thead><tr><th>Food</th><th class="r">Carbs</th></tr></thead>
+          <tbody>
+            <tr><td>1 plain bagel</td><td class="r">about 50 g</td></tr>
+            <tr><td>1 cup cooked white rice</td><td class="r">about 45 g</td></tr>
+            <tr><td>1 cup cooked pasta</td><td class="r">about 40 g</td></tr>
+            <tr><td>500 ml fruit juice</td><td class="r">about 50 g</td></tr>
+            <tr><td>1 banana</td><td class="r">about 25 g</td></tr>
+            <tr><td>1 slice white bread</td><td class="r">about 15 g</td></tr>
+            <tr><td>1 tablespoon honey</td><td class="r">about 17 g</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="block">
+      <div class="sec-head"><h2>Fuel in training</h2></div>
+      <div class="card table-box">
+        <table>
+          <thead><tr><th>Session</th><th>What to take</th></tr></thead>
+          <tbody id="train-fuel"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- RACE DAY -->
+  <section class="panel" id="p-race" role="tabpanel" aria-labelledby="tab-race" hidden>
+    <div class="sec-head">
+      <h2>Race day</h2>
+      <span class="focus">Even pace at your target, with two checkpoints where you decide whether to push on or ease off.</span>
+    </div>
+    <div class="race-cols">
+      <div class="card table-box">
+        <table>
+          <thead><tr><th>Checkpoint</th><th>Pace</th><th class="r">Clock</th></tr></thead>
+          <tbody id="splits"></tbody>
+        </table>
+      </div>
+      <div class="notes" id="race-notes"></div>
+    </div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Checkpoint calculator</h2>
+        <span class="focus">Enter your clock at a checkpoint to see where you stand and what pace you need from there.</span>
+      </div>
+      <div class="card pad">
+        <div class="fields">
+          <div class="field"><label for="f-cpkm">Checkpoint</label>
+            <select id="f-cpkm" data-inp="cpkm">
+              <option value="5">5 km</option><option value="10">10 km</option><option value="15">15 km</option><option value="20">20 km</option>
+              <option value="21.0975">Halfway</option><option value="25">25 km</option><option value="30">30 km</option><option value="35">35 km</option><option value="40">40 km</option>
+            </select>
+          </div>
+          <div class="field"><label for="f-cpt">Your clock (h:mm:ss)</label><input type="text" id="f-cpt" inputmode="numeric" placeholder="1:30:10" value="1:30:10" data-inp="cpt"></div>
+        </div>
+        <div id="cp-out"></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Race morning</h2>
+        <span class="focus">Set your start time. Check the official time on your bib or at aucklandmarathon.co.nz.</span>
+      </div>
+      <div class="card pad" style="gap:0;padding:0">
+        <div class="fields" style="padding:14px 18px"><div class="field"><label for="f-start">Start time</label><input type="time" id="f-start" value="06:00" data-inp="start"></div></div>
+        <div class="timeline" id="timeline"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RULES -->
+  <section class="panel" id="p-rules" role="tabpanel" aria-labelledby="tab-rules" hidden>
+    <div class="sec-head">
+      <h2>Stay in one piece</h2>
+      <span class="focus">Being fit won't help if you're injured on race day. These rules come before any session in the plan.</span>
+    </div>
+    <div class="grid2">
+      <div class="card pad">
+        <h3>Every week</h3>
+        <ol>
+          <li><b>Easy days are easy.</b> HR under 150, and you can talk in full sentences. Easy days run too fast are the usual cause of breakdowns.</li>
+          <li><b>Three hard days at most:</b> Tuesday, Thursday and Sunday. If you race on Tuesday, keep Thursday controlled.</li>
+          <li><b>Monday is always rest.</b> It follows your biggest day of the week.</li>
+          <li><b>After long runs and hard sessions,</b> have carbs and protein within an hour, such as chocolate milk or a sandwich. Aim for 8 hours of sleep.</li>
+          <li><b>Weekly volume goes up by no more than 10%.</b> That's the limit in your NavRun profile, and the sub-3 build stays just inside it.</li>
+        </ol>
+      </div>
+      <div class="card pad">
+        <h3>When something feels off</h3>
+        <ol>
+          <li><b>Pain rule.</b> Soreness that eases as you warm up is normal. Pain that gets worse, changes your stride, or stays sharp means stop, take 2 days off, and only come back when you can jog without pain.</li>
+          <li><b>Tired signs:</b> resting HR 5 or more beats above normal, heavy legs for 2 days or more, or poor sleep. Swap your next hard session for an easy one.</li>
+          <li><b>Missed a session? Skip it.</b> Never double up to make one up.</li>
+          <li><b>Sick?</b> Symptoms above the neck only: an easy run is OK. Fever, chest symptoms or aches: rest until you're clear.</li>
+          <li><b>A test that doesn't go well is still useful.</b> Switching routes is the plan doing its job.</li>
+        </ol>
+      </div>
+    </div>
+    <div class="card pad">
+      <h3>Taper feelings are normal</h3>
+      <p class="muted">From 19 Oct, volume drops and you may feel flat, sluggish or restless, with phantom niggles. That's your body absorbing the training. Don't add extra runs to feel better. The freshness shows up on race day.</p>
+    </div>
+  </section>
+
+  <footer class="fine" style="margin-top:40px">
+    <p>These paces are estimates from NavRun training data and standard race-equivalence formulas, not guarantees. NavRun's app predicts 2:48:20 for this race. Weekly volume, not speed, is the limit right now, which is why the sub-3 route has two tests before you commit.</p>
+    <p>Gel carb amounts vary by brand, so check your packets. Carb-load and breakfast amounts are general sports-nutrition guides. The course climbing comes from the NavRun race entry only. Check the bridge location, aid stations and start time at <a href="https://aucklandmarathon.co.nz" target="_blank" rel="noopener">aucklandmarathon.co.nz</a>.</p>
+    <p>Not coaching or medical advice. Route choices, ticks and calculator values are saved in this browser only.</p>
+  </footer>
+</main>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
