@@ -373,7 +373,7 @@
       h += "<div class=\"checker\"><h4>Test 1 checker · 33 km on Sun 11 Oct</h4><div class=\"fields\">" +
         field("c1-pace", "Avg pace, last 8 km (m:ss)", "c1pace", "text", " inputmode=\"numeric\" placeholder=\"4:15\"") +
         field("c1-hr", "Avg HR, last 8 km", "c1hr", "number", " min=\"100\" max=\"210\"") +
-        selectField("c1-slow", "Final 2–3 km slower?", "c1slow", [["no", "No, held or quicker"], ["yes", "Yes, I slowed"]]) +
+        selectField("c1-slow", "Final 2–3 km slower?", "c1slow", [["no", "No"], ["yes", "Yes, I slowed"]]) +
         "</div><div id=\"c1-out\"></div></div>";
     }
     h += decisionHTML("d2", false);
@@ -535,13 +535,23 @@
   }
 
   /* ---------- course tab ---------- */
-  var CH = { X0: 56, X1: 846, Y0: 26, Y1: 262, EMAX: 60 };
+  var CH = { W: 900, H: 300, X0: 56, X1: 846, Y0: 26, Y1: 262, EMAX: 60, small: false };
+  var narrowMQ = window.matchMedia ? window.matchMedia("(max-width: 760px)") : null;
+  function setChartSize() {
+    var small = !!(narrowMQ && narrowMQ.matches);
+    /* A narrower viewBox on phones keeps the chart at full width with readable labels. */
+    if (small) { CH.W = 560; CH.H = 360; CH.X0 = 44; CH.X1 = 486; CH.Y0 = 34; CH.Y1 = 312; }
+    else { CH.W = 900; CH.H = 300; CH.X0 = 56; CH.X1 = 846; CH.Y0 = 26; CH.Y1 = 262; }
+    CH.small = small;
+    document.getElementById("profile").setAttribute("viewBox", "0 0 " + CH.W + " " + CH.H);
+  }
   function cx(km) { return CH.X0 + km / MARATHON_KM * (CH.X1 - CH.X0); }
   function ceY(e) { return CH.Y1 - Math.max(0, e) / CH.EMAX * (CH.Y1 - CH.Y0); }
   var paceRange = { min: 240, max: 270 };
   function cpY(p) { return CH.Y1 - (p - paceRange.min) / (paceRange.max - paceRange.min) * (CH.Y1 - CH.Y0); }
 
   function renderProfile() {
+    setChartSize();
     var plan = kmPlan(), rows = plan.rows, pts = COURSE.pts, mp = mpSec();
     var paces = rows.map(function (r) { return r.pace; });
     paceRange.min = Math.floor((Math.min.apply(null, paces) - 2) / 5) * 5;
@@ -559,12 +569,12 @@
     [0, 20, 40, 60].forEach(function (e) {
       s += "<text class=\"p-axis\" x=\"" + (CH.X0 - 8) + "\" y=\"" + (ceY(e) + 4).toFixed(1) + "\" text-anchor=\"end\">" + e + "</text>";
     });
-    s += "<text class=\"p-axis-t\" x=\"" + (CH.X0 - 8) + "\" y=\"14\" text-anchor=\"end\">m</text>";
-    s += "<text class=\"p-axis-t\" x=\"" + (CH.X1 + 6) + "\" y=\"14\">min/km</text>";
+    s += "<text class=\"p-axis-t\" x=\"" + (CH.X0 - 8) + "\" y=\"" + (CH.small ? 20 : 14) + "\" text-anchor=\"end\">m</text>";
+    s += "<text class=\"p-axis-t\" x=\"" + (CH.X1 + 6) + "\" y=\"" + (CH.small ? 20 : 14) + "\">" + (CH.small ? "pace" : "min/km") + "</text>";
     /* x axis */
-    for (var k = 0; k <= 40; k += 5) {
+    for (var k = 0; k <= 40; k += (CH.small ? 10 : 5)) {
       s += "<line class=\"p-grid\" x1=\"" + cx(k).toFixed(1) + "\" x2=\"" + cx(k).toFixed(1) + "\" y1=\"" + CH.Y1 + "\" y2=\"" + (CH.Y1 + 5) + "\"></line>";
-      s += "<text class=\"p-axis\" x=\"" + cx(k).toFixed(1) + "\" y=\"" + (CH.Y1 + 18) + "\" text-anchor=\"middle\">" + k + (k === 0 ? " km" : "") + "</text>";
+      s += "<text class=\"p-axis\" x=\"" + cx(k).toFixed(1) + "\" y=\"" + (CH.Y1 + (CH.small ? 26 : 18)) + "\" text-anchor=\"middle\">" + k + (k === 0 ? " km" : "") + "</text>";
     }
     s += "<line class=\"p-grid\" x1=\"" + CH.X0 + "\" x2=\"" + CH.X1 + "\" y1=\"" + CH.Y1 + "\" y2=\"" + CH.Y1 + "\"></line>";
     /* elevation area */
@@ -577,15 +587,16 @@
     area += " L" + cx(MARATHON_KM).toFixed(1) + " " + CH.Y1 + " Z";
     s += "<path class=\"p-area\" d=\"" + area + "\"></path><path class=\"p-line\" d=\"" + line + "\"></path>";
     /* markers */
-    var marks = [[HALF_KM, "Halfway"], [30, "Check 2"], [COURSE.turn, "Turnaround"]];
+    var marks = CH.small ? [[HALF_KM, "Half"], [30, "30k"], [COURSE.turn, "Turn"]] : [[HALF_KM, "Halfway"], [30, "Check 2"], [COURSE.turn, "Turnaround"]];
+    var labelStep = CH.small ? 20 : 14;
     marks.forEach(function (m, i) {
       var X = cx(m[0]).toFixed(1);
       s += "<line class=\"p-mark\" x1=\"" + X + "\" x2=\"" + X + "\" y1=\"" + CH.Y0 + "\" y2=\"" + CH.Y1 + "\"></line>";
-      s += "<text class=\"p-mark-l\" x=\"" + (+X + 4) + "\" y=\"" + (CH.Y0 + 12 + (i === 2 ? 14 : 0)) + "\">" + m[1] + "</text>";
+      s += "<text class=\"p-mark-l\" x=\"" + (+X + 4) + "\" y=\"" + (CH.Y0 + (CH.small ? 16 : 12) + (i === 2 ? labelStep : 0)) + "\">" + m[1] + "</text>";
     });
     s += "<text class=\"p-bridge-l\" x=\"" + (cx(COURSE.bridge[0]) + 3).toFixed(1) + "\" y=\"" + (CH.Y1 - 8) + "\">Bridge</text>";
     s += "<circle class=\"p-edot\" cx=\"" + cx(COURSE.hi.k).toFixed(1) + "\" cy=\"" + ceY(COURSE.hi.e).toFixed(1) + "\" r=\"4\"></circle>";
-    s += "<text class=\"p-mark-l\" x=\"" + (cx(COURSE.hi.k) + 7).toFixed(1) + "\" y=\"" + (ceY(COURSE.hi.e) - 6).toFixed(1) + "\">High point " + Math.round(COURSE.hi.e) + " m</text>";
+    s += "<text class=\"p-mark-l\" x=\"" + (cx(COURSE.hi.k) + 7).toFixed(1) + "\" y=\"" + (ceY(COURSE.hi.e) - 6).toFixed(1) + "\">" + (CH.small ? "" : "High point ") + Math.round(COURSE.hi.e) + " m</text>";
     /* average line */
     var ay = cpY(mp).toFixed(1);
     s += "<line class=\"p-avg\" x1=\"" + CH.X0 + "\" x2=\"" + CH.X1 + "\" y1=\"" + ay + "\" y2=\"" + ay + "\"></line>";
@@ -651,11 +662,16 @@
     function handler(ev) {
       var rect = svg.getBoundingClientRect();
       if (!rect.width) return;
-      var x = (ev.clientX - rect.left) / rect.width * 900;
+      var x = (ev.clientX - rect.left) / rect.width * CH.W;
       showKm((x - CH.X0) / (CH.X1 - CH.X0) * MARATHON_KM);
     }
     svg.addEventListener("pointermove", handler);
     svg.addEventListener("pointerdown", handler);
+    if (narrowMQ) {
+      var redraw = function () { renderProfile(); };
+      if (narrowMQ.addEventListener) narrowMQ.addEventListener("change", redraw);
+      else if (narrowMQ.addListener) narrowMQ.addListener(redraw);
+    }
   }
 
   function renderKmGrid() {
@@ -717,7 +733,10 @@
       p.hidden = !on;
     });
     try { history.replaceState(null, "", "#" + tab); } catch (e) {}
-    if (focus) document.getElementById("tab-" + tab).focus();
+    var btn = document.getElementById("tab-" + tab), bar = btn.parentNode;
+    /* Keep the active tab visible when the tab bar scrolls sideways on phones. */
+    if (bar.scrollWidth > bar.clientWidth) bar.scrollLeft = Math.max(0, btn.offsetLeft - (bar.clientWidth - btn.offsetWidth) / 2);
+    if (focus) btn.focus();
   }
   var THEMES = ["auto", "light", "dark"];
   function applyTheme(t) {
