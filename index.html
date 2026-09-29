@@ -35,6 +35,7 @@
     <button type="button" class="tab" role="tab" id="tab-overview" aria-controls="p-overview" data-tab="overview">Overview</button>
     <button type="button" class="tab" role="tab" id="tab-plan" aria-controls="p-plan" data-tab="plan">Plan</button>
     <button type="button" class="tab" role="tab" id="tab-decisions" aria-controls="p-decisions" data-tab="decisions">Decisions</button>
+    <button type="button" class="tab" role="tab" id="tab-course" aria-controls="p-course" data-tab="course">Course</button>
     <button type="button" class="tab" role="tab" id="tab-fuel" aria-controls="p-fuel" data-tab="fuel">Fuel</button>
     <button type="button" class="tab" role="tab" id="tab-race" aria-controls="p-race" data-tab="race">Race day</button>
     <button type="button" class="tab" role="tab" id="tab-rules" aria-controls="p-rules" data-tab="rules">Stay healthy</button>
@@ -119,6 +120,77 @@
           </tbody>
         </table>
       </div>
+    </div>
+  </section>
+
+  <!-- COURSE -->
+  <section class="panel" id="p-course" role="tabpanel" aria-labelledby="tab-course" hidden>
+    <div class="sec-head">
+      <h2>Course</h2>
+      <span class="focus">From a plotaroute.com GPX of the route. Hover over or tap the profile to see where that point is on the map.</span>
+    </div>
+    <div class="stats" id="course-stats"></div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Elevation and pace</h2>
+        <span class="focus">Planned pace for each km at your target, run by effort: a little slower up the hills, a little faster down them. The pace line is higher where you run slower, so it follows the hills.</span>
+      </div>
+      <div class="card prof-card">
+        <div class="legend">
+          <span><i class="sw sw-ele"></i>Elevation (left axis, m)</span>
+          <span><i class="sw sw-pace"></i>Planned pace (right axis, min/km)</span>
+          <span><i class="sw sw-avg"></i>Target average</span>
+          <span><i class="sw sw-bridge"></i>Harbour Bridge allowance</span>
+        </div>
+        <svg id="profile" viewBox="0 0 900 300" role="img" aria-label="Elevation and planned pace along the course"></svg>
+        <p class="prof-read num" id="prof-read">Hover over or tap the chart to see a km.</p>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Pace for each km</h2>
+        <span class="focus">Orange: slower than your average. Teal: faster. The clock shows planned time at the end of each km.</span>
+      </div>
+      <div class="kmgrid" id="kmgrid"></div>
+    </div>
+
+    <div class="grid2">
+      <div class="card map-card">
+        <svg id="map" viewBox="0 0 400 400" role="img" aria-label="Course map"></svg>
+        <p class="vol-legend" style="padding:0 16px 14px">North is up. The orange section is the Harbour Bridge. The Tamaki Drive section is out and back, so it overlaps on the map.</p>
+      </div>
+      <div class="card" id="sections"></div>
+    </div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Watch pace</h2>
+        <span class="focus">GPS watches usually read long over a marathon. If you run your target pace on the watch, you'll finish slower than your target.</span>
+      </div>
+      <div class="card pad">
+        <div class="fields">
+          <div class="field"><label for="f-watch">Watch distance at the finish: <span id="f-watch-out" class="num">42.8</span> km</label><input type="range" id="f-watch" min="42.2" max="43.4" step="0.1" value="42.8" data-inp="watch"></div>
+        </div>
+        <div class="table-box">
+          <table>
+            <thead><tr><th>Target</th><th>Official pace</th><th>Pace to run on your watch</th><th class="r">Finish if you run official pace on the watch</th></tr></thead>
+            <tbody id="watch-table"></tbody>
+          </table>
+        </div>
+        <p class="vol-legend">The plotted route measures 43.06 km. A watch reading 42.6–43.0 km is common. Use the clock at the official km markers as your real check.</p>
+      </div>
+    </div>
+
+    <div class="card pad">
+      <h3>About this data</h3>
+      <ul>
+        <li><b>Distances are scaled</b> from the plotted 43.06 km to the official 42.2 km, so km markers line up with the plan.</li>
+        <li><b>The Harbour Bridge shows as 0 m.</b> The file took its heights from ground level, which is the water under the bridge. The real climb and descent are bigger.</li>
+        <li><b>Climbing totals don't agree.</b> The file adds up to about 382 m, while the NavRun race entry says 217 m. Small bumps along the waterfront look like measurement noise, so trust the shape more than the totals.</li>
+        <li>Check the official course map and profile at <a href="https://aucklandmarathon.co.nz" target="_blank" rel="noopener">aucklandmarathon.co.nz</a>.</li>
+      </ul>
     </div>
   </section>
 
@@ -207,7 +279,7 @@
   <section class="panel" id="p-race" role="tabpanel" aria-labelledby="tab-race" hidden>
     <div class="sec-head">
       <h2>Race day</h2>
-      <span class="focus">Even pace at your target, with two checkpoints where you decide whether to push on or ease off.</span>
+      <span class="focus">A slightly slower first half for the North Shore hills and the Harbour Bridge, then a slightly faster second half. Two checkpoints tell you whether to push on or ease off.</span>
     </div>
     <div class="race-cols">
       <div class="card table-box">
@@ -292,6 +364,7 @@
 </main>
 
 <script src="js/data.js"></script>
+<script src="js/course.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>

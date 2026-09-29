@@ -9,7 +9,10 @@
     "315": { sec: 11700 }
   };
   var ALLOWED = { A1: ["259", "305", "310"], A2: ["305", "310", "315"], S1: ["305", "310", "315"] };
-  var TABS = ["overview", "plan", "decisions", "fuel", "race", "rules"];
+  var TABS = ["overview", "plan", "decisions", "course", "fuel", "race", "rules"];
+  var HALF_KM = 21.0975;
+  /* The North Shore hills and the bridge are in the first half, so halfway is planned 25 s behind even pace. */
+  var HALF_BANK = 25;
   var TYPE_LABEL = { rest: "Rest", easy: "Easy", int: "Intervals", long: "Long", race: "Race", test: "Test" };
   var DOW = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   var MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -29,7 +32,7 @@
   if (!TARGETS[st.d2]) st.d2 = "259";
 
   var INP_DEFAULTS = { gel: 22, gph: 70, kg: 70, cpkm: "21.0975", cpt: "1:30:10", start: "06:00",
-    c1pace: "4:15", c1hr: "168", c1slow: "no", c2pace: "4:15", c2hr: "170", c2fin: "1:29:45", c2last: "held" };
+    c1pace: "4:15", c1hr: "168", c1slow: "no", c2pace: "4:15", c2hr: "170", c2fin: "1:29:45", c2last: "held", watch: "42.8" };
   var inp = loadJSON("akl-inputs", {});
   Object.keys(INP_DEFAULTS).forEach(function (k) { if (inp[k] === undefined || inp[k] === null) inp[k] = INP_DEFAULTS[k]; });
 
@@ -69,14 +72,79 @@
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;" }[c]; }); }
   function kg() { return clampNum(inp.kg, 40, 130, 70); }
   function loadText() { return "8–10 g of carbs per kg, about " + Math.round(kg() * 8) + "–" + Math.round(kg() * 10) + " g"; }
+  function halfAdj() { return HALF_BANK / HALF_KM; }
+
+  /* ---------- course + per-km pace plan ---------- */
+  var COURSE = (function () {
+    var C = window.COURSE, scale = MARATHON_KM / C.total;
+    var pts = C.pts.map(function (p) { return { k: p[0] * scale, e: p[1], lat: p[2], lon: p[3] }; });
+    /* 1 km moving average to damp the file's elevation noise before measuring climbs. */
+    pts.forEach(function (p, i) {
+      var s = 0, n = 0;
+      for (var j = Math.max(0, i - 5); j <= Math.min(pts.length - 1, i + 5); j++) { s += pts[j].e; n++; }
+      p.es = s / n;
+    });
+    var gain = 0, hi = pts[0];
+    for (var i = 1; i < pts.length; i++) { var de = pts[i].e - pts[i - 1].e; if (de > 0) gain += de; if (pts[i].e > hi.e) hi = pts[i]; }
+    var perKm = [];
+    for (var km = 0; km < 43; km++) {
+      var len = Math.min(1, MARATHON_KM - km);
+      if (len <= 0) break;
+      var g = 0, l = 0;
+      for (var q = 1; q < pts.length; q++) {
+        if (pts[q].k <= km || pts[q - 1].k >= km + len) continue;
+        var d = pts[q].es - pts[q - 1].es;
+        if (d > 0) g += d; else l -= d;
+      }
+      perKm.push({ km: km, len: len, gain: g, loss: l });
+    }
+    return { raw: C, scale: scale, pts: pts, gain: gain, hi: hi, perKm: perKm,
+      bridge: [C.bridge[0] * scale, C.bridge[1] * scale], turn: C.turn * scale, fileTotal: C.total };
+  })();
+
+  /* Effort-based pacing: about 0.9 s per metre climbed and 0.5 s back per metre descended, plus the
+     plan's 10-20 s bridge allowance (the file has no bridge height), then each half is rebalanced
+     so halfway stays about 25 s behind even pace and the finish hits the target. */
+  var planCache = { key: null, plan: null };
+  function kmPlan() {
+    var key = targetSec();
+    if (planCache.key === key) return planCache.plan;
+    var mp = mpSec(), adj = halfAdj();
+    var rows = COURSE.perKm.map(function (r) {
+      var off = 0.9 * r.gain - 0.5 * r.loss;
+      off = Math.max(-8, Math.min(8, off));
+      var ov = Math.max(0, Math.min(r.km + r.len, COURSE.bridge[1]) - Math.max(r.km, COURSE.bridge[0]));
+      off += ov * 10;
+      return { km: r.km, len: r.len, gain: r.gain, loss: r.loss, off: off, bridge: ov > 0.3 };
+    });
+    function balance(from, to, base) {
+      var w = 0, s = 0, i;
+      for (i = from; i <= to; i++) { w += rows[i].len; s += rows[i].off * rows[i].len; }
+      for (i = from; i <= to; i++) rows[i].pace = base + rows[i].off - s / w;
+    }
+    balance(0, 20, mp + adj);
+    balance(21, rows.length - 1, mp - adj);
+    var cum = [0];
+    rows.forEach(function (r, i) { cum[i + 1] = cum[i] + r.pace * r.len; });
+    var scaleFix = targetSec() / cum[cum.length - 1];
+    rows.forEach(function (r) { r.pace *= scaleFix; });
+    cum = [0];
+    rows.forEach(function (r, i) { cum[i + 1] = cum[i] + r.pace * r.len; });
+    planCache = { key: key, plan: { rows: rows, cum: cum } };
+    return planCache.plan;
+  }
+  function plannedClock(km) {
+    var p = kmPlan(), j = Math.max(0, Math.min(p.rows.length - 1, Math.floor(km)));
+    return p.cum[j] + (km - j) * p.rows[j].pace;
+  }
   function fill(str) {
     var mp = mpSec();
     return String(str)
       .replace(/\{mp([+-]\d+)?\}/g, function (_, off) { return fmtPace(mp + (off ? parseInt(off, 10) : 0)); })
-      .replace(/\{half\}/g, fmtClock(mp * 21.0975))
-      .replace(/\{c30\}/g, fmtClock(mp * 30))
-      .replace(/\{bail\}/g, fmtClock(mp * 21.0975 + (mp + 10) * 21.0975))
-      .replace(/\{fast\}/g, fmtClock(mp * 30 + (mp - 7) * 12.195))
+      .replace(/\{half\}/g, fmtClock(plannedClock(HALF_KM)))
+      .replace(/\{c30\}/g, fmtClock(plannedClock(30)))
+      .replace(/\{bail\}/g, fmtClock(plannedClock(HALF_KM) + (mp + 10) * HALF_KM))
+      .replace(/\{fast\}/g, fmtClock(plannedClock(30) + (mp - 7) * 12.195))
       .replace(/\{full\}/g, fmtTarget())
       .replace(/\{load\}/g, loadText());
   }
@@ -393,7 +461,7 @@
     g.list.forEach(function (x, i) { if (cafA === null && x.km >= 20) cafA = i; if (cafB === null && x.km >= 30) cafB = i; });
     var rows = "<tr><td>Gel 1</td><td>10–15 min before the start</td><td class=\"r\">before</td></tr>";
     g.list.forEach(function (x, i) {
-      rows += "<tr><td>Gel " + (i + 2) + ((i === cafA || i === cafB) ? " <span class=\"caf\">caffeine optional</span>" : "") + "</td><td>km " + x.km + "</td><td class=\"r\">" + fmtClock(x.clock) + "</td></tr>";
+      rows += "<tr><td>Gel " + (i + 2) + ((i === cafA || i === cafB) ? " <span class=\"caf\">caffeine optional</span>" : "") + "</td><td>km " + x.km + "</td><td class=\"r\">" + fmtClock(plannedClock(x.km)) + "</td></tr>";
     });
     rows += "<tr><td>Spare</td><td>Only if you feel flat late on</td><td class=\"r\">–</td></tr>";
     document.getElementById("gel-table").innerHTML = rows;
@@ -407,12 +475,14 @@
   function renderRace() {
     var mp = mpSec();
     var pts = [[5, "5 km"], [10, "10 km"], [15, "15 km"], [20, "20 km"], [21.0975, "Halfway · check 1"], [25, "25 km"], [30, "30 km · check 2"], [35, "35 km"], [40, "40 km"], [42.195, "Finish"]];
-    document.getElementById("splits").innerHTML = pts.map(function (p) {
+    document.getElementById("splits").innerHTML = pts.map(function (p, i) {
       var hl = p[1].indexOf("check") >= 0 || p[1] === "Finish";
-      return "<tr" + (hl ? " class=\"hl\"" : "") + "><td>" + p[1] + "</td><td>" + fmtPace(mp) + "/km</td><td class=\"r\">" + fmtClock(mp * p[0]) + "</td></tr>";
+      var prevKm = i === 0 ? 0 : pts[i - 1][0];
+      var seg = (plannedClock(p[0]) - plannedClock(prevKm)) / (p[0] - prevKm);
+      return "<tr" + (hl ? " class=\"hl\"" : "") + "><td>" + p[1] + "</td><td>" + fmtPace(seg) + "/km</td><td class=\"r\">" + fmtClock(plannedClock(p[0])) + "</td></tr>";
     }).join("");
     var cards = [
-      ["Check 1 · Halfway", "<b>Planned clock: {half}.</b> If you're within 30 s of that, HR is under 172 and your breathing feels controlled, hold {mp}/km. If HR is over 175 or the pace feels forced, ease back to {mp+10}/km now. That still finishes around {bail}, and slowing a little here is far better than a big slowdown after 32 km."],
+      ["Check 1 · Halfway", "<b>Planned clock: {half}.</b> That's about 25 s behind even pace, because the North Shore hills and the bridge are in the first half. If you're within 30 s of it, HR is under 172 and your breathing feels controlled, hold {mp}/km. If HR is over 175 or the pace feels forced, ease back to {mp+10}/km now. That still finishes around {bail}, and slowing a little here is far better than a big slowdown after 32 km."],
       ["Check 2 · 30 km", "<b>Planned clock: {c30}.</b> If you feel strong, run 5–10 s/km faster. That finishes around {fast}. If you're hanging on, hold your pace or ease off slightly, and run by effort, not the watch."],
       ["Harbour Bridge", "Let the climb cost you 10–20 s/km and keep your effort level. Don't try to win the time back on the way down. Gain it back over the next few flat kilometres instead."],
       ["First 5 km", "It will feel too easy. Stay on {mp}/km anyway. Every 10 seconds you bank early costs you more than that after 30 km."]
@@ -425,7 +495,7 @@
     var out = document.getElementById("cp-out"), mp = mpSec(), T = targetSec();
     var km = parseFloat(inp.cpkm), t = parseClock(inp.cpt);
     if (isNaN(km) || isNaN(t) || t <= 0) { out.innerHTML = "<p class=\"muted\">Enter your clock as h:mm:ss, for example 1:30:10.</p>"; return; }
-    var planned = mp * km, diff = t - planned, avg = t / km, projected = avg * MARATHON_KM;
+    var planned = plannedClock(km), diff = t - planned, avg = t / km, projected = avg * MARATHON_KM;
     var left = MARATHON_KM - km, needed = (T - t) / left;
     var stats = "<div class=\"stats\">" +
       "<div class=\"stat\"><b class=\"num\">" + fmtClock(planned) + "</b><span>planned clock here</span></div>" +
@@ -464,6 +534,176 @@
     }).join("");
   }
 
+  /* ---------- course tab ---------- */
+  var CH = { X0: 56, X1: 846, Y0: 26, Y1: 262, EMAX: 60 };
+  function cx(km) { return CH.X0 + km / MARATHON_KM * (CH.X1 - CH.X0); }
+  function ceY(e) { return CH.Y1 - Math.max(0, e) / CH.EMAX * (CH.Y1 - CH.Y0); }
+  var paceRange = { min: 240, max: 270 };
+  function cpY(p) { return CH.Y1 - (p - paceRange.min) / (paceRange.max - paceRange.min) * (CH.Y1 - CH.Y0); }
+
+  function renderProfile() {
+    var plan = kmPlan(), rows = plan.rows, pts = COURSE.pts, mp = mpSec();
+    var paces = rows.map(function (r) { return r.pace; });
+    paceRange.min = Math.floor((Math.min.apply(null, paces) - 2) / 5) * 5;
+    paceRange.max = Math.ceil((Math.max.apply(null, paces) + 2) / 5) * 5;
+    var s = "";
+    /* bridge band */
+    s += "<rect class=\"p-bridge\" x=\"" + cx(COURSE.bridge[0]).toFixed(1) + "\" y=\"" + CH.Y0 + "\" width=\"" + (cx(COURSE.bridge[1]) - cx(COURSE.bridge[0])).toFixed(1) + "\" height=\"" + (CH.Y1 - CH.Y0) + "\"></rect>";
+    /* pace gridlines + right axis */
+    for (var p = paceRange.min; p <= paceRange.max; p += 5) {
+      var y = cpY(p).toFixed(1);
+      s += "<line class=\"p-grid\" x1=\"" + CH.X0 + "\" x2=\"" + CH.X1 + "\" y1=\"" + y + "\" y2=\"" + y + "\"></line>";
+      s += "<text class=\"p-axis-r\" x=\"" + (CH.X1 + 6) + "\" y=\"" + (+y + 4) + "\">" + fmtPace(p) + "</text>";
+    }
+    /* left axis */
+    [0, 20, 40, 60].forEach(function (e) {
+      s += "<text class=\"p-axis\" x=\"" + (CH.X0 - 8) + "\" y=\"" + (ceY(e) + 4).toFixed(1) + "\" text-anchor=\"end\">" + e + "</text>";
+    });
+    s += "<text class=\"p-axis-t\" x=\"" + (CH.X0 - 8) + "\" y=\"14\" text-anchor=\"end\">m</text>";
+    s += "<text class=\"p-axis-t\" x=\"" + (CH.X1 + 6) + "\" y=\"14\">min/km</text>";
+    /* x axis */
+    for (var k = 0; k <= 40; k += 5) {
+      s += "<line class=\"p-grid\" x1=\"" + cx(k).toFixed(1) + "\" x2=\"" + cx(k).toFixed(1) + "\" y1=\"" + CH.Y1 + "\" y2=\"" + (CH.Y1 + 5) + "\"></line>";
+      s += "<text class=\"p-axis\" x=\"" + cx(k).toFixed(1) + "\" y=\"" + (CH.Y1 + 18) + "\" text-anchor=\"middle\">" + k + (k === 0 ? " km" : "") + "</text>";
+    }
+    s += "<line class=\"p-grid\" x1=\"" + CH.X0 + "\" x2=\"" + CH.X1 + "\" y1=\"" + CH.Y1 + "\" y2=\"" + CH.Y1 + "\"></line>";
+    /* elevation area */
+    var area = "M" + cx(0).toFixed(1) + " " + CH.Y1, line = "";
+    pts.forEach(function (pt, i) {
+      var X = cx(pt.k).toFixed(1), Y = ceY(pt.e).toFixed(1);
+      area += " L" + X + " " + Y;
+      line += (i ? " L" : "M") + X + " " + Y;
+    });
+    area += " L" + cx(MARATHON_KM).toFixed(1) + " " + CH.Y1 + " Z";
+    s += "<path class=\"p-area\" d=\"" + area + "\"></path><path class=\"p-line\" d=\"" + line + "\"></path>";
+    /* markers */
+    var marks = [[HALF_KM, "Halfway"], [30, "Check 2"], [COURSE.turn, "Turnaround"]];
+    marks.forEach(function (m, i) {
+      var X = cx(m[0]).toFixed(1);
+      s += "<line class=\"p-mark\" x1=\"" + X + "\" x2=\"" + X + "\" y1=\"" + CH.Y0 + "\" y2=\"" + CH.Y1 + "\"></line>";
+      s += "<text class=\"p-mark-l\" x=\"" + (+X + 4) + "\" y=\"" + (CH.Y0 + 12 + (i === 2 ? 14 : 0)) + "\">" + m[1] + "</text>";
+    });
+    s += "<text class=\"p-bridge-l\" x=\"" + (cx(COURSE.bridge[0]) + 3).toFixed(1) + "\" y=\"" + (CH.Y1 - 8) + "\">Bridge</text>";
+    s += "<circle class=\"p-edot\" cx=\"" + cx(COURSE.hi.k).toFixed(1) + "\" cy=\"" + ceY(COURSE.hi.e).toFixed(1) + "\" r=\"4\"></circle>";
+    s += "<text class=\"p-mark-l\" x=\"" + (cx(COURSE.hi.k) + 7).toFixed(1) + "\" y=\"" + (ceY(COURSE.hi.e) - 6).toFixed(1) + "\">High point " + Math.round(COURSE.hi.e) + " m</text>";
+    /* average line */
+    var ay = cpY(mp).toFixed(1);
+    s += "<line class=\"p-avg\" x1=\"" + CH.X0 + "\" x2=\"" + CH.X1 + "\" y1=\"" + ay + "\" y2=\"" + ay + "\"></line>";
+    /* pace step line */
+    var d = "";
+    rows.forEach(function (r, i) {
+      var y1 = cpY(r.pace).toFixed(1);
+      d += (i ? " V" + y1 : "M" + cx(r.km).toFixed(1) + " " + y1) + " H" + cx(r.km + r.len).toFixed(1);
+    });
+    s += "<path class=\"p-pace\" d=\"" + d + "\"></path>";
+    /* hover layer */
+    s += "<g id=\"p-hover\" style=\"display:none\"><line class=\"p-hover-line\" id=\"ph-line\" y1=\"" + CH.Y0 + "\" y2=\"" + CH.Y1 + "\"></line><circle class=\"p-edot\" id=\"ph-e\" r=\"4.5\"></circle><circle class=\"p-pdot\" id=\"ph-p\" r=\"4.5\"></circle></g>";
+    document.getElementById("profile").innerHTML = s;
+  }
+
+  var MAP = null;
+  function renderMap() {
+    var pts = COURSE.pts, W = 400, H = 400, pad = 26;
+    var lats = pts.map(function (p) { return p.lat; }), lons = pts.map(function (p) { return p.lon; });
+    var minLat = Math.min.apply(null, lats), maxLat = Math.max.apply(null, lats), minLon = Math.min.apply(null, lons), maxLon = Math.max.apply(null, lons);
+    var kx = Math.cos((minLat + maxLat) / 2 * Math.PI / 180);
+    var sx = (W - 2 * pad) / ((maxLon - minLon) * kx), sy = (H - 2 * pad) / (maxLat - minLat), sc = Math.min(sx, sy);
+    var offX = (W - (maxLon - minLon) * kx * sc) / 2, offY = (H - (maxLat - minLat) * sc) / 2;
+    MAP = function (p) { return [offX + (p.lon - minLon) * kx * sc, offY + (maxLat - p.lat) * sc]; };
+    var route = "", bridge = "";
+    pts.forEach(function (p, i) {
+      var xy = MAP(p);
+      route += (i ? " L" : "M") + xy[0].toFixed(1) + " " + xy[1].toFixed(1);
+      if (p.k >= COURSE.bridge[0] && p.k <= COURSE.bridge[1]) bridge += (bridge ? " L" : "M") + xy[0].toFixed(1) + " " + xy[1].toFixed(1);
+    });
+    var s = "<path class=\"m-route\" d=\"" + route + "\"></path><path class=\"m-bridge\" d=\"" + bridge + "\"></path>";
+    for (var k = 5; k <= 40; k += 5) {
+      var near = pts.reduce(function (a, b) { return Math.abs(b.k - k) < Math.abs(a.k - k) ? b : a; });
+      var xy = MAP(near);
+      s += "<circle class=\"m-km\" cx=\"" + xy[0].toFixed(1) + "\" cy=\"" + xy[1].toFixed(1) + "\" r=\"8\"></circle><text class=\"m-km-l\" x=\"" + xy[0].toFixed(1) + "\" y=\"" + (xy[1] + 3.5).toFixed(1) + "\" text-anchor=\"middle\">" + k + "</text>";
+    }
+    [[pts[0], "Start"], [pts[pts.length - 1], "Finish"]].forEach(function (f) {
+      var xy = MAP(f[0]);
+      s += "<rect class=\"m-flag\" x=\"" + (xy[0] - 4).toFixed(1) + "\" y=\"" + (xy[1] - 4).toFixed(1) + "\" width=\"8\" height=\"8\"></rect><text class=\"m-flag-l\" x=\"" + (xy[0] + 8).toFixed(1) + "\" y=\"" + (xy[1] - 6).toFixed(1) + "\">" + f[1] + "</text>";
+    });
+    s += "<circle class=\"m-dot\" id=\"m-dot\" r=\"6\" style=\"display:none\"></circle>";
+    document.getElementById("map").innerHTML = s;
+  }
+
+  function showKm(km) {
+    km = Math.max(0, Math.min(MARATHON_KM - 0.001, km));
+    var pts = COURSE.pts, i = Math.round(km / MARATHON_KM * (pts.length - 1));
+    i = Math.max(0, Math.min(pts.length - 1, i));
+    var pt = pts[i], rows = kmPlan().rows, r = rows[Math.min(rows.length - 1, Math.floor(km))];
+    var X = cx(km).toFixed(1);
+    document.getElementById("p-hover").style.display = "";
+    var ln = document.getElementById("ph-line"); ln.setAttribute("x1", X); ln.setAttribute("x2", X);
+    var e = document.getElementById("ph-e"); e.setAttribute("cx", X); e.setAttribute("cy", ceY(pt.e).toFixed(1));
+    var p = document.getElementById("ph-p"); p.setAttribute("cx", X); p.setAttribute("cy", cpY(r.pace).toFixed(1));
+    var xy = MAP(pt), md = document.getElementById("m-dot");
+    md.style.display = ""; md.setAttribute("cx", xy[0].toFixed(1)); md.setAttribute("cy", xy[1].toFixed(1));
+    var inBridge = km >= COURSE.bridge[0] && km <= COURSE.bridge[1];
+    document.getElementById("prof-read").innerHTML = "<b>km " + km.toFixed(1) + "</b> · elevation " + (inBridge ? "file shows 0 m, the real bridge road climbs" : Math.round(pt.e) + " m") +
+      " · km " + (r.km + 1) + " pace <b>" + fmtPace(r.pace) + "/km</b> · planned clock <b>" + fmtClock(plannedClock(km)) + "</b>";
+  }
+  function bindProfile() {
+    var svg = document.getElementById("profile");
+    function handler(ev) {
+      var rect = svg.getBoundingClientRect();
+      if (!rect.width) return;
+      var x = (ev.clientX - rect.left) / rect.width * 900;
+      showKm((x - CH.X0) / (CH.X1 - CH.X0) * MARATHON_KM);
+    }
+    svg.addEventListener("pointermove", handler);
+    svg.addEventListener("pointerdown", handler);
+  }
+
+  function renderKmGrid() {
+    var rows = kmPlan().rows, mp = mpSec(), plan = kmPlan();
+    document.getElementById("kmgrid").innerHTML = rows.map(function (r, i) {
+      var cls = r.pace > mp + 1.5 ? "slow" : (r.pace < mp - 1.5 ? "fast" : "");
+      var label = r.len < 1 ? "Finish" : "km " + (r.km + 1);
+      var hl = (r.km + 1 === 21 || r.km + 1 === 30 || r.len < 1) ? " hl" : "";
+      return "<div class=\"kmc " + cls + hl + "\"><span>" + label + (r.bridge ? " · bridge" : "") + "</span><b>" + fmtPace(r.pace) + "</b><span>" + fmtClock(plan.cum[i + 1]) + "</span></div>";
+    }).join("");
+  }
+
+  function renderCourseStats() {
+    var stats = [
+      [COURSE.fileTotal.toFixed(2) + " km", "plotted route length (official 42.2 km)"],
+      [Math.round(COURSE.hi.e) + " m", "high point, near km " + COURSE.hi.k.toFixed(1)],
+      ["km " + COURSE.bridge[0].toFixed(1) + "–" + COURSE.bridge[1].toFixed(1), "Harbour Bridge"],
+      ["km " + COURSE.turn.toFixed(1), "Tamaki Drive turnaround"]
+    ];
+    document.getElementById("course-stats").innerHTML = stats.map(function (s) { return "<div class=\"stat\"><b class=\"num\">" + esc(s[0]) + "</b><span>" + esc(s[1]) + "</span></div>"; }).join("");
+
+    var secs = [
+      ["0–10", "North Shore", "Devonport, Lake Road and Takapuna. The hilliest part in the file, with the course high point near km " + COURSE.hi.k.toFixed(1) + ". On the climbs let pace drift to about {mp+6}/km, and don't go faster than {mp-7}/km on the way down.", true],
+      ["10–15", "Down to the bridge", "Mostly gentle downhill towards the harbour. It's easy to run too fast here, so stay close to {mp}/km.", false],
+      ["15–17", "Harbour Bridge", "A real climb and descent that the file misses. Let it cost 10–20 s and keep your effort level.", true],
+      ["17–22", "City waterfront", "Wynyard Quarter and Quay Street. Flat. Settle back onto your planned pace and take your gel on schedule.", false],
+      ["22–" + Math.round(COURSE.turn), "Out along Tamaki Drive", "Low and mostly flat along the water. If there's a headwind, tuck in behind other runners.", false],
+      [Math.round(COURSE.turn) + "–42.2", "Back to the finish", "The same road back to the city, finishing near the Viaduct. Run this stretch by effort if the pace gets hard to hold.", false]
+    ];
+    document.getElementById("sections").innerHTML = secs.map(function (x) {
+      return "<div class=\"sect" + (x[3] ? " hot" : "") + "\"><b class=\"km num\">km " + x[0] + "</b><div><strong>" + esc(x[1]) + "</strong><p>" + esc(fill(x[2])) + "</p></div></div>";
+    }).join("");
+  }
+
+  function renderWatch() {
+    var wd = clampNum(inp.watch, 42.2, 43.4, 42.8);
+    document.getElementById("f-watch-out").textContent = wd.toFixed(1);
+    var names = { "259": "Sub-3 (2:59:20)", "305": "3:05", "310": "3:10", "315": "3:15" };
+    document.getElementById("watch-table").innerHTML = ["259", "305", "310", "315"].map(function (k) {
+      var T = TARGETS[k].sec, official = T / MARATHON_KM, watch = T / wd, slow = official * wd;
+      return "<tr" + (k === st.d2 ? " class=\"cur\"" : "") + "><td><b>" + names[k] + "</b></td><td>" + fmtPace(official) + "/km</td><td><b>" + fmtPace(watch) + "/km</b></td><td class=\"r\">" + fmtClock(slow) + "</td></tr>";
+    }).join("");
+  }
+
+  function renderCourse() {
+    renderProfile(); renderMap(); renderKmGrid(); renderCourseStats(); renderWatch();
+  }
+
   /* ---------- tabs + theme ---------- */
   function selectTab(tab, focus) {
     if (TABS.indexOf(tab) < 0) tab = "overview";
@@ -491,11 +731,11 @@
   /* ---------- render ---------- */
   function renderAll() {
     renderHeader(); renderTree(); renderToday(); renderVolume(); renderDates();
-    renderWeekPick(); renderWeek(); renderDecisions(); renderFuel(); renderRace();
+    renderWeekPick(); renderWeek(); renderDecisions(); renderCourse(); renderFuel(); renderRace();
   }
 
   function syncStaticInputs() {
-    document.querySelectorAll("#p-fuel [data-inp], #p-race [data-inp]").forEach(function (el) { el.value = inp[el.getAttribute("data-inp")]; });
+    document.querySelectorAll("#p-fuel [data-inp], #p-race [data-inp], #p-course [data-inp]").forEach(function (el) { el.value = inp[el.getAttribute("data-inp")]; });
   }
 
   /* ---------- events ---------- */
@@ -552,6 +792,7 @@
       if (key.charAt(0) === "c" && key !== "cpkm" && key !== "cpt") updateCheckers();
       else if (key === "cpkm" || key === "cpt") renderCheckpoint();
       else if (key === "start") renderTimeline();
+      else if (key === "watch") renderWatch();
       else { renderFuel(); renderTimeline(); renderDates(); }
       if (key === "kg" && e.type === "change") renderWeek();
       return;
@@ -570,6 +811,7 @@
   applyTheme(store.get("akl-theme") || "auto");
   syncStaticInputs();
   renderAll();
+  bindProfile();
   var fromHash = location.hash.slice(1);
   selectTab(TABS.indexOf(fromHash) >= 0 ? fromHash : (store.get("akl-tab") || "overview"));
 })();
