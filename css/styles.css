@@ -170,6 +170,7 @@ button, input, select { font: inherit; color: inherit; }
 .d-note.fuel { background: var(--fuel-soft); border-radius: 6px; padding: 5px 8px; color: var(--fg); }
 .d-note.fuel b { color: var(--fuel); }
 .d-km { text-align: right; font-weight: 600; white-space: nowrap; }
+.nw { white-space: nowrap; }
 .d-km.opt { color: var(--muted); font-weight: 500; }
 .check { display: flex; justify-content: flex-end; }
 .check input { width: 20px; height: 20px; accent-color: var(--accent); cursor: pointer; margin: 2px 0 0; }
