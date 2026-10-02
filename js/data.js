@@ -124,5 +124,49 @@ window.PLAN = (function () {
     ["Fri 30 and Sat 31 Oct", "Carb load, low fibre, low fat. Early dinner on Saturday."]
   ];
 
+  /* Structured workouts for intervals.icu / Garmin (scripts/push-intervals.mjs), in intervals.icu workout-builder syntax.
+     `s` is the base session, `alt` replaces it on the same branch as the day's `alt` block. "m" means minutes, "mtr" metres. */
+  var EASY = "5:20-5:45/km Pace";
+  function ez(km, pace) { return ["- " + km + "km " + (pace || EASY)]; }
+  function wu(km) { return ["Warmup", "- " + km + "km " + EASY, ""]; }
+  function cd(km) { return ["", "Cooldown", "- " + km + "km " + EASY]; }
+  function reps(n, lines) { return [n + "x"].concat(lines); }
+  var STEPS = {
+    "2026-09-29": { s: ["- 5km"] },
+    "2026-09-30": { alt: ez(6) },
+    "2026-10-01": { s: wu(2).concat(reps(5, ["- 1km 3:45-3:50/km Pace", "- 90s"]), cd(2)) },
+    "2026-10-03": { s: ez(6) },
+    "2026-10-04": { s: ez(29, "5:30-5:45/km Pace"), alt: ez(24, "5:30-5:45/km Pace").concat(["- 5km 4:17-4:23/km Pace"]) },
+    "2026-10-06": { s: ["- 5km"], alt: ez(5, "3:57-4:03/km Pace") },
+    "2026-10-07": { alt: ez(5) },
+    "2026-10-08": { s: wu(2).concat(reps(3, ["- 2km 3:53-3:57/km Pace", "- 2m"]), cd(2)),
+      alt: wu(1.5).concat(reps(3, ["- 3km 4:03-4:07/km Pace", "- 2m"]), cd(1.5)) },
+    "2026-10-10": { s: ez(6, "5:30-5:45/km Pace"), alt: ez(5, "5:30-5:45/km Pace") },
+    "2026-10-11": { s: ez(27, "5:30-5:45/km Pace").concat(["- 6km 4:32-4:38/km Pace"]),
+      alt: ez(25, "5:30-5:45/km Pace").concat(["- 8km 4:13-4:17/km Pace"]) },
+    "2026-10-13": { s: ez(5, "4:00-4:10/km Pace") },
+    "2026-10-14": { alt: ez(5) },
+    "2026-10-15": { s: wu(2).concat(reps(4, ["- 1km 3:48-3:52/km Pace", "- 2m"]), cd(2)) },
+    "2026-10-17": { s: ez(4.5, "5:25-5:35/km Pace").concat(["", "Strides"], reps(4, ["- 20s", "- 60s"])) },
+    "2026-10-18": { s: ["- 14km 4:28-4:32/km Pace", "- 7.1km 4:10-4:30/km Pace"],
+      alt: ["- 16km 4:13-4:17/km Pace", "- 5.1km 4:00-4:15/km Pace"] },
+    "2026-10-20": { s: ["- 5km"] },
+    "2026-10-22": { s: wu(2).concat(["- 3km {mp-2}-{mp+2}/km Pace", ""], reps(4, ["- 400mtr 3:32-3:38/km Pace", "- 200mtr"]), cd(1.5)) },
+    "2026-10-24": { s: ez(6) },
+    "2026-10-25": { s: wu(1.5).concat(["- 10km {mp-2}-{mp+2}/km Pace"], cd(1.5)) },
+    "2026-10-27": { s: ez(5, "5:00-5:15/km Pace") },
+    "2026-10-29": { s: wu(2).concat(reps(3, ["- 1km {mp-2}-{mp+2}/km Pace", "- 1m"]), cd(1)) },
+    "2026-10-31": { s: ez(4.5, "5:45-6:30/km Pace").concat(["", "Strides"], reps(3, ["- 20s", "- 60s"])) },
+    "2026-11-01": { s: ["- 42.2km {mp-3}-{mp+3}/km Pace"] }
+  };
+  WEEKS.forEach(function (w) {
+    w.days.forEach(function (day) {
+      var x = STEPS[day.d];
+      if (!x) return;
+      if (x.s) day.steps = x.s;
+      if (x.alt && day.alt) day.alt.steps = x.alt;
+    });
+  });
+
   return { WEEKS: WEEKS, DEC: DEC, OPTS: OPTS, NODES: NODES, EDGES: EDGES, TRAIN_FUEL: TRAIN_FUEL };
 })();
