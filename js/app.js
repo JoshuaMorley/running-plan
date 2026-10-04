@@ -31,7 +31,7 @@
   if (st.d1 !== "pass" && st.d1 !== "fail") st.d1 = "pass";
   if (!TARGETS[st.d2]) st.d2 = "259";
 
-  var INP_DEFAULTS = { gel: 22, gph: 70, kg: 70, cpkm: "21.0975", cpt: "1:30:10", start: "06:00",
+  var INP_DEFAULTS = { gel: 26, gph: 70, kg: 80, cpkm: "21.0975", cpt: "1:30:10", start: "06:00",
     c1pace: "4:15", c1hr: "168", c1slow: "no", c2pace: "4:15", c2hr: "170", c2fin: "1:29:45", c2last: "held", watch: "42.8" };
   var inp = loadJSON("akl-inputs", {});
   Object.keys(INP_DEFAULTS).forEach(function (k) { if (inp[k] === undefined || inp[k] === null) inp[k] = INP_DEFAULTS[k]; });
@@ -70,7 +70,7 @@
   function parsePace(str) { var s = parseClock(str); return s > 120 && s < 600 ? s : NaN; }
   function clampNum(v, lo, hi, dflt) { v = parseFloat(v); if (isNaN(v)) return dflt; return Math.min(hi, Math.max(lo, v)); }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;" }[c]; }); }
-  function kg() { return clampNum(inp.kg, 40, 130, 70); }
+  function kg() { return clampNum(inp.kg, 40, 130, 80); }
   function loadText() { return "8–10 g of carbs per kg, about " + Math.round(kg() * 8) + "–" + Math.round(kg() * 10) + " g"; }
   function halfAdj() { return HALF_BANK / HALF_KM; }
 
@@ -435,7 +435,7 @@
   /* ---------- fuel ---------- */
   function gelPlan() {
     var mp = mpSec(), dur = targetSec();
-    var gel = clampNum(inp.gel, 10, 50, 22), gph = clampNum(inp.gph, 50, 90, 70);
+    var gel = clampNum(inp.gel, 10, 50, 26), gph = clampNum(inp.gph, 50, 90, 70);
     var interval = gel / gph * 3600, list = [], seen = {};
     for (var t = interval; t <= dur - 900; t += interval) {
       var km = Math.round(t / mp * 2) / 2;
@@ -457,11 +457,9 @@
     ];
     document.getElementById("fuel-stats").innerHTML = stats.map(function (s) { return "<div class=\"stat\"><b class=\"num\">" + esc(s[0]) + "</b><span>" + esc(s[1]) + "</span></div>"; }).join("");
 
-    var cafA = null, cafB = null;
-    g.list.forEach(function (x, i) { if (cafA === null && x.km >= 20) cafA = i; if (cafB === null && x.km >= 30) cafB = i; });
     var rows = "<tr><td>Gel 1</td><td>10–15 min before the start</td><td class=\"r\">before</td></tr>";
     g.list.forEach(function (x, i) {
-      rows += "<tr><td>Gel " + (i + 2) + ((i === cafA || i === cafB) ? " <span class=\"caf\">caffeine optional</span>" : "") + "</td><td>km " + x.km + "</td><td class=\"r\">" + fmtClock(plannedClock(x.km)) + "</td></tr>";
+      rows += "<tr><td>Gel " + (i + 2) + (x.km >= 18 ? " <span class=\"caf\">caffeine</span>" : "") + "</td><td>km " + x.km + "</td><td class=\"r\">" + fmtClock(plannedClock(x.km)) + "</td></tr>";
     });
     rows += "<tr><td>Spare</td><td>Only if you feel flat late on</td><td class=\"r\">–</td></tr>";
     document.getElementById("gel-table").innerHTML = rows;

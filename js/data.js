@@ -35,7 +35,7 @@ window.PLAN = (function () {
       { d: "2026-10-10", t: "long", title: "Long run · 33 km rolling hills", km: 33,
         detail: ["First 27 km easy at 5:30–5:45/km", "Last 5–6 km at 4:35/km if you feel good, otherwise stay easy"],
         why: "Your longest run ever. It proves you can go past 30 km.",
-        fuel: "Full race rehearsal. Race breakfast 3 h before, a gel 10–15 min before you start, then gels on your race schedule (see the Fuel tab), each with water. Include one caffeine gel if you plan to use them on race day.",
+        fuel: "Full race rehearsal. Race breakfast 3 h before, a gel 10–15 min before you start, then gels on your race schedule (see the Fuel tab), each with water. Use your race-day flavour mix: non-caffeine early, caffeine gels from about km 18.",
         alt: { t: "test", title: "Long run · 33 km · Test 1", detail: ["First 25 km easy at 5:30–5:45/km", "Last 8 km at 4:15/km, your sub-3 race pace", "Note your average pace and HR over the last 8 km, and whether the final 2–3 km slowed", "If you slow by more than 10 s/km, ease back to easy and jog it home. That's your answer for Decision 2"], why: "Sub-3 pace on tired legs is the closest you can get to the last 10 km of the race." } },
       { d: "2026-10-11", t: "rest", title: "Rest", fuel: "Recovery day. Eat well, top up carbs and rehydrate after Saturday." }
     ]},
@@ -118,7 +118,7 @@ window.PLAN = (function () {
   var TRAIN_FUEL = [
     ["Easy runs and intervals", "Nothing during. Carbs and protein within an hour after hard sessions."],
     ["29 km · Sun 4 Oct", "Race breakfast 2.5–3 h before. A gel every 25 min from 25 min in, about 60 g of carbs per hour."],
-    ["33 km · Sat 10 Oct", "Full race rehearsal: breakfast 3 h before, gel 10–15 min before, then your race schedule. Try a caffeine gel."],
+    ["33 km · Sat 10 Oct", "Full race rehearsal: breakfast 3 h before, gel 10–15 min before, then your race schedule. Try your race-day caffeine gel mix."],
     ["Half · Sun 18 Oct", "Breakfast 3 h before, gel 10–15 min before, then gels at about km 6, 11 and 17."],
     ["13 km race practice · Sun 25 Oct", "Race breakfast, a gel 10–15 min before, then gels at the first two points on your race schedule."],
     ["Fri 30 and Sat 31 Oct", "Carb load, low fibre, low fat. Early dinner on Saturday."]
