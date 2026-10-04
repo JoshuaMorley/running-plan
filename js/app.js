@@ -253,7 +253,7 @@
   }
 
   var COLX = [0, 230, 460, 690], NW = 172, NH = 50;
-  var COLH = ["Today", "11 Oct · 33 km", "18 Oct · Half", "1 Nov · Race"];
+  var COLH = ["Today", "10 Oct · 33 km", "18 Oct · Half", "1 Nov · Race"];
   function renderTree() {
     var path = ["root", st.d0, l2(), "T" + st.d2];
     function onEdge(a, b) { for (var i = 0; i < path.length - 1; i++) if (path[i] === a && path[i + 1] === b) return true; return false; }
@@ -327,7 +327,7 @@
     var subA = st.d0 === "A";
     var list = [
       ["2026-10-04", "29 km long run", subA ? "Easy, last 5 km at 4:20 if recovered" : "All easy"],
-      ["2026-10-11", subA ? "33 km · Test 1" : "33 km long run", subA ? "Last 8 km at 4:15" : "Longest run ever"],
+      ["2026-10-10", subA ? "33 km · Test 1" : "33 km long run", subA ? "Last 8 km at 4:15" : "Longest run ever"],
       ["2026-10-18", l2() === "A1" ? "Half · Test 2" : "Half · pace test", l2() === "A1" ? "16 km at 4:15" : "14 km at 4:30"],
       ["2026-10-19", "Taper starts", "Less volume, same sharpness"],
       ["2026-10-25", "13 km race practice", "10 km at " + fmtPace(mpSec()) + "/km"],
@@ -370,7 +370,7 @@
     var h = decisionHTML("d0", false);
     h += decisionHTML("d1", false);
     if (st.d0 === "A") {
-      h += "<div class=\"checker\"><h4>Test 1 checker · 33 km on Sun 11 Oct</h4><div class=\"fields\">" +
+      h += "<div class=\"checker\"><h4>Test 1 checker · 33 km on Sat 10 Oct</h4><div class=\"fields\">" +
         field("c1-pace", "Avg pace, last 8 km (m:ss)", "c1pace", "text", " inputmode=\"numeric\" placeholder=\"4:15\"") +
         field("c1-hr", "Avg HR, last 8 km", "c1hr", "number", " min=\"100\" max=\"210\"") +
         selectField("c1-slow", "Final 2–3 km slower?", "c1slow", [["no", "No"], ["yes", "Yes, I slowed"]]) +

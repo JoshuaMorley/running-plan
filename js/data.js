@@ -23,25 +23,24 @@ window.PLAN = (function () {
     ]},
     { n: 2, range: "5 – 11 Oct", focus: "Peak week. Your longest run ever.", decAfter: "d1", days: [
       { d: "2026-10-05", t: "rest", title: "Rest", fuel: "Recovery day. Eat well and top up carbs after Sunday." },
-      { d: "2026-10-06", t: "race", title: "Tuesday 5k", km: 5, detail: "Race it or run it steady. If you race it, keep Thursday controlled.", why: "Keeps your speed ticking over.", fuel: FUEL_HARD,
-        alt: { t: "easy", title: "Tuesday 5k · steady", detail: "Around 4:00/km, controlled. Don't race it this week.", why: "Save your legs for Sunday's test." } },
+      { d: "2026-10-06", t: "int", title: "Morning intervals · threshold", km: 10,
+        detail: ["Moved from Thursday. No evening 5k this week", "2 km easy warm-up", "3 × 2 km at 3:55/km, 2 min jog between", "2 km easy cool-down"],
+        why: "Longer threshold reps build the ability to hold a hard effort.", fuel: FUEL_HARD,
+        alt: { title: "Morning intervals · faster than race pace", km: 13, detail: ["Moved from Thursday. No evening 5k this week", "1.5 km easy warm-up", "3 × 3 km at 4:05/km, 2 min jog between", "1.5 km easy cool-down", "If you can't hold 4:05 on rep 3, stop. That means you need recovery, not more work"], why: "Faster than sub-3 pace, so 4:15 feels comfortable by comparison." } },
       { d: "2026-10-07", t: "rest", title: "Rest or optional easy 30 min", optKm: 5,
         alt: { t: "easy", title: "Easy run", km: 5, optKm: 0, detail: "5:20–5:45/km, HR under 150.", why: "Easy volume. Keep it genuinely easy.", fuel: FUEL_NONE } },
-      { d: "2026-10-08", t: "int", title: "Morning intervals · threshold", km: 10,
-        detail: ["2 km easy warm-up", "3 × 2 km at 3:55/km, 2 min jog between", "2 km easy cool-down"],
-        why: "Longer threshold reps build the ability to hold a hard effort.", fuel: FUEL_HARD,
-        alt: { title: "Morning intervals · faster than race pace", km: 13, detail: ["1.5 km easy warm-up", "3 × 3 km at 4:05/km, 2 min jog between", "1.5 km easy cool-down", "If you can't hold 4:05 on rep 3, stop. That means you need recovery, not more work"], why: "Faster than sub-3 pace, so 4:15 feels comfortable by comparison." } },
-      { d: "2026-10-09", t: "rest", title: "Rest", fuel: "Normal meals with a carb-heavy dinner." },
-      { d: "2026-10-10", t: "easy", title: "Easy run", km: 6, detail: "5:30–5:45/km. Fresh legs for tomorrow matter more than pace.", why: "Shakes out the legs before your biggest run.", fuel: "Carb-heavy dinner tonight, such as pasta or rice.",
+      { d: "2026-10-08", t: "easy", title: "Easy run", km: 6, detail: "5:30–5:45/km. Fresh legs for Saturday matter more than pace.", why: "Keeps the legs moving before your biggest run.", fuel: FUEL_NONE,
         alt: { km: 5 } },
-      { d: "2026-10-11", t: "long", title: "Long run · 33 km rolling hills", km: 33,
+      { d: "2026-10-09", t: "rest", title: "Rest", fuel: "Carb-heavy dinner tonight, such as pasta or rice." },
+      { d: "2026-10-10", t: "long", title: "Long run · 33 km rolling hills", km: 33,
         detail: ["First 27 km easy at 5:30–5:45/km", "Last 5–6 km at 4:35/km if you feel good, otherwise stay easy"],
         why: "Your longest run ever. It proves you can go past 30 km.",
         fuel: "Full race rehearsal. Race breakfast 3 h before, a gel 10–15 min before you start, then gels on your race schedule (see the Fuel tab), each with water. Include one caffeine gel if you plan to use them on race day.",
-        alt: { t: "test", title: "Long run · 33 km · Test 1", detail: ["First 25 km easy at 5:30–5:45/km", "Last 8 km at 4:15/km, your sub-3 race pace", "Note your average pace and HR over the last 8 km, and whether the final 2–3 km slowed", "If you slow by more than 10 s/km, ease back to easy and jog it home. That's your answer for Decision 2"], why: "Sub-3 pace on tired legs is the closest you can get to the last 10 km of the race." } }
+        alt: { t: "test", title: "Long run · 33 km · Test 1", detail: ["First 25 km easy at 5:30–5:45/km", "Last 8 km at 4:15/km, your sub-3 race pace", "Note your average pace and HR over the last 8 km, and whether the final 2–3 km slowed", "If you slow by more than 10 s/km, ease back to easy and jog it home. That's your answer for Decision 2"], why: "Sub-3 pace on tired legs is the closest you can get to the last 10 km of the race." } },
+      { d: "2026-10-11", t: "rest", title: "Rest", fuel: "Recovery day. Eat well, top up carbs and rehydrate after Saturday." }
     ]},
     { n: 3, range: "12 – 18 Oct", focus: "Test week. The half marathon sets your race target.", decAfter: "d2", days: [
-      { d: "2026-10-12", t: "rest", title: "Rest", fuel: "Recovery day. Eat well and top up carbs after Sunday." },
+      { d: "2026-10-12", t: "rest", title: "Rest", fuel: "Normal meals." },
       { d: "2026-10-13", t: "easy", title: "Tuesday 5k · steady", km: 5, detail: "Around 4:00–4:10/km. Controlled, not a race.", why: "Keeps your legs sharp without taking anything out of them for Sunday.", fuel: FUEL_NONE },
       { d: "2026-10-14", t: "rest", title: "Rest or optional easy 30 min", optKm: 5,
         alt: { t: "easy", title: "Easy run", km: 5, optKm: 0, detail: "5:20–5:45/km. Keep it short before Sunday.", why: "Easy volume, nothing more.", fuel: FUEL_NONE } },
@@ -76,7 +75,7 @@ window.PLAN = (function () {
 
   var DEC = {
     d0: { n: 1, when: "Today · Wed 30 Sep", q: "Go after sub-3?" },
-    d1: { n: 2, when: "After the 33 km · Sun 11 Oct", q: "Did the last 8 km at 4:15 hold?" },
+    d1: { n: 2, when: "After the 33 km · Sat 10 Oct", q: "Did the last 8 km at 4:15 hold?" },
     d2: { n: 3, when: "After the half · Sun 18 Oct", q: "Pick your race target" }
   };
   var OPTS = {
@@ -119,7 +118,7 @@ window.PLAN = (function () {
   var TRAIN_FUEL = [
     ["Easy runs and intervals", "Nothing during. Carbs and protein within an hour after hard sessions."],
     ["29 km · Sun 4 Oct", "Race breakfast 2.5–3 h before. A gel every 25 min from 25 min in, about 60 g of carbs per hour."],
-    ["33 km · Sun 11 Oct", "Full race rehearsal: breakfast 3 h before, gel 10–15 min before, then your race schedule. Try a caffeine gel."],
+    ["33 km · Sat 10 Oct", "Full race rehearsal: breakfast 3 h before, gel 10–15 min before, then your race schedule. Try a caffeine gel."],
     ["Half · Sun 18 Oct", "Breakfast 3 h before, gel 10–15 min before, then gels at about km 6, 11 and 17."],
     ["13 km race practice · Sun 25 Oct", "Race breakfast, a gel 10–15 min before, then gels at the first two points on your race schedule."],
     ["Fri 30 and Sat 31 Oct", "Carb load, low fibre, low fat. Early dinner on Saturday."]
@@ -138,12 +137,11 @@ window.PLAN = (function () {
     "2026-10-01": { s: wu(2).concat(reps(5, ["- 1km 3:45-3:50/km Pace", "- 90s"]), cd(2)) },
     "2026-10-03": { s: ez(6) },
     "2026-10-04": { s: ez(29, "5:30-5:45/km Pace"), alt: ez(24, "5:30-5:45/km Pace").concat(["- 5km 4:17-4:23/km Pace"]) },
-    "2026-10-06": { s: ["- 5km"], alt: ez(5, "3:57-4:03/km Pace") },
-    "2026-10-07": { alt: ez(5) },
-    "2026-10-08": { s: wu(2).concat(reps(3, ["- 2km 3:53-3:57/km Pace", "- 2m"]), cd(2)),
+    "2026-10-06": { s: wu(2).concat(reps(3, ["- 2km 3:53-3:57/km Pace", "- 2m"]), cd(2)),
       alt: wu(1.5).concat(reps(3, ["- 3km 4:03-4:07/km Pace", "- 2m"]), cd(1.5)) },
-    "2026-10-10": { s: ez(6, "5:30-5:45/km Pace"), alt: ez(5, "5:30-5:45/km Pace") },
-    "2026-10-11": { s: ez(27, "5:30-5:45/km Pace").concat(["- 6km 4:32-4:38/km Pace"]),
+    "2026-10-07": { alt: ez(5) },
+    "2026-10-08": { s: ez(6, "5:30-5:45/km Pace"), alt: ez(5, "5:30-5:45/km Pace") },
+    "2026-10-10": { s: ez(27, "5:30-5:45/km Pace").concat(["- 6km 4:32-4:38/km Pace"]),
       alt: ez(25, "5:30-5:45/km Pace").concat(["- 8km 4:13-4:17/km Pace"]) },
     "2026-10-13": { s: ez(5, "4:00-4:10/km Pace") },
     "2026-10-14": { alt: ez(5) },
