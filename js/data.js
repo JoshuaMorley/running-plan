@@ -15,7 +15,7 @@ window.PLAN = (function () {
       { d: "2026-10-02", t: "rest", title: "Rest" },
       { d: "2026-10-03", t: "easy", title: "Easy run", km: 6, detail: ["5:20–5:45/km, conversational", "A parkrun jogged easy counts"], result: "Done: 6.0 km parkrun jogged at 5:20/km, avg HR 145", done: true, why: "Loosens the legs before Sunday.", fuel: FUEL_NONE },
       { d: "2026-10-04", t: "long", title: "Long run · 29 km rolling hills", km: 29,
-        result: "Done: 29.0 km in 2:37:48, +219 m. 24 km at 5:35/km (avg HR about 130), then 5 km at 4:17/km (HR 157–166). Felt really good", done: true,
+        result: "Done: 29.0 km in 2:37:48, +219 m. 24 km at 5:35/km (avg HR about 130), then 5 km at 4:17/km (HR 157–166). 5 gels, stomach fine. Felt really good", done: true,
         detail: ["5:30–5:45/km the whole way, HR under 150", "Run the hills by effort, not pace. Walk a steep pinch if HR goes past 155"],
         why: "Builds time on your feet and starts training your gut to take race fuel.",
         fuel: "Gut training starts here. Eat your planned race breakfast 2.5–3 h before. Take a gel every 25 min from 25 min in (about 6), each with water. That's about 60 g of carbs per hour.",
