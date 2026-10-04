@@ -23,7 +23,7 @@ window.PLAN = (function () {
     ]},
     { n: 2, range: "5 – 11 Oct", focus: "Peak week. Your longest run ever.", decAfter: "d1", days: [
       { d: "2026-10-05", t: "rest", title: "Rest", fuel: "Recovery day. Eat well and top up carbs after Sunday." },
-      { d: "2026-10-06", t: "int", title: "Morning intervals · threshold", km: 10,
+      { d: "2026-10-06", t: "int", title: "Morning intervals · threshold", km: 10, shoes: true,
         detail: ["Moved from Thursday. No evening 5k this week", "2 km easy warm-up", "3 × 2 km at 3:55/km, 2 min jog between", "2 km easy cool-down"],
         why: "Longer threshold reps build the ability to hold a hard effort.", fuel: FUEL_HARD,
         alt: { title: "Morning intervals · faster than race pace", km: 13, detail: ["Moved from Thursday. No evening 5k this week", "1.5 km easy warm-up", "3 × 3 km at 4:05/km, 2 min jog between", "1.5 km easy cool-down", "If you can't hold 4:05 on rep 3, stop. That means you need recovery, not more work"], why: "Faster than sub-3 pace, so 4:15 feels comfortable by comparison." } },
@@ -32,7 +32,7 @@ window.PLAN = (function () {
       { d: "2026-10-08", t: "easy", title: "Easy run", km: 6, detail: "5:30–5:45/km. Fresh legs for Saturday matter more than pace.", why: "Keeps the legs moving before your biggest run.", fuel: FUEL_NONE,
         alt: { km: 5 } },
       { d: "2026-10-09", t: "rest", title: "Rest", fuel: "Carb-heavy dinner tonight, such as pasta or rice." },
-      { d: "2026-10-10", t: "long", title: "Long run · 33 km rolling hills", km: 33,
+      { d: "2026-10-10", t: "long", title: "Long run · 33 km rolling hills", km: 33, shoes: true,
         detail: ["First 27 km easy at 5:30–5:45/km", "Last 5–6 km at 4:35/km if you feel good, otherwise stay easy"],
         why: "Your longest run ever. It proves you can go past 30 km.",
         fuel: "Full race rehearsal. Race breakfast 3 h before, a gel 10–15 min before you start, then gels on your race schedule (see the Fuel tab), each with water. Use your race-day flavour mix: non-caffeine early, caffeine gels from about km 18.",
@@ -47,7 +47,7 @@ window.PLAN = (function () {
       { d: "2026-10-15", t: "int", title: "Morning intervals · light", km: 8, detail: ["2 km easy warm-up", "4 × 1 km at 3:50/km, 2 min jog between", "2 km easy cool-down"], why: "Sharpens you up without tiring you before the test.", fuel: FUEL_HARD },
       { d: "2026-10-16", t: "rest", title: "Rest", fuel: "Normal meals." },
       { d: "2026-10-17", t: "easy", title: "Easy run + strides", km: 5, detail: "5:30/km easy, then 4 × 20 s relaxed strides.", why: "Strides wake your legs up for tomorrow.", fuel: "Carb-heavy dinner tonight." },
-      { d: "2026-10-18", t: "test", title: "Half marathon · pace test", km: 21.1, altBy: "half",
+      { d: "2026-10-18", t: "test", title: "Half marathon · pace test", km: 21.1, altBy: "half", shoes: true,
         detail: ["First 14 km at 4:30/km, your marathon target pace", "Last 7 km faster if you have it, otherwise hold", "Holding 4:30 the whole way finishes in 1:35:00", "Note your average pace and HR over the first 14 km"],
         why: "The best guide to your race pace you'll get before race day.",
         fuel: "Race-day routine: breakfast 3 h before, a gel 10–15 min before the start, then gels at about km 6, 11 and 17, each with water.",
@@ -60,16 +60,16 @@ window.PLAN = (function () {
       { d: "2026-10-22", t: "int", title: "Morning intervals · pace + speed", km: 8.5, detail: ["2 km easy warm-up", "3 km at {mp}/km", "4 × 400 m at 3:35/km, 200 m jog between", "1.5 km easy cool-down"], why: "Locks in race pace and keeps some pop in your legs.", fuel: FUEL_HARD },
       { d: "2026-10-23", t: "rest", title: "Rest" },
       { d: "2026-10-24", t: "easy", title: "Easy run", km: 6, detail: "5:20–5:45/km.", why: "Easy running to keep the routine going.", fuel: "Tonight, eat the dinner you plan to have the night before the race." },
-      { d: "2026-10-25", t: "long", title: "Race practice · 13 km", km: 13, detail: ["1.5 km easy", "10 km at {mp}/km", "1.5 km easy", "Race shoes, race kit, race breakfast, same start time as race day"], why: "A full dress rehearsal, so nothing on race day is new.", fuel: "Race breakfast 3 h before, a gel 10–15 min before, then gels at the first two points on your race schedule. Practise taking gels at pace without slowing." }
+      { d: "2026-10-25", t: "long", title: "Race practice · 13 km", km: 13, shoes: true, detail: ["1.5 km easy", "10 km at {mp}/km", "1.5 km easy", "Race shoes, race kit, race breakfast, same start time as race day"], why: "A full dress rehearsal, so nothing on race day is new.", fuel: "Race breakfast 3 h before, a gel 10–15 min before, then gels at the first two points on your race schedule. Practise taking gels at pace without slowing." }
     ]},
     { n: 5, range: "26 Oct – 1 Nov", focus: "Race week. Stay loose, sleep well, fuel up.", days: [
       { d: "2026-10-26", t: "rest", title: "Rest · Labour Day" },
       { d: "2026-10-27", t: "easy", title: "Tuesday 5k · easy", km: 5, detail: "5:00–5:15/km. Don't race it this week.", why: "Keeps the legs moving. Your fitness is already built.", fuel: FUEL_NONE },
       { d: "2026-10-28", t: "rest", title: "Rest" },
-      { d: "2026-10-29", t: "int", title: "Morning pace check", km: 6, detail: ["2 km easy", "3 × 1 km at {mp}/km, 1 min jog between", "1 km easy"], why: "Reminds your legs what race pace feels like.", fuel: FUEL_NONE },
+      { d: "2026-10-29", t: "int", title: "Morning pace check", km: 6, shoes: true, detail: ["2 km easy", "3 × 1 km at {mp}/km, 1 min jog between", "1 km easy"], why: "Reminds your legs what race pace feels like.", fuel: FUEL_NONE },
       { d: "2026-10-30", t: "rest", title: "Rest · carb load starts", fuel: "Carb load: {load} today. Low fibre, low fat. See the Fuel tab." },
       { d: "2026-10-31", t: "easy", title: "Shakeout", km: 5, detail: "Very easy, 5:45/km or slower, plus 3 strides. Lay out your kit, pin your bib, count your gels, and plan the trip to Devonport.", why: "Settles the nerves and loosens the legs.", fuel: "Keep carb loading: {load}. Have an early dinner you've eaten before." },
-      { d: "2026-11-01", t: "race", title: "Auckland Marathon", km: 42.2, detail: "Target {full} at {mp}/km. See the Race day tab for splits and checks.", fuel: "Breakfast 3 h before, gel 1 10–15 min before the start, then your race gel schedule." }
+      { d: "2026-11-01", t: "race", title: "Auckland Marathon", km: 42.2, shoes: true, detail: "Target {full} at {mp}/km. See the Race day tab for splits and checks.", fuel: "Breakfast 3 h before, gel 1 10–15 min before the start, then your race gel schedule." }
     ]}
   ];
 

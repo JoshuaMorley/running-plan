@@ -200,12 +200,13 @@
     if (d.fuel) h += "<p class=\"d-note fuel\"><b>Fuel</b>" + esc(fill(d.fuel)) + "</p>";
     return h;
   }
+  function shoesChip(d) { return d.shoes ? "<span class=\"chip t-shoes\">Race shoes</span>" : ""; }
   function dayRowHTML(d) {
     var dt = dateObj(d.d), done = d.t !== "rest" && isDone(d);
     var h = "<div class=\"day" + (d.t === "rest" ? " rest" : "") + (d.d === today ? " today" : "") + (done ? " done" : "") + "\">";
     h += "<div class=\"d-date\"><b>" + DOW[dt.getDay()] + "</b><span class=\"num\">" + dt.getDate() + " " + MON[dt.getMonth()] + (d.d === today ? " · today" : "") + "</span></div>";
     h += "<span class=\"chip t-" + d.t + "\">" + TYPE_LABEL[d.t] + "</span>";
-    h += "<div class=\"d-body\"><span class=\"d-title\">" + esc(fill(d.title)) + "</span>" + detailHTML(d) + "</div>";
+    h += "<div class=\"d-body\"><span class=\"d-title\">" + esc(fill(d.title)) + "</span>" + shoesChip(d) + detailHTML(d) + "</div>";
     if (d.km) h += "<span class=\"d-km num\">" + d.km + " km</span>";
     else if (d.optKm) h += "<span class=\"d-km opt num\">opt. " + d.optKm + " km</span>";
     else h += "<span class=\"d-km\"></span>";
@@ -303,10 +304,10 @@
     } else if (today > RACE_DATE) {
       html += "<div class=\"card today-card\"><span class=\"eyebrow\">Finished</span><h3>Race complete</h3><p class=\"muted\">Rest up. Easy running only for the next 1–2 weeks.</p></div>";
     } else if (cur) {
-      html += "<div class=\"card today-card\"><span class=\"eyebrow\">Today · " + niceDate(cur.d) + "</span><span class=\"chip t-" + cur.t + "\">" + TYPE_LABEL[cur.t] + "</span><h3>" + esc(fill(cur.title)) + (cur.km ? " · " + cur.km + " km" : "") + "</h3>" + detailHTML(cur) + "<button type=\"button\" class=\"link-btn\" data-goto=\"plan\" data-week=\"" + cur._w + "\">Open this week</button></div>";
+      html += "<div class=\"card today-card\"><span class=\"eyebrow\">Today · " + niceDate(cur.d) + "</span><div class=\"chips\"><span class=\"chip t-" + cur.t + "\">" + TYPE_LABEL[cur.t] + "</span>" + shoesChip(cur) + "</div><h3>" + esc(fill(cur.title)) + (cur.km ? " · " + cur.km + " km" : "") + "</h3>" + detailHTML(cur) + "<button type=\"button\" class=\"link-btn\" data-goto=\"plan\" data-week=\"" + cur._w + "\">Open this week</button></div>";
     }
     if (next) {
-      html += "<div class=\"card today-card next\"><span class=\"eyebrow\">Next session · " + niceDate(next.d) + " · " + relDays(next.d) + "</span><span class=\"chip t-" + next.t + "\">" + TYPE_LABEL[next.t] + "</span><h3>" + esc(fill(next.title)) + (next.km ? " · " + next.km + " km" : "") + "</h3>" + detailHTML(next) + "</div>";
+      html += "<div class=\"card today-card next\"><span class=\"eyebrow\">Next session · " + niceDate(next.d) + " · " + relDays(next.d) + "</span><div class=\"chips\"><span class=\"chip t-" + next.t + "\">" + TYPE_LABEL[next.t] + "</span>" + shoesChip(next) + "</div><h3>" + esc(fill(next.title)) + (next.km ? " · " + next.km + " km" : "") + "</h3>" + detailHTML(next) + "</div>";
     }
     document.getElementById("today-cards").innerHTML = html;
   }
