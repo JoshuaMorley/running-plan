@@ -32,7 +32,7 @@
   if (!TARGETS[st.d2]) st.d2 = "259";
 
   var INP_DEFAULTS = { gel: 26, gph: 70, kg: 80, cpkm: "21.0975", cpt: "1:30:10", start: "06:00",
-    c1pace: "4:15", c1hr: "168", c1slow: "no", c2pace: "4:15", c2hr: "170", c2fin: "1:29:45", c2last: "held", watch: "42.8" };
+    c1pace: "4:15", c1hr: "168", c1slow: "no", c2pace: "4:15", c2hr: "170", c2feel: "just", watch: "42.8" };
   var inp = loadJSON("akl-inputs", {});
   Object.keys(INP_DEFAULTS).forEach(function (k) { if (inp[k] === undefined || inp[k] === null) inp[k] = INP_DEFAULTS[k]; });
 
@@ -331,7 +331,7 @@
       ["2026-10-10", subA ? "33 km · Test 1" : "33 km long run", subA ? "Last 8 km at 4:15" : "Longest run ever"],
       ["2026-10-18", l2() === "A1" ? "Half · Test 2" : "Half · pace test", l2() === "A1" ? "16 km at 4:15" : "14 km at 4:30"],
       ["2026-10-19", "Taper starts", "Less volume, same sharpness"],
-      ["2026-10-25", "13 km race practice", "10 km at " + fmtPace(mpSec()) + "/km"],
+      ["2026-10-25", "10 km race practice", "6 km at " + fmtPace(mpSec()) + "/km"],
       ["2026-10-30", "Carb load starts", loadText() + " a day"],
       [RACE_DATE, "Auckland Marathon", fmtTarget() + " at " + fmtPace(mpSec()) + "/km"]
     ];
@@ -382,8 +382,7 @@
     h += "<div class=\"checker\"><h4>" + (a1 ? "Test 2 checker · half at 4:15" : "Pace test checker · half at 4:30") + " · Sun 18 Oct</h4><div class=\"fields\">" +
       field("c2-pace", a1 ? "Avg pace, first 16 km" : "Avg pace, first 14 km", "c2pace", "text", " inputmode=\"numeric\" placeholder=\"" + (a1 ? "4:15" : "4:30") + "\"") +
       field("c2-hr", a1 ? "Avg HR, first 16 km" : "Avg HR, first 14 km", "c2hr", "number", " min=\"100\" max=\"210\"") +
-      (a1 ? field("c2-fin", "Finish time (h:mm:ss)", "c2fin", "text", " inputmode=\"numeric\" placeholder=\"1:29:45\"") : "") +
-      selectField("c2-last", a1 ? "Last 5 km" : "Last 7 km", "c2last", [["faster", "Got faster"], ["held", "Held pace"], ["slowed", "Slowed down"]]) +
+      selectField("c2-feel", "Could you have kept going at that pace?", "c2feel", [["easy", "Yes, comfortably"], ["just", "Just about"], ["no", "No, I was hanging on"]]) +
       "</div><div id=\"c2-out\"></div></div>";
     document.getElementById("decision-list").innerHTML = h;
     updateCheckers();
@@ -409,23 +408,21 @@
     }
     var o2 = document.getElementById("c2-out");
     if (o2) {
-      var p2 = parsePace(inp.c2pace), hr2 = parseInt(inp.c2hr, 10), last = inp.c2last;
+      var p2 = parsePace(inp.c2pace), hr2 = parseInt(inp.c2hr, 10), feel = inp.c2feel;
       if (isNaN(p2) || isNaN(hr2)) { o2.innerHTML = "<p class=\"muted\">Enter your pace as m:ss and your average HR.</p>"; return; }
       var r2 = [], pick, cls;
+      var feelText = { easy: "You could have kept going comfortably.", just: "You could just about have kept going.", no: "You were hanging on by the end." }[feel] || "";
       if (l2() === "A1") {
-        var fin = parseClock(inp.c2fin);
-        if (isNaN(fin)) { o2.innerHTML = "<p class=\"muted\">Enter your finish time as h:mm:ss, for example 1:29:45.</p>"; return; }
         r2.push("First 16 km at " + fmtPace(p2) + "/km with HR " + hr2 + ".");
-        r2.push("Finished in " + fmtClock(fin) + (fin <= 5430 ? ", inside 1:30:30." : ", outside 1:30:30."));
-        r2.push(last === "slowed" ? "You slowed over the last 5 km." : "You " + (last === "faster" ? "got faster" : "held pace") + " over the last 5 km.");
-        if (p2 <= 257 && hr2 <= 172 && fin <= 5430 && last !== "slowed") { pick = "259"; cls = "good"; }
-        else if (p2 <= 262 && fin <= 5520) { pick = "305"; cls = "warn"; }
+        r2.push(feelText);
+        if (p2 <= 257 && hr2 <= 172 && feel === "easy") { pick = "259"; cls = "good"; }
+        else if (p2 <= 262 && feel !== "no") { pick = "305"; cls = "warn"; }
         else { pick = "310"; cls = "bad"; }
       } else {
         r2.push("First 14 km at " + fmtPace(p2) + "/km with HR " + hr2 + ".");
-        r2.push(last === "slowed" ? "You slowed over the last 7 km." : "You " + (last === "faster" ? "got faster" : "held pace") + " over the last 7 km.");
-        if (p2 <= 272 && hr2 <= 165 && last === "faster") { pick = "305"; cls = "good"; }
-        else if (p2 <= 275 && hr2 <= 170 && last !== "slowed") { pick = "310"; cls = "good"; }
+        r2.push(feelText);
+        if (p2 <= 272 && hr2 <= 165 && feel === "easy") { pick = "305"; cls = "good"; }
+        else if (p2 <= 275 && hr2 <= 170 && feel !== "no") { pick = "310"; cls = "good"; }
         else { pick = "315"; cls = "warn"; }
       }
       var label = { "259": "Sub-3 at 4:15/km", "305": "3:05 at 4:23/km", "310": "3:10 at 4:30/km", "315": "3:15 at 4:37/km" }[pick];
