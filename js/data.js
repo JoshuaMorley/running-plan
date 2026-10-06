@@ -24,10 +24,12 @@ window.PLAN = (function () {
     { n: 2, range: "5 – 11 Oct", focus: "Peak week. Your longest run ever.", decAfter: "d1", days: [
       { d: "2026-10-05", t: "rest", title: "Rest", fuel: "Recovery day. Eat well and top up carbs after Sunday." },
       { d: "2026-10-06", t: "int", title: "Morning intervals · threshold", km: 10, shoes: true,
+        result: "Done instead: 7 × 1 min hard, 1 min walk recovery (2:44–3:33/km, max HR 183), 7.5 km total. The 3 × 3 km is dropped, not made up", done: true,
         detail: ["Moved from Thursday. No evening 5k this week", "2 km easy warm-up", "3 × 2 km at 3:55/km, 2 min jog between", "2 km easy cool-down"],
         why: "Longer threshold reps build the ability to hold a hard effort.", fuel: FUEL_HARD,
         alt: { title: "Morning intervals · faster than race pace", km: 13, detail: ["Moved from Thursday. No evening 5k this week", "1.5 km easy warm-up", "3 × 3 km at 4:05/km, 2 min jog between", "1.5 km easy cool-down", "If you can't hold 4:05 on rep 3, stop. That means you need recovery, not more work"], why: "Faster than sub-3 pace, so 4:15 feels comfortable by comparison." } },
       { d: "2026-10-07", t: "rest", title: "Rest or optional easy 30 min", optKm: 5,
+        result: "Done: 5.0 km at 5:27/km, avg HR about 140", done: true,
         alt: { t: "easy", title: "Easy run", km: 5, optKm: 0, detail: "5:20–5:45/km, HR under 150.", why: "Easy volume. Keep it genuinely easy.", fuel: FUEL_NONE } },
       { d: "2026-10-08", t: "easy", title: "Easy run", km: 6, detail: "5:30–5:45/km. Fresh legs for Saturday matter more than pace.", why: "Keeps the legs moving before your biggest run.", fuel: FUEL_NONE,
         alt: { km: 5 } },
