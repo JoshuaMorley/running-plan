@@ -185,7 +185,76 @@
     var v = store.get("akl-done-" + day.d);
     if (v === "1") return true;
     if (v === "0") return false;
-    return !!day.done;
+    return !!day.done || runsOn(day.d).length > 0;
+  }
+
+  /* ---------- Strava results (js/results.js, written by scripts/sync-strava.mjs) ---------- */
+  var RUNS = (window.RESULTS && window.RESULTS.runs) || [];
+  function runsOn(iso) { return RUNS.filter(function (r) { return r.date === iso; }); }
+  function runsBetween(a, b) { return RUNS.filter(function (r) { return r.date >= a && r.date <= b; }); }
+  /* Several runs on one day (say a warm-up saved separately) count as one. HR is time-weighted. */
+  function combine(list) {
+    if (!list.length) return null;
+    var m = 0, sec = 0, hrT = 0, hrS = 0;
+    list.forEach(function (r) { m += r.m; sec += r.sec; if (r.hr) { hrT += r.hr * r.sec; hrS += r.sec; } });
+    return { m: m, sec: sec, pace: sec / m * 1000, hr: hrS ? Math.round(hrT / hrS) : null, n: list.length };
+  }
+  function splitsTotal(run) { return run.splits.reduce(function (t, s) { return t + s[0]; }, 0); }
+  /* Pace and HR between two distances (metres) in a run, pro-rating the splits at each end. */
+  function segment(run, from, to) {
+    var pos = 0, m = 0, sec = 0, hrT = 0, hrS = 0;
+    run.splits.forEach(function (s) {
+      var a = pos, b = pos + s[0];
+      pos = b;
+      var ov = Math.min(b, to) - Math.max(a, from);
+      if (ov <= 0) return;
+      var t = s[1] * ov / s[0];
+      m += ov; sec += t;
+      if (s[2]) { hrT += s[2] * t; hrS += t; }
+    });
+    return m > 0 ? { m: m, pace: sec / m * 1000, hr: hrS ? Math.round(hrT / hrS) : null } : null;
+  }
+  /* The longest run on a test day, which is the test itself. */
+  function testRun(iso) {
+    return runsOn(iso).sort(function (a, b) { return b.m - a.m; })[0] || null;
+  }
+
+  /* The day's pace target, when every paced step shares one range (easy runs, steady runs). */
+  function dayPaceRange(d) {
+    if (!d.steps) return null;
+    var found = null, many = false;
+    d.steps.forEach(function (s) {
+      var m = fill(s).match(/(\d+):(\d\d)-(\d+):(\d\d)\/km Pace/);
+      if (!m) return;
+      var r = [Math.min(+m[1] * 60 + +m[2], +m[3] * 60 + +m[4]), Math.max(+m[1] * 60 + +m[2], +m[3] * 60 + +m[4])];
+      if (found && (found[0] !== r[0] || found[1] !== r[1])) many = true;
+      found = r;
+    });
+    return many ? null : found;
+  }
+  var GRADE = { ok: "on plan", meh: "a bit off", off: "well off" };
+  function pill(grade, text) {
+    return "<span class=\"pill" + (grade ? " " + grade : "") + "\"" + (grade ? " title=\"" + GRADE[grade] + "\"" : "") + ">" + esc(text) + (grade ? "<span class=\"sr\"> (" + GRADE[grade] + ")</span>" : "") + "</span>";
+  }
+  /* Strava's numbers for the day next to the plan: distance against planned km, pace against the
+     day's single pace range (±5 s is on plan), and HR against the 150 cap on easy days. */
+  function actualHTML(d) {
+    var a = combine(runsOn(d.d));
+    if (!a) return "";
+    var km = a.m / 1000, plan = d.km || d.optKm || 0, bits = [], g = "";
+    if (plan) { var off = Math.abs(km / plan - 1); g = off <= 0.1 ? "ok" : off <= 0.25 ? "meh" : "off"; }
+    bits.push(pill(g, (Math.round(km * 10) / 10) + (plan ? " of " + plan : "") + " km"));
+    var pr = dayPaceRange(d);
+    g = "";
+    if (pr) g = a.pace >= pr[0] - 5 && a.pace <= pr[1] + 5 ? "ok" : a.pace >= pr[0] - 15 && a.pace <= pr[1] + 15 ? "meh" : "off";
+    bits.push(pill(g, fmtPace(a.pace) + "/km"));
+    if (a.hr) {
+      g = "";
+      if (pr && pr[0] >= 300) g = a.hr <= 150 ? "ok" : a.hr <= 155 ? "meh" : "off";
+      bits.push(pill(g, "HR " + a.hr));
+    }
+    var label = d.t === "rest" && !d.optKm ? "Extra run" : "Strava" + (a.n > 1 ? " · " + a.n + " runs" : "");
+    return "<div class=\"d-actual\"><span class=\"d-actual-l\">" + label + "</span>" + bits.join("") + "</div>";
   }
 
   /* ---------- shared pieces ---------- */
@@ -206,7 +275,7 @@
     var h = "<div class=\"day" + (d.t === "rest" ? " rest" : "") + (d.d === today ? " today" : "") + (done ? " done" : "") + "\">";
     h += "<div class=\"d-date\"><b>" + DOW[dt.getDay()] + "</b><span class=\"num\">" + dt.getDate() + " " + MON[dt.getMonth()] + (d.d === today ? " · today" : "") + "</span></div>";
     h += "<span class=\"chip t-" + d.t + "\">" + TYPE_LABEL[d.t] + "</span>";
-    h += "<div class=\"d-body\"><span class=\"d-title\">" + esc(fill(d.title)) + "</span>" + shoesChip(d) + detailHTML(d) + "</div>";
+    h += "<div class=\"d-body\"><span class=\"d-title\">" + esc(fill(d.title)) + "</span>" + shoesChip(d) + detailHTML(d) + actualHTML(d) + "</div>";
     if (d.km) h += "<span class=\"d-km num\">" + d.km + " km</span>";
     else if (d.optKm) h += "<span class=\"d-km opt num\">opt. " + d.optKm + " km</span>";
     else h += "<span class=\"d-km\"></span>";
@@ -304,7 +373,7 @@
     } else if (today > RACE_DATE) {
       html += "<div class=\"card today-card\"><span class=\"eyebrow\">Finished</span><h3>Race complete</h3><p class=\"muted\">Rest up. Easy running only for the next 1–2 weeks.</p></div>";
     } else if (cur) {
-      html += "<div class=\"card today-card\"><span class=\"eyebrow\">Today · " + niceDate(cur.d) + "</span><div class=\"chips\"><span class=\"chip t-" + cur.t + "\">" + TYPE_LABEL[cur.t] + "</span>" + shoesChip(cur) + "</div><h3>" + esc(fill(cur.title)) + (cur.km ? " · " + cur.km + " km" : "") + "</h3>" + detailHTML(cur) + "<button type=\"button\" class=\"link-btn\" data-goto=\"plan\" data-week=\"" + cur._w + "\">Open this week</button></div>";
+      html += "<div class=\"card today-card\"><span class=\"eyebrow\">Today · " + niceDate(cur.d) + "</span><div class=\"chips\"><span class=\"chip t-" + cur.t + "\">" + TYPE_LABEL[cur.t] + "</span>" + shoesChip(cur) + "</div><h3>" + esc(fill(cur.title)) + (cur.km ? " · " + cur.km + " km" : "") + "</h3>" + detailHTML(cur) + actualHTML(cur) + "<button type=\"button\" class=\"link-btn\" data-goto=\"plan\" data-week=\"" + cur._w + "\">Open this week</button></div>";
     }
     if (next) {
       html += "<div class=\"card today-card next\"><span class=\"eyebrow\">Next session · " + niceDate(next.d) + " · " + relDays(next.d) + "</span><div class=\"chips\"><span class=\"chip t-" + next.t + "\">" + TYPE_LABEL[next.t] + "</span>" + shoesChip(next) + "</div><h3>" + esc(fill(next.title)) + (next.km ? " · " + next.km + " km" : "") + "</h3>" + detailHTML(next) + "</div>";
@@ -314,15 +383,59 @@
   function renderVolume() {
     var PREV_PEAK = 51, cw = currentWeekIndex();
     var totals = P.WEEKS.map(weekKm);
-    var max = Math.max.apply(null, totals.concat([PREV_PEAK])) * 1.05;
+    /* Every Strava run in the week counts, planned or not. Future weeks have nothing to show yet. */
+    var ran = P.WEEKS.map(function (w) {
+      var a = combine(runsBetween(w.days[0].d, w.days[w.days.length - 1].d));
+      return a ? a.m / 1000 : (w.days[0].d <= today ? 0 : null);
+    });
+    var max = Math.max.apply(null, totals.concat(ran, [PREV_PEAK])) * 1.05;
+    function r1(x) { return Math.round(x * 10) / 10; }
     var h = totals.map(function (km, i) {
-      var w = P.WEEKS[i];
-      return "<div class=\"vol-row" + (i === cw ? " cur" : "") + "\"><span><b>Week " + w.n + "</b><br><span class=\"muted\" style=\"font-size:12px\">" + esc(w.range) + "</span></span>" +
-        "<div class=\"vol-track\"><div class=\"vol-bar\" style=\"width:" + (km / max * 100).toFixed(1) + "%\"></div><div class=\"vol-mark\" style=\"left:" + (PREV_PEAK / max * 100).toFixed(1) + "%\"></div></div>" +
-        "<span class=\"num\" style=\"text-align:right;font-weight:600\">" + (Math.round(km * 10) / 10) + " km</span></div>";
+      var w = P.WEEKS[i], act = ran[i];
+      var tip = "Week " + w.n + ": " + r1(km) + " km planned" + (act === null ? "" : ", " + r1(act) + " km run");
+      return "<div class=\"vol-row" + (i === cw ? " cur" : "") + "\" title=\"" + tip + "\"><span><b>Week " + w.n + "</b><br><span class=\"muted\" style=\"font-size:12px\">" + esc(w.range) + "</span></span>" +
+        "<div class=\"vol-track\"><div class=\"vol-bar\" style=\"width:" + (km / max * 100).toFixed(1) + "%\"></div>" +
+        (act === null ? "" : "<div class=\"vol-act\" style=\"width:" + (act / max * 100).toFixed(1) + "%\"></div>") +
+        "<div class=\"vol-mark\" style=\"left:" + (PREV_PEAK / max * 100).toFixed(1) + "%\"></div></div>" +
+        "<span class=\"num\" style=\"text-align:right\"><b>" + r1(km) + " km</b>" + (act === null ? "" : "<br><span class=\"muted\" style=\"font-size:12px\">" + r1(act) + " run</span>") + "</span></div>";
     }).join("");
-    h += "<p class=\"vol-legend\">Dashed line: your previous biggest week, 51 km. Week 5 includes the race. The current week is in orange.</p>";
+    h += "<div class=\"vol-key\"><span><i class=\"sw-plan\"></i>Planned</span><span><i class=\"sw-act\"></i>Run, from Strava</span><span><i class=\"sw-peak\"></i>Previous biggest week, 51 km</span></div>";
+    h += "<p class=\"vol-legend\">Week 5 includes the race. The current week is in orange.</p>";
     document.getElementById("volume").innerHTML = h;
+  }
+  /* Heart rate drift (aerobic decoupling): how much less pace each heartbeat buys in the second half of
+     the easy kilometres than the first. Uses easy-paced splits (slower than 5:00/km, at least 900 m),
+     skips the first km as warm-up, and needs 4 or more. Only easy, long and unplanned runs count. */
+  function drift(run) {
+    var s = run.splits.slice(1).filter(function (x) { return x[0] >= 900 && x[2] && x[1] / x[0] * 1000 >= 300; });
+    if (s.length < 4) return null;
+    function ef(part) {
+      var m = 0, t = 0, hb = 0;
+      part.forEach(function (x) { m += x[0]; t += x[1]; hb += x[2] * x[1]; });
+      return (m / t) / (hb / t);
+    }
+    var half = Math.floor(s.length / 2);
+    return { pct: (ef(s.slice(0, half)) / ef(s.slice(half)) - 1) * 100, km: s.length };
+  }
+  function renderDrift() {
+    var byDate = {};
+    allDays().forEach(function (d) { byDate[d.d] = d; });
+    var rows = RUNS.filter(function (r) {
+      var d = byDate[r.date];
+      return !d || d.t === "easy" || d.t === "long" || d.t === "rest";
+    }).map(function (r) { return { r: r, x: drift(r) }; }).filter(function (o) { return o.x; });
+    var el = document.getElementById("drift");
+    if (!rows.length) { el.innerHTML = "<p class=\"muted\" style=\"padding:16px 18px;margin:0\">No easy runs long enough to measure yet.</p>"; return; }
+    var MAX = 10;
+    el.innerHTML = rows.map(function (o) {
+      var p = o.x.pct, g = p < 5 ? ["ok", "Steady"] : p < 8 ? ["meh", "Some drift"] : ["off", "High drift"];
+      var w = Math.max(0, Math.min(p, MAX)) / MAX * 100;
+      return "<div class=\"drift-row\" title=\"" + esc(o.r.name) + ": " + p.toFixed(1) + "% over " + o.x.km + " easy km\">" +
+        "<span><b>" + niceDate(o.r.date) + "</b><br><span class=\"muted\" style=\"font-size:12px\">" + (Math.round(o.r.m / 100) / 10) + " km · " + o.x.km + " easy km</span></span>" +
+        "<div class=\"vol-track\"><div class=\"drift-bar " + g[0] + "\" style=\"width:" + w.toFixed(1) + "%\"></div><div class=\"vol-mark\" style=\"left:50%\"></div></div>" +
+        "<span class=\"num\" style=\"text-align:right\"><b>" + (p < 0 ? "−" : "") + Math.abs(p).toFixed(1) + "%</b><br>" + pill(g[0], g[1]) + "</span></div>";
+    }).join("") +
+      "<p class=\"vol-legend\">Dashed line: 5%. Under 5% is a sign of good aerobic fitness, and below zero means HR fell as the run went on (often a hilly start), and it should hold or fall through the taper. Hills, heat, wind and stops all push it up, so watch the trend, not one run. It's an estimate from Strava splits.</p>";
   }
   function renderDates() {
     var subA = st.d0 === "A";
@@ -348,9 +461,9 @@
     var f = { d0: feedRoute[0], d1: feedRoute[1], d2: feedRoute[2] };
     var label = (f.d0 === "A" ? "sub-3 build" : "3:10 build") + ", target " + fmtClock(TARGETS[f.d2].sec).replace(/:00$/, "");
     var same = f.d0 === st.d0 && f.d2 === st.d2 && (st.d0 === "S" || f.d1 === st.d1);
-    el.textContent = "The calendar follows the " + label + "." + (same ? "" :
-      " That's not the route picked here. To update it, run: node scripts/build-ics.mjs --build " + st.d0 +
-      (st.d0 === "A" ? " --d1 " + st.d1 : "") + " --target " + st.d2 + ", then push.");
+    var want = JSON.stringify({ build: st.d0, d1: st.d1, target: st.d2 });
+    el.innerHTML = esc("The calendar follows the " + label + ".") + (same ? "" :
+      " That's not the route picked here. To switch, set <a href=\"https://github.com/JoshuaMorley/running-plan/edit/main/route.json\" target=\"_blank\" rel=\"noopener\">route.json</a> to <code>" + esc(want) + "</code>. The next sync updates the calendar, and Garmin too if it's set up.");
     el.hidden = false;
   }
   function loadFeedRoute() {
@@ -396,7 +509,7 @@
         field("c1-pace", "Avg pace, last 8 km (m:ss)", "c1pace", "text", " inputmode=\"numeric\" placeholder=\"4:15\"") +
         field("c1-hr", "Avg HR, last 8 km", "c1hr", "number", " min=\"100\" max=\"210\"") +
         selectField("c1-slow", "Final 2–3 km slower?", "c1slow", [["no", "No"], ["yes", "Yes, I slowed"]]) +
-        "</div><div id=\"c1-out\"></div></div>";
+        "</div>" + stravaFillHTML("c1") + "<div id=\"c1-out\"></div></div>";
     }
     h += decisionHTML("d2", false);
     var a1 = l2() === "A1";
@@ -404,9 +517,36 @@
       field("c2-pace", a1 ? "Avg pace, first 16 km" : "Avg pace, first 14 km", "c2pace", "text", " inputmode=\"numeric\" placeholder=\"" + (a1 ? "4:15" : "4:30") + "\"") +
       field("c2-hr", a1 ? "Avg HR, first 16 km" : "Avg HR, first 14 km", "c2hr", "number", " min=\"100\" max=\"210\"") +
       selectField("c2-feel", "Could you have kept going at that pace?", "c2feel", [["easy", "Yes, comfortably"], ["just", "Just about"], ["no", "No, I was hanging on"]]) +
-      "</div><div id=\"c2-out\"></div></div>";
+      "</div>" + stravaFillHTML("c2") + "<div id=\"c2-out\"></div></div>";
     document.getElementById("decision-list").innerHTML = h;
     updateCheckers();
+  }
+  /* Test numbers worked out from the Strava run on the test day.
+     Test 1: last 8 km, and a slowdown if the last 2 km were more than 5 s/km slower than the 6 km before.
+     Test 2: the first 16 km (or 14 km on the 4:30 test). How it felt stays yours to pick. */
+  function testValues(key) {
+    var run = testRun(key === "c1" ? "2026-10-10" : "2026-10-18");
+    if (!run || !run.splits.length) return null;
+    var total = splitsTotal(run);
+    if (key === "c1") {
+      if (total < 8000) return null;
+      var last8 = segment(run, total - 8000, total), last2 = segment(run, total - 2000, total), mid = segment(run, total - 8000, total - 2000);
+      if (!last8.hr) return null;
+      var slow = last2.pace - mid.pace > 5;
+      return { fill: { c1pace: fmtPace(last8.pace), c1hr: String(last8.hr), c1slow: slow ? "yes" : "no" },
+        text: "last 8 km at " + fmtPace(last8.pace) + "/km, HR " + last8.hr + ", last 2 km at " + fmtPace(last2.pace) + "/km" };
+    }
+    var n = l2() === "A1" ? 16 : 14;
+    if (total < n * 1000) return null;
+    var first = segment(run, 0, n * 1000);
+    if (!first.hr) return null;
+    return { fill: { c2pace: fmtPace(first.pace), c2hr: String(first.hr) },
+      text: "first " + n + " km at " + fmtPace(first.pace) + "/km, HR " + first.hr + ". Pick how it felt yourself" };
+  }
+  function stravaFillHTML(key) {
+    var tv = testValues(key);
+    if (!tv) return "";
+    return "<div class=\"strava-fill\"><span class=\"muted\">From Strava: " + esc(tv.text) + ".</span><button type=\"button\" class=\"link-btn\" data-strava=\"" + key + "\">Fill in from Strava</button></div>";
   }
   function verdictHTML(cls, title, reasons, dec, val) {
     var already = st[dec] === val;
@@ -485,6 +625,12 @@
 
     document.getElementById("carb-load").innerHTML = "<b style=\"color:var(--fg)\">About " + Math.round(kg() * 8) + "–" + Math.round(kg() * 10) + " g of carbs each day</b> (8–10 g per kg at " + kg() + " kg).";
     document.getElementById("breakfast").innerHTML = "<b style=\"color:var(--fg)\">About " + Math.round(kg() * 2) + " g of carbs, 3 hours before the start</b> (about 2 g per kg).";
+    document.getElementById("recipes").innerHTML = Object.keys(P.MEALS).map(function (k) {
+      var m = P.MEALS[k];
+      return "<section class=\"card pad recipe\"><h3>" + esc(m.name) + "</h3><p class=\"muted\">" + esc(m.carbs) + " of carbs" + (m.time ? " · " + esc(m.time) : "") + "</p>" +
+        "<ul>" + m.items.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>" +
+        "<ol>" + m.steps.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ol></section>";
+    }).join("");
     document.getElementById("train-fuel").innerHTML = P.TRAIN_FUEL.map(function (r) { return "<tr><td><b>" + esc(r[0]) + "</b></td><td class=\"muted\">" + esc(r[1]) + "</td></tr>"; }).join("");
   }
 
@@ -766,7 +912,7 @@
 
   /* ---------- render ---------- */
   function renderAll() {
-    renderHeader(); renderTree(); renderToday(); renderVolume(); renderDates(); renderCalRoute();
+    renderHeader(); renderTree(); renderToday(); renderVolume(); renderDrift(); renderDates(); renderCalRoute();
     renderWeekPick(); renderWeek(); renderDecisions(); renderCourse(); renderFuel(); renderRace();
   }
 
@@ -792,6 +938,12 @@
       if (go.hasAttribute("data-week")) { ui.week = parseInt(go.getAttribute("data-week"), 10); renderWeekPick(); renderWeek(); }
       selectTab(go.getAttribute("data-goto"));
       window.scrollTo(0, 0);
+      return;
+    }
+    var fillBtn = t.closest("[data-strava]");
+    if (fillBtn) {
+      var tv = testValues(fillBtn.getAttribute("data-strava"));
+      if (tv) { Object.keys(tv.fill).forEach(function (k) { inp[k] = tv.fill[k]; }); saveInputs(); renderDecisions(); }
       return;
     }
     var wk = t.closest(".wk-btn");

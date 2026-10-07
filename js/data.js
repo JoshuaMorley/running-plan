@@ -169,5 +169,36 @@ window.PLAN = (function () {
     });
   });
 
-  return { WEEKS: WEEKS, DEC: DEC, OPTS: OPTS, NODES: NODES, EDGES: EDGES, TRAIN_FUEL: TRAIN_FUEL };
+  /* Recipes for the big-carb meals, sized for an 80 kg runner. Carb counts are rough, so check labels. Shown on the
+     Fuel tab and in the calendar reminders. Low fibre and low fat so they sit light before a long run. */
+  var MEALS = {
+    pasta: { name: "Chicken and tomato pasta", carbs: "about 150 g", time: "25 min",
+      items: ["150 g dry spaghetti or penne (about 110 g carbs)", "150 g skinless chicken breast, sliced thin", "½ jar (about 250 g) plain tomato pasta sauce", "1 garlic clove, a pinch of salt, a little olive oil", "2 slices white bread or a small white roll on the side (about 30 g carbs)"],
+      steps: ["Boil the pasta in well-salted water.", "Brown the chicken in a little oil, add the garlic, then the sauce. Simmer 5 min.", "Toss through the drained pasta. Skip the cheese and keep the veg light tonight."] },
+    rice: { name: "Teriyaki chicken rice bowl", carbs: "about 150 g", time: "25 min",
+      items: ["1 cup (about 185 g) dry white rice, about 2.5 cups cooked (about 110 g carbs)", "150 g skinless chicken breast or thigh, diced", "3 tbsp teriyaki sauce (about 15 g carbs)", "1 small carrot, grated", "250 ml apple or orange juice with it (about 25 g carbs)"],
+      steps: ["Cook the rice.", "Brown the chicken, add the teriyaki and a splash of water, and cook until sticky.", "Pile on the rice with the carrot. White rice, not brown, the night before a big run."] },
+    load: { name: "Carb-load day menu", carbs: "about 700 g",
+      items: ["Breakfast: 2 bagels with jam and 500 ml juice (about 170 g)", "Morning: a banana and 2 rice cakes with honey (about 55 g)", "Lunch: white-bread ham sandwich (4 slices), 50 g pretzels, 500 ml sports drink (about 130 g)", "Afternoon: 3 crumpets with golden syrup and a glass of juice (about 100 g)", "Dinner: the chicken and tomato pasta or the rice bowl (about 150 g)", "Evening: a pot of rice pudding and a handful of lollies (about 90 g)"],
+      steps: ["Spread it across the day. Graze, don't stuff.", "Swap in anything from the carbs table on the Fuel tab, keeping fibre and fat low.", "Sip water or electrolyte drink all day. Pale yellow urine is the goal."] },
+    breakfast: { name: "Race breakfast", carbs: "about 160 g", time: "5 min",
+      items: ["1 white bagel with 2 tbsp honey (about 85 g)", "1 slice white toast with jam (about 30 g)", "1 banana (about 25 g)", "250 ml juice (about 25 g)", "About 500 ml water or electrolyte drink"],
+      steps: ["Eat it 3 hours before the start, then sip until 30 min before.", "Same breakfast as the 33 km, the half and race practice. Nothing new on race day."] }
+  };
+
+  /* Timed calendar events for meals (scripts/build-ics.mjs). Times are NZ local. */
+  var REMINDERS = [
+    { d: "2026-10-09", at: "17:30", title: "Carb-heavy dinner before the 33 km", meal: "pasta" },
+    { d: "2026-10-10", at: "05:00", title: "Race breakfast before the 33 km", meal: "breakfast", note: "Adjust to 3 hours before you start running." },
+    { d: "2026-10-17", at: "17:30", title: "Carb-heavy dinner before the half", meal: "rice" },
+    { d: "2026-10-18", at: "05:00", title: "Race breakfast before the half", meal: "breakfast", note: "Adjust to 3 hours before you start running." },
+    { d: "2026-10-24", at: "17:30", title: "Race-eve dinner rehearsal", meal: "rice", note: "Eat exactly what you plan to have on Sat 31 Oct, at the same time." },
+    { d: "2026-10-25", at: "03:00", title: "Race breakfast rehearsal", meal: "breakfast", note: "Same start time as race day, so breakfast at 3am for a 6am start." },
+    { d: "2026-10-30", at: "07:00", title: "Carb load day 1", meal: "load" },
+    { d: "2026-10-31", at: "07:00", title: "Carb load day 2", meal: "load" },
+    { d: "2026-10-31", at: "17:00", title: "Early race-eve dinner", meal: "rice", note: "Done by 6pm, so it's settled by bedtime." },
+    { d: "2026-11-01", at: "03:00", title: "Race breakfast", meal: "breakfast", note: "3 hours before the 6am start. Check your start time." }
+  ];
+
+  return { WEEKS: WEEKS, DEC: DEC, OPTS: OPTS, NODES: NODES, EDGES: EDGES, TRAIN_FUEL: TRAIN_FUEL, MEALS: MEALS, REMINDERS: REMINDERS };
 })();

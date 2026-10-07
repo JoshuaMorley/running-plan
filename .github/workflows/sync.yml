@@ -1,0 +1,61 @@
+# Pulls new runs from Strava, rebuilds the calendar feed, sends workouts to intervals.icu (and so Garmin)
+# when the plan or route changes, then commits any changes so GitHub Pages republishes the site.
+# Steps whose secrets aren't set are skipped.
+name: Sync
+
+on:
+  schedule:
+    # Every 2 hours. GitHub can start scheduled runs late when it's busy.
+    - cron: "17 */2 * * *"
+  push:
+    branches: [main]
+    paths: [route.json, js/data.js]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    env:
+      HAS_STRAVA: ${{ secrets.STRAVA_REFRESH_TOKEN != '' }}
+      HAS_INTERVALS: ${{ secrets.INTERVALS_API_KEY != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Pull runs from Strava
+        if: env.HAS_STRAVA == 'true'
+        env:
+          STRAVA_CLIENT_ID: ${{ secrets.STRAVA_CLIENT_ID }}
+          STRAVA_CLIENT_SECRET: ${{ secrets.STRAVA_CLIENT_SECRET }}
+          STRAVA_REFRESH_TOKEN: ${{ secrets.STRAVA_REFRESH_TOKEN }}
+        run: node scripts/sync-strava.mjs
+
+      - name: Build the calendar feed
+        run: node scripts/build-ics.mjs
+
+      # Only when the plan or route changed (or on a manual run), so workouts aren't re-sent every 2 hours.
+      - name: Send workouts to intervals.icu
+        if: env.HAS_INTERVALS == 'true' && github.event_name != 'schedule'
+        env:
+          INTERVALS_ATHLETE_ID: ${{ secrets.INTERVALS_ATHLETE_ID }}
+          INTERVALS_API_KEY: ${{ secrets.INTERVALS_API_KEY }}
+        run: node scripts/push-intervals.mjs
+
+      - name: Commit changes
+        run: |
+          git add js/results.js plan.ics
+          if git diff --cached --quiet; then echo "Nothing new."; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Sync runs from Strava"
+          git push

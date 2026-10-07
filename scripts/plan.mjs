@@ -1,12 +1,14 @@
-/* Shared by push-intervals.mjs and build-ics.mjs: loads js/data.js, reads the route from the command line
-   and resolves each day of the plan on that route. */
+/* Shared by push-intervals.mjs and build-ics.mjs: loads js/data.js and js/results.js, reads the route from
+   route.json and the command line, and resolves each day of the plan on that route. */
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import vm from "node:vm";
 
 const ctx = { window: {} };
-vm.runInNewContext(readFileSync(fileURLToPath(new URL("../js/data.js", import.meta.url)), "utf8"), ctx);
+for (const f of ["../js/data.js", "../js/results.js"]) vm.runInNewContext(readFileSync(fileURLToPath(new URL(f, import.meta.url)), "utf8"), ctx);
 export const P = ctx.window.PLAN;
+/* Strava runs on a date, from scripts/sync-strava.mjs. */
+export function runsOn(date) { return (ctx.window.RESULTS.runs || []).filter((r) => r.date === date); }
 
 /* ---------- copied from js/app.js; keep in sync ---------- */
 const MARATHON_KM = 42.195;
@@ -31,7 +33,11 @@ export function arg(name, dflt) { const i = args.indexOf("--" + name); return i 
 export const flag = (name) => args.includes("--" + name);
 export function fail(msg) { console.error(msg); process.exit(1); }
 
-export const st = { d0: arg("build", "A"), d1: arg("d1", "pass"), d2: arg("target") };
+/* route.json holds the route the automatic sync uses. Flags override it. */
+const route = JSON.parse(readFileSync(fileURLToPath(new URL("../route.json", import.meta.url)), "utf8"));
+/* A route change on the command line drops route.json's target, which may not exist on the new route. */
+const routeFlag = args.includes("--build") || args.includes("--d1");
+export const st = { d0: arg("build", route.build), d1: arg("d1", route.d1), d2: arg("target", routeFlag ? undefined : route.target) };
 function l2() { return st.d0 === "S" ? "S1" : (st.d1 === "pass" ? "A1" : "A2"); }
 function halfKey() { return l2() === "A1" ? "A" : "S"; }
 if (st.d0 !== "A" && st.d0 !== "S") fail("--build must be A (sub-3) or S (3:10)");

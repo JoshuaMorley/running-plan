@@ -105,10 +105,37 @@ button, input, select { font: inherit; color: inherit; }
 .vol { padding: 16px 18px; display: grid; gap: 10px; }
 .vol-row { display: grid; grid-template-columns: 110px minmax(0, 1fr) 64px; gap: 12px; align-items: center; }
 .vol-track { position: relative; height: 14px; background: var(--bg); border-radius: 4px; }
-.vol-bar { position: absolute; inset: 0 auto 0 0; background: var(--accent); border-radius: 4px; }
-.vol-row.cur .vol-bar { background: var(--key); }
+/* Planned vs run: the planned bar is the light target, the run bar sits inside it. */
+.vol-bar { position: absolute; inset: 0 auto 0 0; background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent); border-radius: 4px; }
+.vol-row.cur .vol-bar { background: var(--key-soft); box-shadow: inset 0 0 0 1px var(--key); }
 .vol-mark { position: absolute; top: -4px; bottom: -4px; width: 0; border-left: 2px dashed var(--muted); }
 .vol-legend { font-size: 13px; color: var(--muted); }
+.vol-act { position: absolute; left: 0; top: 4px; bottom: 4px; background: var(--accent); border-radius: 0 4px 4px 0; }
+.vol-row.cur .vol-act { background: var(--key); }
+.vol-key { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--muted); }
+.vol-key span { display: inline-flex; align-items: center; gap: 6px; }
+.vol-key i { display: inline-block; width: 16px; height: 10px; border-radius: 3px; }
+.vol-key .sw-plan { background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent); }
+.vol-key .sw-act { background: var(--accent); height: 6px; }
+.vol-key .sw-peak { width: 0; height: 14px; border-left: 2px dashed var(--muted); border-radius: 0; }
+.drift-row { display: grid; grid-template-columns: 110px minmax(0, 1fr) 92px; gap: 12px; align-items: center; }
+.drift-bar { position: absolute; inset: 0 auto 0 0; border-radius: 0 4px 4px 0; background: var(--good); }
+.drift-bar.meh { background: var(--warn); }
+.drift-bar.off { background: var(--key); }
+
+/* Strava actuals and status pills. Each pill also carries its grade as text. */
+.d-actual { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 13px; }
+.d-actual-l { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; color: var(--muted); }
+.pill { display: inline-block; border-radius: 999px; padding: 1px 8px; background: var(--bg); border: 1px solid var(--line); font-variant-numeric: tabular-nums; font-size: 12px; font-weight: 600; }
+.pill.ok { background: var(--good-soft); border-color: var(--good); }
+.pill.meh { background: var(--warn-soft); border-color: var(--warn); }
+.pill.off { background: var(--key-soft); border-color: var(--key); }
+.pill.ok::before { content: "✓ "; color: var(--good); }
+.pill.meh::before { content: "~ "; color: var(--warn); }
+.pill.off::before { content: "! "; color: var(--key); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.strava-fill { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; font-size: 13px; }
+.recipe ol { margin: 0; padding-left: 20px; display: grid; gap: 6px; font-size: 14px; }
 .dates { display: grid; gap: 0; }
 .date-row { display: grid; grid-template-columns: 110px minmax(0, 1fr) auto; gap: 12px; padding: 12px 18px; border-top: 1px solid var(--line); align-items: baseline; }
 .date-row:first-child { border-top: 0; }
@@ -308,6 +335,7 @@ tr.cur td { background: var(--accent-soft); }
   .day .check { grid-column: 3; grid-row: 1; }
   .day.rest .d-km { display: none; }
   .vol-row { grid-template-columns: 64px minmax(0, 1fr) 58px; gap: 10px; }
+  .drift-row { grid-template-columns: 78px minmax(0, 1fr) 84px; gap: 10px; }
   .date-row { grid-template-columns: 78px minmax(0, 1fr); padding: 12px 14px; }
   .date-row .muted:last-child { grid-column: 2; }
   .top-in { padding-block: 14px 10px; }

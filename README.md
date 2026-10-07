@@ -29,7 +29,7 @@ One-time setup:
 Run it (Node 20.6 or newer). Use the same choices you made on the site:
 
 ```
-node scripts/push-intervals.mjs --dry-run                      # preview: sub-3 build, defaults
+node scripts/push-intervals.mjs --dry-run                      # preview the route.json route
 node --env-file=.env scripts/push-intervals.mjs                # send today → race day
 node --env-file=.env scripts/push-intervals.mjs --build S      # 3:10 build
 node --env-file=.env scripts/push-intervals.mjs --d1 fail --target 305 --from 2026-10-19
@@ -37,16 +37,41 @@ node --env-file=.env scripts/push-intervals.mjs --d1 fail --target 305 --from 20
 
 Re-run after each decision. Workouts are matched by date, so they're updated, not duplicated. The script never deletes anything. intervals.icu only sends about the next week of workouts to Garmin, so later weeks show up on your watch as they get closer.
 
+## Automatic sync (GitHub Actions)
+
+`.github/workflows/sync.yml` runs every 2 hours, when `route.json` or `js/data.js` changes, and on demand from the **Actions** tab. Each run:
+
+1. Pulls your runs from Strava into `js/results.js` (`scripts/sync-strava.mjs`). The site uses them for the planned vs actual pills, run volume, heart rate drift and the test checkers.
+2. Rebuilds `plan.ics` for the calendar, with Strava results and the meal reminders.
+3. Sends workouts to intervals.icu, but only when the plan or route changed or you ran it by hand.
+4. Commits anything that changed, so GitHub Pages republishes the site.
+
+`route.json` is the route the calendar and Garmin follow. After a decision, edit it on GitHub (the Overview tab links to it when it's out of step with the site) and the sync does the rest. The decisions themselves stay yours.
+
+One-time setup:
+
+1. Create a Strava API app at [strava.com/settings/api](https://www.strava.com/settings/api). Set **Authorization Callback Domain** to `localhost`.
+2. Add its client ID and secret to `.env`:
+   ```
+   STRAVA_CLIENT_ID=12345
+   STRAVA_CLIENT_SECRET=your-secret
+   ```
+3. Run `node --env-file=.env scripts/strava-auth.mjs`, open the link, and press **Authorize**. It saves `STRAVA_REFRESH_TOKEN` to `.env`.
+4. Check it works: `node --env-file=.env scripts/sync-strava.mjs`.
+5. On GitHub, go to **Settings → Secrets and variables → Actions** and add `STRAVA_CLIENT_ID`, `STRAVA_CLIENT_SECRET` and `STRAVA_REFRESH_TOKEN`. Optionally add `INTERVALS_ATHLETE_ID` and `INTERVALS_API_KEY` for Garmin.
+6. Run the **Sync** workflow once from the **Actions** tab to check it.
+
+Steps without their secrets are skipped. If Strava ever rejects the token, the run fails and GitHub emails you. Repeat steps 3 and 5.
+
 ## Calendar feed (Google Calendar, Apple, Outlook)
 
-`scripts/build-ics.mjs` writes `plan.ics`, which has every run on one route as an all-day event. GitHub Pages serves it at `https://joshuamorley.github.io/running-plan/plan.ics`. The Overview tab has buttons to subscribe to it. In Google Calendar you can also add it by hand: **Other calendars → + → From URL**.
+`scripts/build-ics.mjs` writes `plan.ics`, which has every run on the `route.json` route as an all-day event, plus timed meal reminders with recipes (from `MEALS` and `REMINDERS` in `js/data.js`). GitHub Pages serves it at `https://joshuamorley.github.io/running-plan/plan.ics`. The Overview tab has buttons to subscribe to it. In Google Calendar you can also add it by hand: **Other calendars → + → From URL**.
 
-Rebuild it whenever you change `js/data.js` or make a decision, then commit and push. Use the same choices you made on the site:
+The automatic sync rebuilds it. To build it by hand, flags override `route.json`:
 
 ```
-node scripts/build-ics.mjs                                     # sub-3 build, defaults
+node scripts/build-ics.mjs                                     # the route.json route
 node scripts/build-ics.mjs --build S --target 315              # 3:10 build
-node scripts/build-ics.mjs --d1 fail --target 305
 ```
 
 Events keep the same ID for each date, so subscribers see them updated instead of duplicated. Days that turn into rest days drop out. Google Calendar only re-reads subscribed calendars every several hours, so changes take a while to show up. The Overview tab says which route the feed follows and warns if it's different from the route picked on the site.
