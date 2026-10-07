@@ -5,8 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Auckland Marathon Build</title>
 <meta name="description" content="Five-week branching training plan to the Auckland Marathon on 1 November 2026, with decision tests, gel plans and race-day tools.">
-<meta name="theme-color" content="#0B6B73">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230B6B73'/%3E%3Ctext x='32' y='43' font-family='Arial Narrow,Arial,sans-serif' font-size='30' font-weight='700' fill='white' text-anchor='middle'%3E42%3C/text%3E%3C/svg%3E">
+<meta name="theme-color" content="#FBFCFD" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#151922" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232C46C9'/%3E%3Ctext x='32' y='43' font-family='Arial Narrow,Arial,sans-serif' font-size='30' font-weight='700' fill='%23FBFCFD' text-anchor='middle'%3E42%3C/text%3E%3C/svg%3E">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -15,10 +16,11 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Public+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,600..800&family=Geist:wght@400..700&family=Geist+Mono:wght@500..600&display=swap">
 <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+<a class="skip" href="#main">Skip to content</a>
 <header class="top">
   <div class="top-in">
     <div class="brand">
@@ -49,13 +51,13 @@
   </div>
   <div class="route-bar">
     <span class="lbl">Your route</span>
-    <span id="route" style="display:flex;flex-wrap:wrap;gap:6px;align-items:center"></span>
-    <span class="lbl" style="margin-left:auto">Target</span>
+    <span id="route" class="route-steps"></span>
+    <span class="lbl end">Target</span>
     <strong class="num" id="target-read">2:59:20 · 4:15/km</strong>
   </div>
 </nav>
 
-<main class="wrap">
+<main class="wrap" id="main" tabindex="-1">
 
   <!-- OVERVIEW -->
   <section class="panel" id="p-overview" role="tabpanel" aria-labelledby="tab-overview">
@@ -220,7 +222,7 @@
     <div class="block">
       <div class="sec-head">
         <h2>Pace for each km</h2>
-        <span class="focus">Orange: slower than your average. Teal: faster. The clock shows planned time at the end of each km.</span>
+        <span class="focus">Orange: slower than your average. Blue: faster. The clock shows planned time at the end of each km.</span>
       </div>
       <div class="kmgrid" id="kmgrid"></div>
     </div>
@@ -462,7 +464,7 @@
     </div>
   </section>
 
-  <footer class="fine" style="margin-top:40px">
+  <footer class="fine">
     <p>These paces are estimates from your recent races and Strava runs and standard race-equivalence formulas, not guarantees. Weekly volume, not speed, is the limit right now, which is why the sub-3 route has two tests before you commit.</p>
     <p>Gel carb amounts vary by brand, so check your packets. Carb-load, breakfast and recipe amounts are general sports-nutrition guides. The course climbing figure is a rough one, since sources disagree. Check the bridge location, aid stations and start time at <a href="https://aucklandmarathon.co.nz" target="_blank" rel="noopener">aucklandmarathon.co.nz</a>.</p>
     <p>Not coaching or medical advice. Run results sync from Strava about every 30 minutes, sometimes later. Route choices, ticks and calculator values are saved in this browser only.</p>
