@@ -1,0 +1,369 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//joshuamorley//Auckland Marathon plan//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Auckland Marathon plan
+X-WR-CALDESC:Runs on the sub-3 build\, Test 1 pass\, target 259 (4:15/km). 
+ https://joshuamorley.github.io/running-plan/
+X-WR-TIMEZONE:Pacific/Auckland
+REFRESH-INTERVAL;VALUE=DURATION:PT6H
+X-PUBLISHED-TTL:PT6H
+X-AKL-ROUTE:A-pass-259
+BEGIN:VEVENT
+UID:akl-2026-09-29@joshuamorley.github.io
+DTSTAMP:20261007T022859Z
+DTSTART;VALUE=DATE:20260929
+DTEND;VALUE=DATE:20260930
+SUMMARY:✓ Tuesday 5k race · 5 km
+DESCRIPTION:Done: 17:44\, 3rd place\, avg HR 184\n\n• Good George 5k.\n\n
+ Heart rate guide (estimated from your recent runs\, may be off):\n• Race
+  effort: HR climbs past 180 (your 5k averaged 184). Run it by feel\n\nhttp
+ s://joshuamorley.github.io/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-09-30@joshuamorley.github.io
+DTSTAMP:20261007T022859Z
+DTSTART;VALUE=DATE:20260930
+DTEND;VALUE=DATE:20261001
+SUMMARY:Easy run · 6 km
+DESCRIPTION:• 5:20–5:45/km\, HR under 150\n• You should be able to ta
+ lk in full sentences the whole way\n\nWhy: Adds the extra easy volume a su
+ b-3 attempt needs without adding stress.\n\nFuel: None needed. Eat a norma
+ l carb-based meal afterwards.\n\nHeart rate guide (estimated from your rec
+ ent runs\, may be off):\n• 5:20–5:45/km: easy\, HR 125–150. Over 150
+  means slow down\n\nhttps://joshuamorley.github.io/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-10-01@joshuamorley.github.io
+DTSTAMP:20261007T022859Z
+DTSTART;VALUE=DATE:20261001
+DTEND;VALUE=DATE:20261002
+SUMMARY:Morning intervals · threshold · 9.5 km
+DESCRIPTION:• 2 km easy warm-up\n• 5 × 1 km at 3:45–3:50/km\, 90 s j
+ og between\n• 2 km easy cool-down\n• Reps should feel hard but even. I
+ f the last rep is more than 5 s slower than the first\, stop there\n\nWhy:
+  Raises your threshold so marathon pace feels easier. Kept below 5k pace b
+ ecause you raced two days ago.\n\nFuel: None during. Have carbs and protei
+ n within an hour afterwards.\n\nHeart rate guide (estimated from your rece
+ nt runs\, may be off):\n• 5:20–5:45/km: easy\, HR 125–150. Over 150 
+ means slow down\n• 3:45–3:50/km: HR about 172–182\n\nhttps://joshuam
+ orley.github.io/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-10-03@joshuamorley.github.io
+DTSTAMP:20261007T022859Z
+DTSTART;VALUE=DATE:20261003
+DTEND;VALUE=DATE:20261004
+SUMMARY:✓ Easy run · 6 km
+DESCRIPTION:Done: 6.0 km parkrun jogged at 5:20/km\, avg HR 145\n\n• 5:20
+ –5:45/km\, conversational\n• A parkrun jogged easy counts\n\nWhy: Loos
+ ens the legs before Sunday.\n\nFuel: None needed. Eat a normal carb-based 
+ meal afterwards.\n\nHeart rate guide (estimated from your recent runs\, ma
+ y be off):\n• 5:20–5:45/km: easy\, HR 125–150. Over 150 means slow d
+ own\n\nhttps://joshuamorley.github.io/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-10-04@joshuamorley.github.io
+DTSTAMP:20261007T022859Z
+DTSTART;VALUE=DATE:20261004
+DTEND;VALUE=DATE:20261005
+SUMMARY:✓ Long run · 29 km rolling hills
+DESCRIPTION:Done: 29.0 km in 2:37:48\, +219 m. 24 km at 5:35/km (avg HR abo
+ ut 130)\, then 5 km at 4:18/km\, quickening from 4:24 to 4:13 (HR 153–16
+ 8). 5 gels\, stomach fine. Felt really good\n\n• 5:30–5:45/km for the 
+ first 24 km\, HR under 150\n• Last 5 km at 4:20/km only if your legs hav
+ e recovered from Tuesday. Otherwise stay easy\n• Run the hills by effort
+ \, not pace\n\nWhy: Builds time on your feet and starts training your gut 
+ to take race fuel.\n\nFuel: Gut training starts here. Eat your planned rac
+ e breakfast 2.5–3 h before. Take a gel every 25 min from 25 min in (abou
+ t 6)\, each with water. That's about 60 g of carbs per hour.\n\nHeart rate
+  guide (estimated from your recent runs\, may be off):\n• 5:30–5:45/km
+ : easy\, HR 125–150. Over 150 means slow down\n• 4:17–4:23/km: HR ab
+ out 158–170\n\nhttps://joshuamorley.github.io/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-10-06@joshuamorley.github.io
+DTSTAMP:20261007T022859Z
+DTSTART;VALUE=DATE:20261006
+DTEND;VALUE=DATE:20261007
+SUMMARY:✓ Morning intervals · faster than race pace · 13 km
+DESCRIPTION:Done instead: 7 × 1 min hard\, 1 min walk recovery (2:44–3:3
+ 3/km\, max HR 183)\, 7.5 km total. The 3 × 3 km is dropped\, not made up\
+ n\n• Moved from Thursday. No evening 5k this week\n• 1.5 km easy warm-
+ up\n• 3 × 3 km at 4:05/km\, 2 min jog between\n• 1.5 km easy cool-dow
+ n\n• If you can't hold 4:05 on rep 3\, stop. That means you need recover
+ y\, not more work\n\nWhy: Faster than sub-3 pace\, so 4:15 feels comfortab
+ le by comparison.\n\nFuel: None during. Have carbs and protein within an h
+ our afterwards.\n\nHeart rate guide (estimated from your recent runs\, may
+  be off):\n• 5:20–5:45/km: easy\, HR 125–150. Over 150 means slow do
+ wn\n• 4:03–4:07/km: HR about 165–175\n\nhttps://joshuamorley.github.
+ io/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-10-07@joshuamorley.github.io
+DTSTAMP:20261007T022859Z
+DTSTART;VALUE=DATE:20261007
+DTEND;VALUE=DATE:20261008
+SUMMARY:✓ Easy run · 5 km
+DESCRIPTION:Done: 5.0 km at 5:27/km\, avg HR about 140\n\n• 5:20–5:45/k
+ m\, HR under 150.\n\nWhy: Easy volume. Keep it genuinely easy.\n\nFuel: No
+ ne needed. Eat a normal carb-based meal afterwards.\n\nHeart rate guide (e
+ stimated from your recent runs\, may be off):\n• 5:20–5:45/km: easy\, 
+ HR 125–150. Over 150 means slow down\n\nhttps://joshuamorley.github.io/r
+ unning-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-10-08@joshuamorley.github.io
+DTSTAMP:20261007T022859Z
+DTSTART;VALUE=DATE:20261008
+DTEND;VALUE=DATE:20261009
+SUMMARY:Easy run · 5 km
+DESCRIPTION:• 5:30–5:45/km. Fresh legs for Saturday matter more than pa
+ ce.\n\nWhy: Keeps the legs moving before your biggest run.\n\nFuel: None n
+ eeded. Eat a normal carb-based meal afterwards.\n\nHeart rate guide (estim
+ ated from your recent runs\, may be off):\n• 5:30–5:45/km: easy\, HR 1
+ 25–150. Over 150 means slow down\n\nhttps://joshuamorley.github.io/runni
+ ng-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-10-10@joshuamorley.github.io
+DTSTAMP:20261007T022859Z
+DTSTART;VALUE=DATE:20261010
+DTEND;VALUE=DATE:20261011
+SUMMARY:Long run · 33 km · Test 1
+DESCRIPTION:• First 25 km easy at 5:30–5:45/km\n• Last 8 km at 4:15/k
+ m\, your sub-3 race pace\n• Note your average pace and HR over the last 
+ 8 km\, and whether the final 2–3 km slowed\n• If you slow by more than
+  10 s/km\, ease back to easy and jog it home. That's your answer for Decis
+ ion 2\n\nWhy: Sub-3 pace on tired legs is the closest you can get to the l
+ ast 10 km of the race.\n\nFuel: Full race rehearsal. Race breakfast 3 h be
+ fore\, a gel 10–15 min before you start\, then gels on your race schedul
+ e (see the Fuel tab)\, each with water. Use your race-day flavour mix: non
+ -caffeine early\, caffeine gels from about km 18.\n\nHeart rate guide (est
+ imated from your recent runs\, may be off):\n• 5:30–5:45/km: easy\, HR
+  125–150. Over 150 means slow down\n• 4:13–4:17/km: HR about 158–1
+ 70\n\nhttps://joshuamorley.github.io/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-10-13@joshuamorley.github.io
+DTSTAMP:20261007T022859Z
+DTSTART;VALUE=DATE:20261013
+DTEND;VALUE=DATE:20261014
+SUMMARY:Tuesday 5k · steady · 5 km
+DESCRIPTION:• Around 4:00–4:10/km. Controlled\, not a race.\n\nWhy: Kee
+ ps your legs sharp without taking anything out of them for Sunday.\n\nFuel
+ : None needed. Eat a normal carb-based meal afterwards.\n\nHeart rate guid
+ e (estimated from your recent runs\, may be off):\n• 4:00–4:10/km: HR 
+ about 165–175\n\nhttps://joshuamorley.github.io/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-10-14@joshuamorley.github.io
+DTSTAMP:20261007T022859Z
+DTSTART;VALUE=DATE:20261014
+DTEND;VALUE=DATE:20261015
+SUMMARY:Easy run · 5 km
+DESCRIPTION:• 5:20–5:45/km. Keep it short before Sunday.\n\nWhy: Easy v
+ olume\, nothing more.\n\nFuel: None needed. Eat a normal carb-based meal a
+ fterwards.\n\nHeart rate guide (estimated from your recent runs\, may be o
+ ff):\n• 5:20–5:45/km: easy\, HR 125–150. Over 150 means slow down\n\
+ nhttps://joshuamorley.github.io/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-10-15@joshuamorley.github.io
+DTSTAMP:20261007T022859Z
+DTSTART;VALUE=DATE:20261015
+DTEND;VALUE=DATE:20261016
+SUMMARY:Morning intervals · light · 8 km
+DESCRIPTION:• 2 km easy warm-up\n• 4 × 1 km at 3:50/km\, 2 min jog bet
+ ween\n• 2 km easy cool-down\n\nWhy: Sharpens you up without tiring you b
+ efore the test.\n\nFuel: None during. Have carbs and protein within an hou
+ r afterwards.\n\nHeart rate guide (estimated from your recent runs\, may b
+ e off):\n• 5:20–5:45/km: easy\, HR 125–150. Over 150 means slow down
+ \n• 3:48–3:52/km: HR about 172–182\n\nhttps://joshuamorley.github.io
+ /running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-10-17@joshuamorley.github.io
+DTSTAMP:20261007T022859Z
+DTSTART;VALUE=DATE:20261017
+DTEND;VALUE=DATE:20261018
+SUMMARY:Easy run + strides · 5 km
+DESCRIPTION:• 5:30/km easy\, then 4 × 20 s relaxed strides.\n\nWhy: Stri
+ des wake your legs up for tomorrow.\n\nFuel: Carb-heavy dinner tonight.\n\
+ nHeart rate guide (estimated from your recent runs\, may be off):\n• 5:2
+ 5–5:35/km: easy\, HR 125–150. Over 150 means slow down\n\nhttps://josh
+ uamorley.github.io/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-10-18@joshuamorley.github.io
+DTSTAMP:20261007T022859Z
+DTSTART;VALUE=DATE:20261018
+DTEND;VALUE=DATE:20261019
+SUMMARY:Half marathon · Test 2 · 21.1 km
+DESCRIPTION:• Run it as a controlled training run\, not a race. Two weeks
+  out is too close to race a half\n• First 16 km at 4:15/km\n• Last 5 k
+ m easy to steady\, 4:45–5:15/km. Don't speed up\n• If HR goes past 170
+  before 16 km\, ease off. That tells you something useful\, it isn't a fai
+ lure\n• Note your average pace and HR over the first 16 km\, and whether
+  you could have kept going\n\nWhy: The best guide to your race pace you'll
+  get before race day\, without taking so much out of you that it hurts the
+  marathon.\n\nFuel: Race-day routine: breakfast 3 h before\, a gel 10–15
+  min before the start\, then gels at about km 6\, 11 and 17\, each with wa
+ ter.\n\nHeart rate guide (estimated from your recent runs\, may be off):\n
+ • 4:13–4:17/km: HR about 158–170\n• 4:45–5:15/km: steady\, HR ab
+ out 140–158\n\nhttps://joshuamorley.github.io/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-10-20@joshuamorley.github.io
+DTSTAMP:20261007T022859Z
+DTSTART;VALUE=DATE:20261020
+DTEND;VALUE=DATE:20261021
+SUMMARY:Tuesday 5k · last sharp one · 5 km
+DESCRIPTION:• Race it if you want. Twelve days out is fine. Otherwise run
+  it at threshold.\n\nWhy: One last effort to stay sharp\, with 12 days lef
+ t to recover.\n\nFuel: None during. Have carbs and protein within an hour 
+ afterwards.\n\nHeart rate guide (estimated from your recent runs\, may be 
+ off):\n• Race effort: HR climbs past 180 (your 5k averaged 184). Run it 
+ by feel\n\nhttps://joshuamorley.github.io/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-10-22@joshuamorley.github.io
+DTSTAMP:20261007T022859Z
+DTSTART;VALUE=DATE:20261022
+DTEND;VALUE=DATE:20261023
+SUMMARY:Morning intervals · pace + speed · 8.5 km
+DESCRIPTION:• 2 km easy warm-up\n• 3 km at 4:15/km\n• 4 × 400 m at 3
+ :35/km\, 200 m jog between\n• 1.5 km easy cool-down\n\nWhy: Locks in rac
+ e pace and keeps some pop in your legs.\n\nFuel: None during. Have carbs a
+ nd protein within an hour afterwards.\n\nHeart rate guide (estimated from 
+ your recent runs\, may be off):\n• 5:20–5:45/km: easy\, HR 125–150. 
+ Over 150 means slow down\n• 4:13–4:17/km: HR about 158–170\n• 3:32
+ –3:38/km: too short for HR to settle. Run these by pace\n\nhttps://joshu
+ amorley.github.io/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-10-24@joshuamorley.github.io
+DTSTAMP:20261007T022859Z
+DTSTART;VALUE=DATE:20261024
+DTEND;VALUE=DATE:20261025
+SUMMARY:Easy run · 6 km
+DESCRIPTION:• 5:20–5:45/km.\n\nWhy: Easy running to keep the routine go
+ ing.\n\nFuel: Tonight\, eat the dinner you plan to have the night before t
+ he race.\n\nHeart rate guide (estimated from your recent runs\, may be off
+ ):\n• 5:20–5:45/km: easy\, HR 125–150. Over 150 means slow down\n\nh
+ ttps://joshuamorley.github.io/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-10-25@joshuamorley.github.io
+DTSTAMP:20261007T022859Z
+DTSTART;VALUE=DATE:20261025
+DTEND;VALUE=DATE:20261026
+SUMMARY:Race practice · 10 km
+DESCRIPTION:• 2 km easy\n• 6 km at 4:15/km\n• 2 km easy\n• Race sho
+ es\, race kit\, race breakfast\, same start time as race day\n\nWhy: A ful
+ l dress rehearsal\, so nothing on race day is new. Only 6 km at race pace\
+ , because a week out you want to rehearse\, not add fatigue.\n\nFuel: Race
+  breakfast 3 h before\, a gel 10–15 min before\, then gels at the first 
+ two points on your race schedule. Practise taking gels at pace without slo
+ wing.\n\nHeart rate guide (estimated from your recent runs\, may be off):\
+ n• 5:20–5:45/km: easy\, HR 125–150. Over 150 means slow down\n• 4:
+ 13–4:17/km: HR about 158–170\n\nhttps://joshuamorley.github.io/running
+ -plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-10-27@joshuamorley.github.io
+DTSTAMP:20261007T022859Z
+DTSTART;VALUE=DATE:20261027
+DTEND;VALUE=DATE:20261028
+SUMMARY:Tuesday 5k · easy · 5 km
+DESCRIPTION:• 5:00–5:15/km. Don't race it this week.\n\nWhy: Keeps the 
+ legs moving. Your fitness is already built.\n\nFuel: None needed. Eat a no
+ rmal carb-based meal afterwards.\n\nHeart rate guide (estimated from your 
+ recent runs\, may be off):\n• 5:00–5:15/km: easy\, HR 125–150. Over 
+ 150 means slow down\n\nhttps://joshuamorley.github.io/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-10-29@joshuamorley.github.io
+DTSTAMP:20261007T022859Z
+DTSTART;VALUE=DATE:20261029
+DTEND;VALUE=DATE:20261030
+SUMMARY:Morning pace check · 6 km
+DESCRIPTION:• 2 km easy\n• 3 × 1 km at 4:15/km\, 1 min jog between\n
+ • 1 km easy\n\nWhy: Reminds your legs what race pace feels like.\n\nFuel
+ : None needed. Eat a normal carb-based meal afterwards.\n\nHeart rate guid
+ e (estimated from your recent runs\, may be off):\n• 5:20–5:45/km: eas
+ y\, HR 125–150. Over 150 means slow down\n• 4:13–4:17/km: HR about 1
+ 58–170\n\nhttps://joshuamorley.github.io/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-10-31@joshuamorley.github.io
+DTSTAMP:20261007T022859Z
+DTSTART;VALUE=DATE:20261031
+DTEND;VALUE=DATE:20261101
+SUMMARY:Shakeout · 5 km
+DESCRIPTION:• Very easy\, 5:45/km or slower\, plus 3 strides. Lay out you
+ r kit\, pin your bib\, count your gels\, and plan the trip to Devonport.\n
+ \nWhy: Settles the nerves and loosens the legs.\n\nFuel: Keep carb loading
+ : your carb-load amount (see the Fuel tab). Have an early dinner you've ea
+ ten before.\n\nHeart rate guide (estimated from your recent runs\, may be 
+ off):\n• 5:45–6:30/km: easy\, HR 125–150. Over 150 means slow down\n
+ \nhttps://joshuamorley.github.io/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-11-01@joshuamorley.github.io
+DTSTAMP:20261007T022859Z
+DTSTART;VALUE=DATE:20261101
+DTEND;VALUE=DATE:20261102
+SUMMARY:Auckland Marathon · 42.2 km
+DESCRIPTION:• Target 2:59:20 at 4:15/km. See the Race day tab for splits 
+ and checks.\n\nFuel: Breakfast 3 h before\, gel 1 10–15 min before the s
+ tart\, then your race gel schedule.\n\nHeart rate guide (estimated from yo
+ ur recent runs\, may be off):\n• 4:12–4:18/km: HR about 158–170\n\nh
+ ttps://joshuamorley.github.io/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+END:VCALENDAR

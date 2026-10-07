@@ -37,6 +37,22 @@ node --env-file=.env scripts/push-intervals.mjs --d1 fail --target 305 --from 20
 
 Re-run after each decision. Workouts are matched by date, so they're updated, not duplicated. The script never deletes anything. intervals.icu only sends about the next week of workouts to Garmin, so later weeks show up on your watch as they get closer.
 
+## Calendar feed (Google Calendar, Apple, Outlook)
+
+`scripts/build-ics.mjs` writes `plan.ics`, which has every run on one route as an all-day event. GitHub Pages serves it at `https://joshuamorley.github.io/running-plan/plan.ics`. The Overview tab has buttons to subscribe to it. In Google Calendar you can also add it by hand: **Other calendars → + → From URL**.
+
+Rebuild it whenever you change `js/data.js` or make a decision, then commit and push. Use the same choices you made on the site:
+
+```
+node scripts/build-ics.mjs                                     # sub-3 build, defaults
+node scripts/build-ics.mjs --build S --target 315              # 3:10 build
+node scripts/build-ics.mjs --d1 fail --target 305
+```
+
+Events keep the same ID for each date, so subscribers see them updated instead of duplicated. Days that turn into rest days drop out. Google Calendar only re-reads subscribed calendars every several hours, so changes take a while to show up. The Overview tab says which route the feed follows and warns if it's different from the route picked on the site.
+
+`scripts/plan.mjs` holds the route and session logic that this script and `push-intervals.mjs` share.
+
 ## Publish on GitHub Pages
 
 1. Create an empty repository on GitHub.

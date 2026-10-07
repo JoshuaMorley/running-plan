@@ -340,6 +340,27 @@
     }).join("");
   }
 
+  /* The feed in plan.ics is built for one route (scripts/build-ics.mjs), so say which and flag a mismatch. */
+  var feedRoute = null;
+  function renderCalRoute() {
+    var el = document.getElementById("cal-route");
+    if (!feedRoute || !TARGETS[feedRoute[2]]) { el.hidden = true; return; }
+    var f = { d0: feedRoute[0], d1: feedRoute[1], d2: feedRoute[2] };
+    var label = (f.d0 === "A" ? "sub-3 build" : "3:10 build") + ", target " + fmtClock(TARGETS[f.d2].sec).replace(/:00$/, "");
+    var same = f.d0 === st.d0 && f.d2 === st.d2 && (st.d0 === "S" || f.d1 === st.d1);
+    el.textContent = "The calendar follows the " + label + "." + (same ? "" :
+      " That's not the route picked here. To update it, run: node scripts/build-ics.mjs --build " + st.d0 +
+      (st.d0 === "A" ? " --d1 " + st.d1 : "") + " --target " + st.d2 + ", then push.");
+    el.hidden = false;
+  }
+  function loadFeedRoute() {
+    if (!window.fetch) return;
+    fetch("plan.ics", { cache: "no-cache" }).then(function (r) { return r.ok ? r.text() : ""; }).then(function (t) {
+      var m = /^X-AKL-ROUTE:(\w)-(\w+)-(\d+)/m.exec(t);
+      if (m) { feedRoute = [m[1], m[2], m[3]]; renderCalRoute(); }
+    }).catch(function () {});
+  }
+
   /* ---------- plan ---------- */
   function renderWeekPick() {
     var cw = currentWeekIndex();
@@ -745,7 +766,7 @@
 
   /* ---------- render ---------- */
   function renderAll() {
-    renderHeader(); renderTree(); renderToday(); renderVolume(); renderDates();
+    renderHeader(); renderTree(); renderToday(); renderVolume(); renderDates(); renderCalRoute();
     renderWeekPick(); renderWeek(); renderDecisions(); renderCourse(); renderFuel(); renderRace();
   }
 
@@ -826,6 +847,7 @@
   applyTheme(store.get("akl-theme") || "auto");
   syncStaticInputs();
   renderAll();
+  loadFeedRoute();
   bindProfile();
   var fromHash = location.hash.slice(1);
   selectTab(TABS.indexOf(fromHash) >= 0 ? fromHash : (store.get("akl-tab") || "overview"));
