@@ -39,7 +39,7 @@ Re-run after each decision. Workouts are matched by date, so they're updated, no
 
 ## Automatic sync (GitHub Actions)
 
-`.github/workflows/sync.yml` runs every 2 hours, when `route.json` or `js/data.js` changes, and on demand from the **Actions** tab. Each run:
+`.github/workflows/sync.yml` runs every 30 minutes, when `route.json` or `js/data.js` changes, and on demand from the **Actions** tab. Each run:
 
 1. Pulls your runs from Strava into `js/results.js` (`scripts/sync-strava.mjs`). The site uses them for the planned vs actual pills, run volume, heart rate drift and the test checkers.
 2. Rebuilds `plan.ics` for the calendar, with Strava results and the meal reminders.

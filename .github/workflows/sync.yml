@@ -5,8 +5,8 @@ name: Sync
 
 on:
   schedule:
-    # Every 2 hours. GitHub can start scheduled runs late when it's busy.
-    - cron: "17 */2 * * *"
+    # Every 30 minutes. GitHub can start scheduled runs late when it's busy.
+    - cron: "*/30 * * * *"
   push:
     branches: [main]
     paths: [route.json, js/data.js]
@@ -43,7 +43,7 @@ jobs:
       - name: Build the calendar feed
         run: node scripts/build-ics.mjs
 
-      # Only when the plan or route changed (or on a manual run), so workouts aren't re-sent every 2 hours.
+      # Only when the plan or route changed (or on a manual run), so workouts aren't re-sent on every scheduled run.
       - name: Send workouts to intervals.icu
         if: env.HAS_INTERVALS == 'true' && github.event_name != 'schedule'
         env:
