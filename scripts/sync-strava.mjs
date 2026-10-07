@@ -45,7 +45,8 @@ const runs = [];
 let fetched = 0;
 for (const a of list) {
   const id = String(a.id), old = known.get(id);
-  if (old && !old.seed && old.m === Math.round(a.distance * 10) / 10 && old.sec === a.moving_time && old.name === a.name) { runs.push(old); continue; }
+  /* Entries without laps are from an older version of this script, so fetch those again. */
+  if (old && old.laps && old.m === Math.round(a.distance * 10) / 10 && old.sec === a.moving_time && old.name === a.name) { runs.push(old); continue; }
   const d = await api("/activities/" + id);
   fetched++;
   runs.push({
@@ -58,8 +59,12 @@ for (const a of list) {
     hr: d.average_heartrate ? Math.round(d.average_heartrate) : null,
     maxHr: d.max_heartrate || null,
     elev: Math.round(d.total_elevation_gain || 0),
+    kcal: d.calories ? Math.round(d.calories) : null,
     /* Per-km splits as [metres, moving seconds, avg HR]. */
-    splits: (d.splits_metric || []).map((s) => [Math.round(s.distance * 10) / 10, s.moving_time, s.average_heartrate ? Math.round(s.average_heartrate) : null])
+    splits: (d.splits_metric || []).map((s) => [Math.round(s.distance * 10) / 10, s.moving_time, s.average_heartrate ? Math.round(s.average_heartrate) : null]),
+    /* Watch laps (auto km laps, or each rep on interval days) as [metres, moving seconds, avg HR, cadence].
+       Strava gives run cadence for one foot, so double it for steps per minute. */
+    laps: (d.laps || []).map((l) => [Math.round(l.distance * 10) / 10, l.moving_time, l.average_heartrate ? Math.round(l.average_heartrate) : null, l.average_cadence ? Math.round(l.average_cadence * 10) / 10 : null])
   });
 }
 runs.sort((a, b) => a.start.localeCompare(b.start));

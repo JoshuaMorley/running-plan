@@ -9,7 +9,7 @@
     "315": { sec: 11700 }
   };
   var ALLOWED = { A1: ["259", "305", "310"], A2: ["305", "310", "315"], S1: ["305", "310", "315"] };
-  var TABS = ["overview", "plan", "decisions", "course", "fuel", "race", "rules"];
+  var TABS = ["overview", "plan", "decisions", "stats", "course", "fuel", "race", "rules"];
   var HALF_KM = 21.0975;
   /* The North Shore hills and the bridge are in the first half, so halfway is planned 25 s behind even pace. */
   var HALF_BANK = 25;
@@ -474,6 +474,175 @@
     }).catch(function () {});
   }
 
+  /* ---------- stats ---------- */
+  var MARATHON_HR = [165, 172], MARATHON_HR_MID = 168;
+  /* Weighted least squares, y = a + b·x. Points are [x, y, weight]. */
+  function fitLine(pts) {
+    var n = 0, sx = 0, sy = 0, sxx = 0, sxy = 0;
+    pts.forEach(function (p) { var w = p[2] || 1; n += w; sx += p[0] * w; sy += p[1] * w; sxx += p[0] * p[0] * w; sxy += p[0] * p[1] * w; });
+    var b = (n * sxy - sx * sy) / (n * sxx - sx * sx), a = (sy - b * sx) / n, ss = 0, st = 0, my = sy / n;
+    pts.forEach(function (p) { var w = p[2] || 1; ss += w * Math.pow(p[1] - a - b * p[0], 2); st += w * Math.pow(p[1] - my, 2); });
+    return { a: a, b: b, r2: st ? 1 - ss / st : 0, at: function (x) { return a + b * x; } };
+  }
+  /* Runs that aren't interval sessions on the current route. */
+  function steadyRuns() {
+    var byDate = {};
+    allDays().forEach(function (d) { byDate[d.d] = d; });
+    return RUNS.filter(function (r) { var d = byDate[r.date]; return !d || d.t !== "int"; });
+  }
+
+  /* A small SVG scatter: dots with hover tips, an optional trend curve and reference lines.
+     Domains may run backwards (pace axes put faster to the right or top). */
+  function scatterSVG(o) {
+    var W = o.w || 640, H = o.h || 300, L = 52, R = 16, T = 14, B = 38;
+    function sx(x) { return L + (x - o.x[0]) / (o.x[1] - o.x[0]) * (W - L - R); }
+    function sy(y) { return T + (1 - (y - o.y[0]) / (o.y[1] - o.y[0])) * (H - T - B); }
+    var g = "";
+    (o.band || []).forEach(function (b) { g += "<rect class=\"sc-band\" x=\"" + Math.min(sx(b[0]), sx(b[1])) + "\" y=\"" + T + "\" width=\"" + Math.abs(sx(b[1]) - sx(b[0])) + "\" height=\"" + (H - T - B) + "\"></rect>"; });
+    o.yTicks.forEach(function (v) { g += "<line class=\"sc-grid\" x1=\"" + L + "\" x2=\"" + (W - R) + "\" y1=\"" + sy(v) + "\" y2=\"" + sy(v) + "\"></line><text class=\"sc-ax\" x=\"" + (L - 8) + "\" y=\"" + (sy(v) + 4) + "\" text-anchor=\"end\">" + esc(o.fy(v)) + "</text>"; });
+    o.xTicks.forEach(function (v) { g += "<text class=\"sc-ax\" x=\"" + sx(v) + "\" y=\"" + (H - B + 18) + "\" text-anchor=\"middle\">" + esc(o.fx(v)) + "</text>"; });
+    g += "<text class=\"sc-ax sc-title\" x=\"" + (W - R) + "\" y=\"" + (H - 4) + "\" text-anchor=\"end\">" + esc(o.xLabel) + "</text>";
+    (o.refs || []).forEach(function (r) {
+      if (r.y !== undefined) g += "<line class=\"sc-ref\" x1=\"" + L + "\" x2=\"" + (W - R) + "\" y1=\"" + sy(r.y) + "\" y2=\"" + sy(r.y) + "\"></line><text class=\"sc-ref-l\" x=\"" + (L + 6) + "\" y=\"" + (sy(r.y) - 6) + "\">" + esc(r.label) + "</text>";
+    });
+    if (o.curve) {
+      var d = "";
+      for (var i = 0; i <= 40; i++) {
+        var x = o.x[0] + (o.x[1] - o.x[0]) * i / 40, y = o.curve(x);
+        if (y < Math.min(o.y[0], o.y[1]) || y > Math.max(o.y[0], o.y[1])) continue;
+        d += (d ? " L" : "M") + sx(x).toFixed(1) + " " + sy(y).toFixed(1);
+      }
+      g += "<path class=\"sc-fit\" d=\"" + d + "\"></path>";
+    }
+    o.pts.forEach(function (p) {
+      var cx = sx(p.x).toFixed(1), cy = sy(p.y).toFixed(1);
+      g += "<circle class=\"sc-dot" + (p.cls ? " " + p.cls : "") + "\" cx=\"" + cx + "\" cy=\"" + cy + "\" r=\"4.5\"></circle>";
+      g += "<circle class=\"sc-hit\" cx=\"" + cx + "\" cy=\"" + cy + "\" r=\"10\" data-tip=\"" + esc(p.tip) + "\"></circle>";
+    });
+    return "<svg class=\"scatter\" viewBox=\"0 0 " + W + " " + H + "\" role=\"img\" aria-label=\"" + esc(o.label) + "\">" + g + "</svg>";
+  }
+  function paceTicks(lo, hi) { var t = []; for (var p = Math.ceil(lo / 30) * 30; p <= hi; p += 30) t.push(p); return t; }
+
+  function renderStats() {
+    var runs = RUNS, el = document.getElementById("st-totals");
+    if (!runs.length) { el.innerHTML = "<p class=\"muted\">No runs synced from Strava yet.</p>"; return; }
+    var km = 0, sec = 0, elev = 0, kcal = 0, beats = 0;
+    runs.forEach(function (r) { km += r.m / 1000; sec += r.sec; elev += r.elev || 0; kcal += r.kcal || 0; if (r.hr) beats += r.hr * r.sec / 60; });
+    var gelKcal = clampNum(inp.gel, 10, 50, 26) * 4;
+    el.innerHTML = [
+      [Math.round(km * 10) / 10 + " km", runs.length + " runs since 28 Sep"],
+      [fmtClock(sec).replace(/:\d\d$/, "") + " h", "on your feet"],
+      [elev + " m", "climbed, " + (Math.round(elev / 328 * 10) / 10) + " Sky Towers"],
+      [Math.round(beats).toLocaleString("en-NZ"), "heartbeats"],
+      [kcal.toLocaleString("en-NZ") + " kcal", "about " + Math.round(kcal / gelKcal) + " gels' worth"]
+    ].map(function (s) { return "<div class=\"stat\"><b class=\"num\">" + esc(s[0]) + "</b><span>" + esc(s[1]) + "</span></div>"; }).join("");
+
+    renderPredictor();
+    renderBeats();
+    renderStride();
+  }
+
+  /* Speed is close to linear in HR across easy to race efforts, so fit speed on HR and read it at the
+     middle of the marathon HR band. Skips each run's first km (HR still rising), partial and walking kms. */
+  function renderPredictor() {
+    var pts = [];
+    steadyRuns().forEach(function (r) {
+      var pos = 0;
+      r.splits.forEach(function (s, i) {
+        pos += s[0];
+        if (i === 0 || s[0] < 900 || !s[2] || s[1] / s[0] * 1000 > 420) return;
+        pts.push({ hr: s[2], v: s[0] / s[1], w: s[1], tip: niceDate(r.date) + " · km " + Math.round(pos / 1000) + " · " + fmtPace(s[1] / s[0] * 1000) + "/km · HR " + s[2], fast: s[1] / s[0] * 1000 < 290 });
+      });
+    });
+    var head = document.getElementById("st-predict-head"), box = document.getElementById("st-predict");
+    if (pts.length < 10) { head.innerHTML = "<p class=\"muted\">Needs at least 10 steady km splits.</p>"; box.innerHTML = ""; return; }
+    var f = fitLine(pts.map(function (p) { return [p.hr, p.v, p.w]; }));
+    var mid = MARATHON_HR_MID, v = f.at(mid), pace = 1000 / v, T = MARATHON_KM * 1000 / v;
+    var gap = pace - mpSec();
+    head.innerHTML = "<div class=\"stats\">" +
+      "<div class=\"stat\"><b class=\"num\">" + fmtPace(pace) + "/km</b><span>at HR " + mid.toFixed(0) + ", from your trend</span></div>" +
+      "<div class=\"stat\"><b class=\"num\">" + fmtClock(T).replace(/:\d\d$/, "") + "</b><span>marathon at that pace</span></div>" +
+      "<div class=\"stat\"><b class=\"num\">" + (Math.abs(gap) < 2 ? "On target" : Math.round(Math.abs(gap)) + " s/km " + (gap > 0 ? "slower" : "faster")) + "</b><span>than your " + fmtPace(mpSec()) + "/km target</span></div></div>" +
+      "<p class=\"muted chart-note\">Based on " + pts.length + " km splits, mostly easy ones, so it's a stretch to read off at marathon effort. Fit R² " + f.r2.toFixed(2) + ". Your fast kms (orange) show what you've actually run near that heart rate. Race-day fatigue and heat push it slower, and the 33 km and the half will sharpen it. An estimate, not a promise.</p>";
+    var hrs = pts.map(function (p) { return p.hr; }), paces = pts.map(function (p) { return 1000 / p.v; });
+    var x0 = Math.floor((Math.min.apply(null, hrs) - 5) / 10) * 10, x1 = Math.ceil((Math.max.apply(null, hrs) + 5) / 10) * 10;
+    var ySlow = Math.ceil((Math.max.apply(null, paces) + 10) / 30) * 30, yFast = Math.floor((Math.min.apply(null, paces.concat([pace, mpSec()])) - 10) / 30) * 30;
+    var xt = []; for (var x = x0; x <= x1; x += 10) xt.push(x);
+    box.innerHTML = scatterSVG({
+      x: [x0, x1], y: [ySlow, yFast], xTicks: xt, yTicks: paceTicks(yFast, ySlow), fx: String, fy: fmtPace,
+      xLabel: "Heart rate (bpm) →", label: "Pace against heart rate for each km split, with a trend line",
+      band: [MARATHON_HR], refs: [{ y: mpSec(), label: "Target " + fmtPace(mpSec()) + "/km" }],
+      curve: function (hr) { return 1000 / f.at(hr); },
+      pts: pts.map(function (p) { return { x: p.hr, y: 1000 / p.v, tip: p.tip, cls: p.fast ? "hot" : "" }; })
+    }) + "<div class=\"vol-key\"><span><i class=\"sw-dot\"></i>Steady km</span><span><i class=\"sw-dot hot\"></i>Faster than 4:50/km</span><span><i class=\"sw-fit\"></i>Trend</span><span><i class=\"sw-band\"></i>Marathon HR 165–172</span></div>";
+  }
+
+  function renderBeats() {
+    var rows = RUNS.filter(function (r) { return r.hr; }).map(function (r) { return { r: r, b: r.hr * r.sec / 60 / (r.m / 1000) }; });
+    var max = Math.max.apply(null, rows.map(function (x) { return x.b; })) * 1.05;
+    document.getElementById("st-beats").innerHTML = rows.map(function (x) {
+      var r = x.r;
+      return "<div class=\"vol-row beats-row\" title=\"" + esc(r.name) + "\"><span><b>" + niceDate(r.date) + "</b><br><span class=\"muted\" style=\"font-size:12px\">" + (Math.round(r.m / 100) / 10) + " km · " + fmtPace(r.sec / r.m * 1000) + "/km · HR " + r.hr + "</span></span>" +
+        "<div class=\"vol-track\"><div class=\"vol-act\" style=\"top:0;bottom:0;width:" + (x.b / max * 100).toFixed(1) + "%\"></div></div>" +
+        "<span class=\"num\" style=\"text-align:right\"><b>" + Math.round(x.b) + "</b></span></div>";
+    }).join("") + "<p class=\"vol-legend\">Beats per km. Faster running costs more beats per minute but fewer per km, so a flat-out 5k can come out the lowest. Watch easy runs at similar paces for the trend.</p>";
+  }
+
+  /* Stride length = speed ÷ steps per second. Laps over 200 m and 30 s, with walking recoveries left out. */
+  function renderStride() {
+    var laps = [];
+    RUNS.forEach(function (r) {
+      (r.laps || []).forEach(function (l) {
+        if (l[0] < 200 || l[1] < 30 || !l[3] || l[3] < 70) return;
+        var sp = l[0] / l[1], pace = 1000 / sp, spm = l[3] * 2;
+        if (pace > 450 || pace < 150) return;
+        laps.push({ sp: sp, pace: pace, spm: spm, stride: sp / (spm / 60), w: l[1], tip: niceDate(r.date) + " · " + Math.round(l[0]) + " m at " + fmtPace(pace) + "/km · " + Math.round(spm) + " spm · " + (sp / (spm / 60)).toFixed(2) + " m stride" });
+      });
+    });
+    var head = document.getElementById("st-stride-head");
+    if (laps.length < 10) { head.innerHTML = "<p class=\"muted\">Needs at least 10 laps with cadence.</p>"; return; }
+    var fs = fitLine(laps.map(function (l) { return [l.sp, l.stride, l.w]; })), fc = fitLine(laps.map(function (l) { return [l.sp, l.spm, l.w]; }));
+    var easy = 335, mp = mpSec();
+    var s1 = fs.at(1000 / easy), s2 = fs.at(1000 / mp), c1 = fc.at(1000 / easy), c2 = fc.at(1000 / mp);
+    var ds = (s2 / s1 - 1) * 100, dc = (c2 / c1 - 1) * 100;
+    head.innerHTML = "<div class=\"stats\" style=\"padding:0\">" +
+      "<div class=\"stat\"><b class=\"num\">+" + Math.round(ds) + "%</b><span>stride, " + s1.toFixed(2) + " → " + s2.toFixed(2) + " m from 5:35 to " + fmtPace(mp) + "/km</span></div>" +
+      "<div class=\"stat\"><b class=\"num\">+" + Math.round(dc) + "%</b><span>cadence, " + Math.round(c1) + " → " + Math.round(c2) + " steps a minute</span></div></div>" +
+      "<p class=\"muted chart-note\">" + (ds > dc * 2 ? "You speed up mostly by lengthening your stride. Long strides cost more on tired legs, so late in the race a few extra steps a minute is the cheaper way to hold pace." : "You speed up with both longer strides and quicker steps.") +
+      " Strava gives run cadence for one foot, so it's doubled here. From " + laps.length + " laps. An estimate.</p>";
+    var paces = laps.map(function (l) { return l.pace; });
+    var xSlow = Math.ceil((Math.max.apply(null, paces) + 5) / 30) * 30, xFast = Math.floor((Math.min.apply(null, paces) - 5) / 30) * 30;
+    function chart(key, fit, fy, step, label) {
+      var vals = laps.map(function (l) { return l[key]; });
+      var lo = Math.floor(Math.min.apply(null, vals) / step) * step, hi = Math.ceil(Math.max.apply(null, vals) / step) * step, ticks = [];
+      for (var t = lo; t <= hi + 1e-9; t += step) ticks.push(t);
+      return scatterSVG({
+        w: 400, h: 260, x: [xSlow, xFast], y: [lo, hi], xTicks: paceTicks(xFast, xSlow).filter(function (p, i, a) { return (a.length - 1 - i) % 2 === 0; }), yTicks: ticks, fx: fmtPace, fy: fy,
+        xLabel: "Pace (min/km), faster →", label: label,
+        curve: function (p) { return fit.at(1000 / p); },
+        pts: laps.map(function (l) { return { x: l.pace, y: l[key], tip: l.tip }; })
+      });
+    }
+    document.getElementById("st-stride").innerHTML = chart("stride", fs, function (v) { return v.toFixed(1) + " m"; }, 0.2, "Stride length against pace for each lap, with a trend line");
+    document.getElementById("st-cadence").innerHTML = chart("spm", fc, function (v) { return Math.round(v); }, 10, "Cadence against pace for each lap, with a trend line");
+  }
+
+  /* One floating tip for every chart dot on the Stats tab. */
+  (function () {
+    var tip = document.getElementById("chart-tip");
+    document.addEventListener("pointerover", function (e) {
+      var t = e.target.closest && e.target.closest("[data-tip]");
+      if (!t || !tip) return;
+      tip.textContent = t.getAttribute("data-tip");
+      tip.hidden = false;
+      var r = t.getBoundingClientRect();
+      tip.style.left = Math.min(window.innerWidth - tip.offsetWidth - 8, Math.max(8, r.left + r.width / 2 - tip.offsetWidth / 2)) + "px";
+      tip.style.top = (r.top - tip.offsetHeight - 6) + "px";
+    });
+    document.addEventListener("pointerout", function (e) { if (e.target.closest && e.target.closest("[data-tip]") && tip) tip.hidden = true; });
+    window.addEventListener("scroll", function () { if (tip) tip.hidden = true; }, { passive: true });
+  })();
+
   /* ---------- plan ---------- */
   function renderWeekPick() {
     var cw = currentWeekIndex();
@@ -913,7 +1082,7 @@
   /* ---------- render ---------- */
   function renderAll() {
     renderHeader(); renderTree(); renderToday(); renderVolume(); renderDrift(); renderDates(); renderCalRoute();
-    renderWeekPick(); renderWeek(); renderDecisions(); renderCourse(); renderFuel(); renderRace();
+    renderWeekPick(); renderWeek(); renderDecisions(); renderStats(); renderCourse(); renderFuel(); renderRace();
   }
 
   function syncStaticInputs() {

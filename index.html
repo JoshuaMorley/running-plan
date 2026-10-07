@@ -41,6 +41,7 @@
     <button type="button" class="tab" role="tab" id="tab-overview" aria-controls="p-overview" data-tab="overview">Overview</button>
     <button type="button" class="tab" role="tab" id="tab-plan" aria-controls="p-plan" data-tab="plan">Plan</button>
     <button type="button" class="tab" role="tab" id="tab-decisions" aria-controls="p-decisions" data-tab="decisions">Decisions</button>
+    <button type="button" class="tab" role="tab" id="tab-stats" aria-controls="p-stats" data-tab="stats">Stats</button>
     <button type="button" class="tab" role="tab" id="tab-course" aria-controls="p-course" data-tab="course">Course</button>
     <button type="button" class="tab" role="tab" id="tab-fuel" aria-controls="p-fuel" data-tab="fuel">Fuel</button>
     <button type="button" class="tab" role="tab" id="tab-race" aria-controls="p-race" data-tab="race">Race day</button>
@@ -124,6 +125,43 @@
       <button type="button" class="nav-btn" id="wk-prev">← Previous week</button>
       <button type="button" class="nav-btn" id="wk-next">Next week →</button>
     </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="panel" id="p-stats" role="tabpanel" aria-labelledby="tab-stats" hidden>
+    <div class="stats" id="st-totals"></div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Marathon predictor</h2>
+        <span class="focus">Every km split from your steady runs, plotted as heart rate against pace. The trend line reads off the pace your heart supports at marathon effort, HR 165–172. Interval days are left out.</span>
+      </div>
+      <div class="card chart-card">
+        <div id="st-predict-head"></div>
+        <div id="st-predict"></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Heartbeats per km</h2>
+        <span class="focus">Average heart rate × minutes per km. How many beats each km costs you. Lower is more efficient. Compare similar runs: easy with easy.</span>
+      </div>
+      <div class="card vol" id="st-beats"></div>
+    </div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Stride or cadence?</h2>
+        <span class="focus">How you run faster: longer strides, quicker steps, or both. Each dot is a watch lap: auto km laps, plus each rep on interval days.</span>
+      </div>
+      <div class="card chart-card"><div id="st-stride-head"></div></div>
+      <div class="grid2">
+        <div class="card chart-card"><h3>Stride length</h3><div id="st-stride"></div></div>
+        <div class="card chart-card"><h3>Cadence</h3><div id="st-cadence"></div></div>
+      </div>
+    </div>
+    <div class="chart-tip" id="chart-tip" hidden></div>
   </section>
 
   <!-- DECISIONS -->
