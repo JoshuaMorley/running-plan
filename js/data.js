@@ -35,6 +35,7 @@ window.PLAN = (function () {
         alt: { km: 5 } },
       { d: "2026-10-09", t: "rest", title: "Rest", fuel: "Carb-heavy dinner tonight, such as pasta or rice." },
       { d: "2026-10-10", t: "long", title: "Long run · 33 km rolling hills", km: 33, shoes: true,
+        result: "Done: 33.0 km in 2:54:07, +35 m. 25 km at 5:36/km (avg HR about 144), then 8 km at 4:15/km, last 2 km at 4:11 (HR 167–181, max 185). 6 gels about every 22 min, caffeine in the last 2. A little sloshing that settled quickly", done: true,
         detail: ["First 27 km easy at 5:30–5:45/km", "Last 5–6 km at 4:35/km if you feel good, otherwise stay easy"],
         why: "Your longest run ever. It proves you can go past 30 km.",
         fuel: "Full race rehearsal. Race breakfast 3 h before, a gel 10–15 min before you start, then gels on your race schedule (see the Fuel tab), each with water. Use your race-day flavour mix: non-caffeine early, caffeine gels from about km 18.",
