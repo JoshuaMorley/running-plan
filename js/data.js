@@ -44,7 +44,7 @@ window.PLAN = (function () {
     ]},
     { n: 3, range: "12 – 18 Oct", focus: "Test week. The half marathon sets your race target.", decAfter: "d2", days: [
       { d: "2026-10-12", t: "rest", title: "Rest", fuel: "Normal meals." },
-      { d: "2026-10-13", t: "easy", title: "Tuesday 5k · steady", km: 5, detail: "Around 4:00–4:10/km. Controlled, not a race.", why: "Keeps your legs sharp without taking anything out of them for Sunday.", fuel: FUEL_NONE },
+      { d: "2026-10-13", t: "easy", title: "Tuesday 5k · steady", km: 5, detail: ["Around 4:00–4:10/km. Controlled, not a race", "Expect HR about 165–175, creeping up in the last km or two", "If HR is past 178 before 4 km, ease off. That's race effort, and Sunday matters more"], why: "Keeps your legs sharp without taking anything out of them for Sunday.", fuel: FUEL_NONE },
       { d: "2026-10-14", t: "rest", title: "Rest or optional easy 30 min", optKm: 5,
         alt: { t: "easy", title: "Easy run", km: 5, optKm: 0, detail: "5:20–5:45/km. Keep it short before Sunday.", why: "Easy volume, nothing more.", fuel: FUEL_NONE } },
       { d: "2026-10-15", t: "int", title: "Morning intervals · light", km: 8, detail: ["2 km easy warm-up", "4 × 1 km at 3:50/km, 2 min jog between", "2 km easy cool-down"], why: "Sharpens you up without tiring you before the test.", fuel: FUEL_HARD },
