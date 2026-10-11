@@ -35,26 +35,29 @@
       </div>
       <button type="button" class="theme-btn" id="theme-btn" aria-label="Change colour theme">Theme: auto</button>
     </div>
+    <div class="route-bar">
+      <span class="lbl">Your route</span>
+      <span id="route" class="route-steps"></span>
+      <span class="lbl end">Target</span>
+      <strong class="num" id="target-read">2:59:20 · 4:15/km</strong>
+    </div>
   </div>
 </header>
 
-<nav class="tabs" aria-label="Sections">
+<!-- One nav, three layouts: top tab bar on tablets, bottom bar with a More sheet on phones, floating sidebar on desktop. -->
+<nav class="tabs" id="tabs" aria-label="Sections">
+  <div class="side-brand" aria-hidden="true"><span class="side-mark">42</span><span><b>Auckland</b><small>Marathon build</small></span></div>
   <div class="tabs-in" role="tablist" id="tablist">
-    <button type="button" class="tab" role="tab" id="tab-overview" aria-controls="p-overview" data-tab="overview">Overview</button>
-    <button type="button" class="tab" role="tab" id="tab-plan" aria-controls="p-plan" data-tab="plan">Plan</button>
-    <button type="button" class="tab" role="tab" id="tab-decisions" aria-controls="p-decisions" data-tab="decisions">Decisions</button>
-    <button type="button" class="tab" role="tab" id="tab-stats" aria-controls="p-stats" data-tab="stats">Stats</button>
-    <button type="button" class="tab" role="tab" id="tab-course" aria-controls="p-course" data-tab="course">Course</button>
-    <button type="button" class="tab" role="tab" id="tab-fuel" aria-controls="p-fuel" data-tab="fuel">Fuel</button>
-    <button type="button" class="tab" role="tab" id="tab-race" aria-controls="p-race" data-tab="race">Race day</button>
-    <button type="button" class="tab" role="tab" id="tab-rules" aria-controls="p-rules" data-tab="rules">Stay healthy</button>
+    <button type="button" class="tab" role="tab" id="tab-overview" aria-controls="p-overview" data-tab="overview"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg><span>Overview</span></button>
+    <button type="button" class="tab" role="tab" id="tab-plan" aria-controls="p-plan" data-tab="plan"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span>Plan</span></button>
+    <button type="button" class="tab more-item" role="tab" id="tab-decisions" aria-controls="p-decisions" data-tab="decisions"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="5" r="2"/><circle cx="6" cy="19" r="2"/><circle cx="18" cy="7" r="2"/><path d="M6 7v10M18 9v1a5 5 0 0 1-5 5H8"/></svg><span>Decisions</span></button>
+    <button type="button" class="tab more-item" role="tab" id="tab-stats" aria-controls="p-stats" data-tab="stats"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M7 16v-4M12 16V6M17 16V9"/></svg><span>Stats</span></button>
+    <button type="button" class="tab more-item" role="tab" id="tab-course" aria-controls="p-course" data-tab="course"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.8-6.5-11a6.5 6.5 0 0 1 13 0c0 5.2-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.2"/></svg><span>Course</span></button>
+    <button type="button" class="tab" role="tab" id="tab-fuel" aria-controls="p-fuel" data-tab="fuel"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 3L5 14h6.5L10.5 21 19 10h-6.5z"/></svg><span>Fuel</span></button>
+    <button type="button" class="tab" role="tab" id="tab-race" aria-controls="p-race" data-tab="race"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4M5 4h12l-2.5 4.5L17 13H5"/></svg><span>Race day</span></button>
+    <button type="button" class="tab more-item" role="tab" id="tab-rules" aria-controls="p-rules" data-tab="rules"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-8.5-5.3-8.5-11A4.5 4.5 0 0 1 12 6.6 4.5 4.5 0 0 1 20.5 9c0 5.7-8.5 11-8.5 11z"/></svg><span>Stay healthy</span></button>
   </div>
-  <div class="route-bar">
-    <span class="lbl">Your route</span>
-    <span id="route" class="route-steps"></span>
-    <span class="lbl end">Target</span>
-    <strong class="num" id="target-read">2:59:20 · 4:15/km</strong>
-  </div>
+  <button type="button" class="tab more-btn" id="more-btn" aria-expanded="false" aria-controls="tablist"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18.5" cy="12" r="1.4"/></svg><span id="more-label">More</span></button>
 </nav>
 
 <main class="wrap" id="main" tabindex="-1">

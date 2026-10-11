@@ -300,6 +300,8 @@
     if (g.elev) h += "<section><h4>Elevation</h4><p>" + esc(fill(g.elev)) + "</p></section>";
     if (g.stop) h += "<section class=\"g-stop\"><h4>Back off if</h4>" + ulHTML(g.stop) + "</section>";
     if (g.after) h += "<section><h4>Afterwards</h4><p>" + esc(fill(g.after)) + "</p></section>";
+    if (d.why) h += "<section><h4>Why this run</h4><p>" + esc(fill(d.why)) + "</p></section>";
+    if (d.fuel) h += "<section class=\"g-fuel\"><h4>Fuel</h4><p>" + esc(fill(d.fuel)) + "</p></section>";
     if (d.result) h += "<section><h4>What you did</h4><p>" + esc(d.result) + "</p></section>";
     return h + "<p class=\"muted g-foot\">HR and elevation are estimates from your Strava runs and the course GPX, so they may be off.</p>";
   }
@@ -1106,9 +1108,18 @@
     });
     try { history.replaceState(null, "", "#" + tab); } catch (e) {}
     var btn = document.getElementById("tab-" + tab), bar = btn.parentNode;
-    /* Keep the active tab visible when the tab bar scrolls sideways on phones. */
+    /* Keep the active tab visible when the tab bar scrolls sideways. */
     if (bar.scrollWidth > bar.clientWidth) bar.scrollLeft = Math.max(0, btn.offsetLeft - (bar.clientWidth - btn.offsetWidth) / 2);
+    /* Phones: tabs in the More sheet light up the More button and lend it their name. */
+    var extra = btn.classList.contains("more-item"), more = document.getElementById("more-btn");
+    more.classList.toggle("on", extra);
+    document.getElementById("more-label").textContent = extra ? btn.textContent : "More";
+    setMore(false);
     if (focus) btn.focus();
+  }
+  function setMore(open) {
+    document.getElementById("tabs").classList.toggle("open", open);
+    document.getElementById("more-btn").setAttribute("aria-expanded", String(open));
   }
   var THEMES = ["auto", "light", "dark"];
   function applyTheme(t) {
@@ -1149,6 +1160,8 @@
       window.scrollTo(0, 0);
       return;
     }
+    if (t.closest("#more-btn")) { setMore(!document.getElementById("tabs").classList.contains("open")); return; }
+    if (!t.closest("#tabs")) setMore(false);
     var guideBtn = t.closest("[data-guide]");
     if (guideBtn) { openGuide(guideBtn.getAttribute("data-guide")); return; }
     if (t.id === "guide-close" || t.id === "guide") { document.getElementById("guide").close(); return; }
@@ -1169,6 +1182,7 @@
   });
   document.addEventListener("keydown", function (e) {
     var t = e.target;
+    if (e.key === "Escape") setMore(false);
     if (t.getAttribute && t.getAttribute("role") === "tab" && (e.key === "ArrowRight" || e.key === "ArrowLeft")) {
       e.preventDefault();
       var i = TABS.indexOf(t.getAttribute("data-tab"));
