@@ -5,7 +5,7 @@
    Events keep the same UID per date, so a re-run updates them. Days that become rest drop out of the feed. */
 import { readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { P, RACE_DATE, st, routeLabel, sessions, runsOn, fmtPace } from "./plan.mjs";
+import { P, RACE_DATE, st, routeLabel, sessions, runsOn, fmtPace, fill } from "./plan.mjs";
 
 const SITE = "https://joshuamorley.github.io/running-plan/";
 const OUT = fileURLToPath(new URL("../plan.ics", import.meta.url));
@@ -56,10 +56,25 @@ function stravaLine(date) {
   return ["Strava: " + (Math.round(m / 100) / 10) + " km at " + fmtPace(sec / m * 1000) + "/km" + (hrS ? ", avg HR " + Math.round(hrT / hrS) : ""), ""];
 }
 
+/* The site's Run guide popup, as text. Calendar only: it's too long for Garmin notes. */
+function guideLines(g) {
+  if (!g) return [];
+  const out = ["", "RUN GUIDE"];
+  const para = (h, x) => { if (x) out.push("", h + ": " + fill(x)); };
+  const list = (h, xs) => { if (xs && xs.length) out.push("", h + ":", ...xs.map((x) => "• " + fill(x))); };
+  para("How it should feel", g.feel);
+  list("How to run it", g.how);
+  list("Heart rate", g.hr);
+  para("Elevation", g.elev);
+  list("Back off if", g.stop);
+  para("Afterwards", g.after);
+  return out;
+}
+
 list.forEach((s) => {
   const d = s.day, ran = runsOn(d.d).length > 0;
   const summary = (d.done || ran ? "✓ " : "") + s.title + (d.km && !/\bkm\b/.test(s.title) ? " · " + d.km + " km" : "");
-  const notes = (d.result ? [d.result, ""] : []).concat(stravaLine(d.d), s.notes, ["", SITE + "#plan"]);
+  const notes = (d.result ? [d.result, ""] : []).concat(stravaLine(d.d), s.notes, guideLines(d.guide), ["", SITE + "#plan"]);
   lines.push(
     "BEGIN:VEVENT",
     "UID:akl-" + d.d + "@joshuamorley.github.io",
