@@ -257,6 +257,22 @@
     return "<div class=\"d-actual\"><span class=\"d-actual-l\">" + label + "</span>" + bits.join("") + "</div>";
   }
 
+  /* HR range for each paced step, from the bands in js/data.js. Same logic as hrGuide in scripts/plan.mjs, which puts these in Garmin and the calendar. */
+  function hrLines(d) {
+    var out = [];
+    (d.steps || []).forEach(function (s) {
+      var m = fill(s).match(/(\d+):(\d\d)-(\d+):(\d\d)\/km Pace/), line = null;
+      if (m) {
+        var lo = Math.min(+m[1] * 60 + +m[2], +m[3] * 60 + +m[4]), hi = Math.max(+m[1] * 60 + +m[2], +m[3] * 60 + +m[4]);
+        line = fmtPace(lo) + "–" + fmtPace(hi) + "/km: " + P.HR_BANDS.filter(function (b) { return lo >= b[0]; })[0][1];
+      } else if (d.t === "race" && /^- \d+(\.\d+)?km$/.test(s.trim())) {
+        line = P.HR_RACE;
+      }
+      if (line && out.indexOf(line) < 0) out.push(line);
+    });
+    return out;
+  }
+
   /* ---------- shared pieces ---------- */
   function detailHTML(d) {
     var h = "";
@@ -267,7 +283,31 @@
     if (d.result) h += "<span class=\"d-result\">" + esc(d.result) + "</span>";
     if (d.why) h += "<p class=\"d-note\"><b>Why</b>" + esc(fill(d.why)) + "</p>";
     if (d.fuel) h += "<p class=\"d-note fuel\"><b>Fuel</b>" + esc(fill(d.fuel)) + "</p>";
+    if (d.t !== "rest" && (d.guide || hrLines(d).length)) h += "<button type=\"button\" class=\"guide-btn\" data-guide=\"" + d.d + "\">Run guide</button>";
     return h;
+  }
+
+  /* ---------- run guide popup ---------- */
+  function ulHTML(list) { return "<ul>" + list.map(function (x) { return "<li>" + esc(fill(x)) + "</li>"; }).join("") + "</ul>"; }
+  function guideHTML(d) {
+    var g = d.guide || {}, hr = (g.hr || []).concat(hrLines(d)), dt = dateObj(d.d), h = "";
+    h += "<span class=\"eyebrow\">" + DOW[dt.getDay()] + " " + dt.getDate() + " " + MON[dt.getMonth()] + "</span>";
+    h += "<h3>" + esc(fill(d.title)) + (d.km ? " · " + d.km + " km" : "") + "</h3>";
+    if (g.feel) h += "<section><h4>How it should feel</h4><p>" + esc(fill(g.feel)) + "</p></section>";
+    if (g.how) h += "<section><h4>How to run it</h4>" + ulHTML(g.how) + "</section>";
+    else if (d.detail) h += "<section><h4>The session</h4>" + ulHTML([].concat(d.detail)) + "</section>";
+    if (hr.length) h += "<section><h4>Heart rate</h4>" + ulHTML(hr) + "</section>";
+    if (g.elev) h += "<section><h4>Elevation</h4><p>" + esc(fill(g.elev)) + "</p></section>";
+    if (g.stop) h += "<section class=\"g-stop\"><h4>Back off if</h4>" + ulHTML(g.stop) + "</section>";
+    if (g.after) h += "<section><h4>Afterwards</h4><p>" + esc(fill(g.after)) + "</p></section>";
+    if (d.result) h += "<section><h4>What you did</h4><p>" + esc(d.result) + "</p></section>";
+    return h + "<p class=\"muted g-foot\">HR and elevation are estimates from your Strava runs and the course GPX, so they may be off.</p>";
+  }
+  function openGuide(iso) {
+    var d = allDays().filter(function (x) { return x.d === iso; })[0], dlg = document.getElementById("guide");
+    if (!d || !dlg) return;
+    document.getElementById("guide-body").innerHTML = guideHTML(d);
+    if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", "");
   }
   function shoesChip(d) { return d.shoes ? "<span class=\"chip t-shoes\">Race shoes</span>" : ""; }
   function dayRowHTML(d) {
@@ -1109,6 +1149,9 @@
       window.scrollTo(0, 0);
       return;
     }
+    var guideBtn = t.closest("[data-guide]");
+    if (guideBtn) { openGuide(guideBtn.getAttribute("data-guide")); return; }
+    if (t.id === "guide-close" || t.id === "guide") { document.getElementById("guide").close(); return; }
     var fillBtn = t.closest("[data-strava]");
     if (fillBtn) {
       var tv = testValues(fillBtn.getAttribute("data-strava"));

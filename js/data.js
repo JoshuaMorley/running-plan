@@ -161,8 +161,143 @@ window.PLAN = (function () {
     "2026-10-31": { s: ez(4.5, "5:45-6:30/km Pace").concat(["", "Strides"], reps(3, ["- 20s", "- 60s"])) },
     "2026-11-01": { s: ["- 42.2km {mp-3}-{mp+3}/km Pace"] }
   };
+  /* Heart rate guide shown with each run on the site, in the calendar and in Garmin notes: [fastest pace in seconds/km
+     at or above this, text]. Garmin only takes one target type per workout, so the steps keep pace targets and these go in the notes.
+     Estimates from the 4 Oct long run (4:13–4:19/km at HR 153–168) and the 29 Sep 5k (avg HR 184). */
+  var HR_BANDS = [
+    [300, "easy, HR 125–150. Over 150 means slow down"],
+    [285, "steady, HR about 140–158"],
+    [260, "HR about 150–162"],
+    [250, "HR about 158–170"],
+    [237, "HR about 165–175"],
+    [220, "HR about 172–182"],
+    [0, "too short for HR to settle. Run these by pace"]
+  ];
+  var HR_RACE = "Race effort: HR climbs past 180 (your 5k averaged 184). Run it by feel";
+
+  /* The Run guide popup on the site, by date. `alt` replaces it on the same branch as the day's `alt` block.
+     feel: what it should feel like. how: pacing, step by step. hr: extra HR notes (the pace bands above are added for you).
+     elev: how hilly the route should be. stop: when to back off. after: what to do afterwards.
+     Elevation numbers come from your Strava runs and the course (about 217 m of climbing per the site header; the plotaroute GPX gives 110–345 m depending on smoothing and has no bridge height). */
+  var FLAT = "Flat. Under 20 m of climbing, like the Good George course (+5 m) or your usual morning loop.";
+  var GUIDES = {
+    "2026-10-13": {
+      feel: "Comfortably hard. You can say a few words but wouldn't want to chat. Smooth and in control, never straining.",
+      how: ["Jog 1–2 km beforehand and do 2–3 strides", "Km 1 at 4:10. Don't go out with the racers", "Km 2–4 settle at 4:00–4:05", "Km 5 hold the pace. No sprint finish"],
+      hr: ["Expect about 165–175, creeping up in the last km or two", "The 33 km may still be in your legs, and a warm evening adds 3–5 bpm"],
+      elev: FLAT,
+      stop: ["HR past 178 before 4 km: ease to 4:15", "Any niggle from Saturday: jog it easy and call it a recovery run"],
+      after: "Jog 1 km to cool down. Normal dinner. Tomorrow is rest or an easy 30 min."
+    },
+    "2026-10-14": {
+      alt: {
+        feel: "Very easy. Full sentences the whole way. This only adds volume, so it should feel like nothing.",
+        how: ["5:20–5:45/km from the first step", "Skip it if your legs are heavy after last night"],
+        elev: "Anything gentle, up to about 40 m. Walk any steep pinch rather than pushing.",
+        stop: ["HR over 150: slow down", "Tight calves or hamstrings: stop and walk home. Sunday matters more"],
+        after: "Nothing special. Normal meals."
+      }
+    },
+    "2026-10-15": {
+      feel: "Reps feel strong and quick but relaxed, like the middle of a 10k race. You finish wanting one more.",
+      how: ["2 km easy, then 3–4 strides", "4 × 1 km at 3:48–3:52/km. Rep 1 at 3:52, then settle", "2 min easy jog between, not a walk", "2 km easy cool-down"],
+      hr: ["HR won't settle in a 1 km rep. Run by pace and breathing", "Expect the end of each rep around 170–178"],
+      elev: FLAT + " Do the reps on the flattest stretch you have, so the paces mean something.",
+      stop: ["If a rep is more than 5 s slower than rep 1, stop there", "Three days before the test, so leave something in the tank"],
+      after: "Carbs and protein within an hour. Rest tomorrow."
+    },
+    "2026-10-17": {
+      feel: "Loose and easy, with the strides feeling quick and light, not sprinting.",
+      how: ["4.5 km at about 5:30/km", "4 × 20 s strides: build to about 3:30/km pace, stay tall and relaxed", "60 s walk or jog between strides"],
+      elev: FLAT,
+      stop: ["Anything tight: skip the strides"],
+      after: "Carb-heavy dinner. Lay out your kit and gels for tomorrow. Early night."
+    },
+    "2026-10-18": {
+      feel: "4:30 should feel steady and almost too easy for the first 10 km. If it feels like work early, that's the answer, not a failure.",
+      how: ["1–2 km easy warm-up and a few strides", "Km 1–14 at 4:28–4:32. Lock in by km 2 and don't bank time", "Km 15–21 at 4:45–5:15. Don't speed up even if you feel great"],
+      hr: ["At 4:30 expect about 150–162, drifting up slowly", "HR past 170 before 14 km: ease off and note when it happened"],
+      elev: "If you're picking the route, aim for about 80–150 m of climbing. That's about the race's climbing per km (roughly 5 m/km, plus a bit for the bridge), so the test is honest. Put one longer climb in the first half, like the bridge. Run hills by effort, not pace.",
+      stop: ["HR past 170 early, or 4:30 feels forced by km 8: drop to 4:45 and jog it in", "Any sharp pain: stop. A missed test beats a missed race"],
+      after: "Write down your average pace and HR over the first 14 km, and how you felt. Carbs and protein within an hour. Then pick your target on the Decisions tab.",
+      alt: {
+        feel: "4:15 should feel controlled and rhythmic, like marathon effort, not half-marathon effort. The first 10 km should feel almost easy.",
+        how: ["1–2 km easy warm-up and a few strides", "Km 1–16 at 4:13–4:17. Lock in by km 2 and don't bank time", "Km 17–21 at 4:45–5:15. Don't speed up even if you feel great"],
+        hr: ["At 4:15 expect about 158–170, drifting up slowly", "Your 33 km had the last 8 km at 4:15 at HR 167–181, but that was on tired legs. Fresh, it should be lower"],
+        elev: "If you're picking the route, aim for about 80–150 m of climbing. That's about the race's climbing per km (roughly 5 m/km, plus a bit for the bridge), so the test is honest. Put one longer climb in the first half, like the bridge. Run hills by effort, not pace.",
+        stop: ["HR past 170 before 16 km: ease off and note when it happened", "4:15 feels forced by km 8: drop to 4:30 and finish as the 4:30 test", "Any sharp pain: stop. A missed test beats a missed race"],
+        after: "Write down your average pace and HR over the first 16 km, and whether you could have kept going. Carbs and protein within an hour. Then pick your target on the Decisions tab."
+      }
+    },
+    "2026-10-20": {
+      feel: "If you race it: hard, like the 29 Sep 5k. If not: threshold, comfortably hard and even.",
+      how: ["Jog 1–2 km and do 3–4 strides", "Racing: km 1 no faster than 3:35, then hold. Your 17:44 averaged 3:33", "Threshold: 3:50–4:00/km the whole way"],
+      hr: ["Racing: expect 180+ by km 3", "Threshold: about 172–180"],
+      elev: FLAT,
+      stop: ["Any niggle from Sunday: run it easy. Twelve days out, nothing is gained by forcing it"],
+      after: "Carbs and protein within an hour. Rest tomorrow."
+    },
+    "2026-10-22": {
+      feel: "The 3 km at race pace should feel smooth and familiar. The 400s feel quick and springy, not a sprint.",
+      how: ["2 km easy", "3 km at {mp-2}–{mp+2}/km. Practise exactly how race pace feels", "4 × 400 m at 3:32–3:38/km, 200 m jog between", "1.5 km easy cool-down"],
+      hr: ["400s are too short for HR to mean much. Run by pace"],
+      elev: FLAT + " Race pace on the flat is what you're memorising.",
+      stop: ["If race pace feels hard today, skip the 400s. You need rest, not more work"],
+      after: "Carbs and protein within an hour."
+    },
+    "2026-10-24": {
+      feel: "Easy and relaxed. Full sentences the whole way.",
+      how: ["5:20–5:45/km from the first step"],
+      elev: "Anything gentle, up to about 50 m.",
+      stop: ["HR over 150: slow down"],
+      after: "Tonight, eat the dinner you plan to have the night before the race."
+    },
+    "2026-10-25": {
+      feel: "A calm rehearsal. Race pace should feel easy enough to hold for 42 km. If it doesn't, adjust your target, don't push.",
+      how: ["Race kit, race shoes, race breakfast 3 h before, same start time as race day", "2 km easy", "6 km at {mp-2}–{mp+2}/km. Take a gel at pace without slowing", "2 km easy"],
+      hr: ["At race pace expect about 158–170. Note it, it's your race-day number"],
+      elev: "Aim for about 50–80 m, with one longer climb in the 6 km if you can, to practise the bridge: keep the effort level, let pace drop 10–20 s/km, and don't chase it back on the way down. Some of the North Shore part of the course is ideal.",
+      stop: ["Race pace feels hard: drop to {mp+10} and finish. That's useful information, not a failure"],
+      after: "Note anything that rubbed, sloshed or annoyed you, and fix it this week. Nothing on race day should be new."
+    },
+    "2026-10-27": {
+      feel: "Easy. You'll feel restless with the taper. That's normal. Don't race it.",
+      how: ["5:00–5:15/km the whole way", "Let the racers go"],
+      elev: FLAT,
+      stop: ["If you find yourself under 5:00, back off"],
+      after: "Normal dinner. Early night."
+    },
+    "2026-10-29": {
+      feel: "Race pace should feel easy and automatic. The legs may feel flat in the taper. That's normal.",
+      how: ["2 km easy", "3 × 1 km at {mp-2}–{mp+2}/km, 1 min jog between", "1 km easy"],
+      elev: FLAT,
+      stop: ["Don't add reps, however good you feel"],
+      after: "Normal meals. Carb loading starts tomorrow."
+    },
+    "2026-10-31": {
+      feel: "Very easy and short, just shaking the legs out.",
+      how: ["5:45/km or slower", "3 × 20 s relaxed strides near the end"],
+      elev: "Flat. Near Devonport is ideal if you're staying close to the start.",
+      stop: ["Anything tight: skip the strides"],
+      after: "Lay out your kit, pin your bib, count your gels, and plan the trip to Devonport. Early dinner you've eaten before."
+    },
+    "2026-11-01": {
+      feel: "The first 10 km should feel too easy. The race starts at 32 km.",
+      how: ["Target {full} at {mp}/km", "Halfway about 25 s behind even pace, because the hills and the bridge come first", "Bridge: keep the effort level, let it cost 10–20 s/km", "After 32 km: hold form, take your last gels, and race the people in front"],
+      hr: ["About 158–170 through halfway. Over 175 at halfway: ease to {mp+10}", "HR drifts up late, so judge by effort after 32 km"],
+      elev: "About 217 m of climbing, though estimates vary (the course GPX gives anywhere from about 110 to 345 m depending on smoothing, and it has no bridge height). The hardest of it is in the first half: the North Shore hills, then the bridge from about km 15 to 17. The second half, out along Tamaki Drive and back, is mostly flat with a few small bumps.",
+      stop: ["See the checks on the Race day tab"],
+      after: "Walk, eat and drink. Then celebrate."
+    }
+  };
+
   WEEKS.forEach(function (w) {
     w.days.forEach(function (day) {
+      var g = GUIDES[day.d];
+      if (g) {
+        if (g.feel) day.guide = g;
+        if (g.alt && day.alt) day.alt.guide = g.alt;
+      }
       var x = STEPS[day.d];
       if (!x) return;
       if (x.s) day.steps = x.s;
@@ -201,5 +336,5 @@ window.PLAN = (function () {
     { d: "2026-11-01", at: "03:00", title: "Race breakfast", meal: "breakfast", note: "3 hours before the 6am start. Check your start time." }
   ];
 
-  return { WEEKS: WEEKS, DEC: DEC, OPTS: OPTS, NODES: NODES, EDGES: EDGES, TRAIN_FUEL: TRAIN_FUEL, MEALS: MEALS, REMINDERS: REMINDERS };
+  return { WEEKS: WEEKS, DEC: DEC, OPTS: OPTS, NODES: NODES, EDGES: EDGES, TRAIN_FUEL: TRAIN_FUEL, MEALS: MEALS, REMINDERS: REMINDERS, HR_BANDS: HR_BANDS, HR_RACE: HR_RACE };
 })();

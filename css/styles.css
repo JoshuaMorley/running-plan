@@ -266,6 +266,22 @@ a.link-btn { text-decoration: none; }
 .d-note b { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--fg); margin-right: 6px; }
 .d-note.fuel { background: var(--fuel-soft); border-radius: 8px; padding: 6px 10px; color: var(--fg); }
 .d-note.fuel b { color: var(--fuel); }
+.guide-btn { justify-self: start; border: 1px solid var(--line); background: var(--surface); color: var(--accent); border-radius: 8px; padding: 5px 10px; cursor: pointer; font: inherit; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+.guide-btn:hover { border-color: var(--accent); background: var(--accent-soft); }
+.guide { width: min(560px, calc(100vw - 32px)); max-height: calc(100dvh - 48px); padding: 0; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); color: var(--fg); box-shadow: var(--shadow-hi); overflow: auto; }
+.guide::backdrop { background: rgb(10 14 22 / .5); }
+.guide-in { position: relative; padding: 22px 22px 18px; display: grid; gap: 14px; }
+.guide-x { position: absolute; top: 10px; right: 10px; width: 34px; height: 34px; border: 0; border-radius: 8px; background: var(--sunk); color: var(--fg); font-size: 20px; line-height: 1; cursor: pointer; }
+.guide-x:hover { background: var(--line); }
+#guide-body { display: grid; gap: 14px; }
+#guide-body h3 { margin: 2px 40px 0 0; }
+#guide-body section { display: grid; gap: 4px; font-size: 14px; }
+#guide-body h4 { margin: 0; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+#guide-body p { margin: 0; }
+#guide-body ul { margin: 0; padding-left: 18px; display: grid; gap: 3px; }
+#guide-body .g-stop { background: var(--key-soft); border-radius: 10px; padding: 10px 12px; }
+#guide-body .g-stop h4 { color: var(--key); }
+#guide-body .g-foot { font-size: 12px; }
 .d-km { text-align: right; font-family: var(--mono); font-size: 14px; font-weight: 600; white-space: nowrap; }
 .nw { white-space: nowrap; }
 .d-km.opt { color: var(--muted); font-weight: 500; }

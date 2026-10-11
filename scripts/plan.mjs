@@ -58,18 +58,7 @@ function resolve(day) {
   return key === "A" && day.alt ? Object.assign({}, day, day.alt) : day;
 }
 
-/* ---------- heart rate guide ----------
-   Garmin only takes one target type per workout, so the steps keep pace targets and the HR ranges go in the notes.
-   Bands are estimates from the 4 Oct long run (4:13–4:19/km at HR 153–168) and the 29 Sep 5k (avg HR 184). */
-const HR_BANDS = [
-  [300, "easy, HR 125–150. Over 150 means slow down"],
-  [285, "steady, HR about 140–158"],
-  [260, "HR about 150–162"],
-  [250, "HR about 158–170"],
-  [237, "HR about 165–175"],
-  [220, "HR about 172–182"],
-  [0, "too short for HR to settle. Run these by pace"]
-];
+/* ---------- heart rate guide (bands in js/data.js; same logic as hrLines in js/app.js) ---------- */
 function hrGuide(d, steps) {
   const out = [];
   steps.forEach((s) => {
@@ -77,9 +66,9 @@ function hrGuide(d, steps) {
     let line = null;
     if (m) {
       const a = +m[1] * 60 + +m[2], b = +m[3] * 60 + +m[4];
-      line = fmtPace(Math.min(a, b)) + "–" + fmtPace(Math.max(a, b)) + "/km: " + HR_BANDS.find(([min]) => Math.min(a, b) >= min)[1];
+      line = fmtPace(Math.min(a, b)) + "–" + fmtPace(Math.max(a, b)) + "/km: " + P.HR_BANDS.find(([min]) => Math.min(a, b) >= min)[1];
     } else if (d.t === "race" && /^- \d+(\.\d+)?km$/.test(s.trim())) {
-      line = "Race effort: HR climbs past 180 (your 5k averaged 184). Run it by feel";
+      line = P.HR_RACE;
     }
     if (line && out.indexOf(line) < 0) out.push(line);
   });
