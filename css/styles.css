@@ -487,11 +487,12 @@ tr.cur td { background: var(--accent-soft); }
   .guide-in::before { content: ""; position: absolute; top: 9px; left: 50%; width: 40px; height: 4px; margin-left: -20px; border-radius: 4px; background: var(--line); }
 }
 
-/* Desktop: the nav floats as a glass card on the left and the page shifts over. */
+/* Desktop: header across the top, then the nav as a sticky glass card beside the content. */
 @media screen and (min-width: 1100px) {
-  body { padding-left: 268px; }
-  .tabs { position: fixed; top: 20px; left: 20px; width: 228px; max-height: calc(100dvh - 40px); overflow-y: auto; display: flex; flex-direction: column; gap: 18px; padding: 18px 12px 14px; border: 1px solid var(--line); border-radius: 18px; background: color-mix(in srgb, var(--surface) 78%, transparent); box-shadow: var(--shadow-hi), inset 0 1px 0 rgb(255 255 255 / .06); }
-  .side-brand { display: flex; align-items: center; gap: 10px; padding: 0 6px; }
+  body { display: grid; grid-template-columns: minmax(24px, 1fr) 228px 32px minmax(0, 1000px) minmax(24px, 1fr); align-items: start; }
+  .top { grid-column: 1 / -1; }
+  .wrap { grid-column: 4; width: 100%; max-width: none; margin: 0; padding-inline: 0; }
+  .tabs { grid-column: 2; position: sticky; top: 20px; margin-top: 28px; width: auto; max-height: calc(100dvh - 40px); overflow-y: auto; display: flex; flex-direction: column; gap: 18px; padding: 18px 12px 14px; border: 1px solid var(--line); border-radius: 18px; background: color-mix(in srgb, var(--surface) 78%, transparent); box-shadow: var(--shadow-hi), inset 0 1px 0 rgb(255 255 255 / .06); }
   .tabs-in { flex-direction: column; gap: 2px; padding: 0; margin: 0; max-width: none; overflow: visible; }
   .tab { display: flex; align-items: center; gap: 11px; width: 100%; padding: 9px 12px; border-radius: 10px; text-align: left; }
   .tab .ico { display: block; }
@@ -500,8 +501,8 @@ tr.cur td { background: var(--accent-soft); }
   .tab[aria-selected="true"] { background: var(--accent-soft); color: var(--accent); }
   .tab[aria-selected="true"]::before { content: ""; position: absolute; left: -12px; top: 9px; bottom: 9px; width: 3px; border-radius: 0 3px 3px 0; background: var(--accent); }
   .tab:hover:not([aria-selected="true"]) { background: var(--sunk); }
-  .top-in, .wrap { max-width: 1080px; padding-inline: 32px; }
-  .top::before { inset: -40% auto auto 40%; }
+  /* Header content lines up with the sidebar's left edge and the content's right edge. */
+  .top-in { max-width: calc(228px + 32px + 1000px + 48px); padding-inline: 24px; }
 }
 @media (prefers-reduced-motion: no-preference) {
   .opt-card, .node rect, .edge, .tab, .wk-btn, .link-btn, .nav-btn, .use-btn, .step, .theme-btn, .field input, .field select, tbody td, .pill {
