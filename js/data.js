@@ -62,8 +62,8 @@ window.PLAN = (function () {
       { d: "2026-10-21", t: "rest", title: "Rest" },
       { d: "2026-10-22", t: "int", title: "Morning intervals · pace + speed", km: 9.5, shoes: true, detail: ["2 km easy warm-up", "4 km at {mp}/km", "4 × 400 m at 3:35/km, 200 m jog between", "1.5 km easy cool-down", "Race shoes and race kit. This replaces the Sunday race practice"], why: "Your last proper race-pace run before race week, so it takes a little of the dropped race practice. The 400s keep some pop in your legs.", fuel: FUEL_HARD },
       { d: "2026-10-23", t: "easy", title: "Easy run", km: 6, detail: "5:20–5:45/km. Moved from Saturday.", why: "Easy running to keep the routine going before the weekend off.", fuel: FUEL_NONE },
-      { d: "2026-10-24", t: "rest", title: "Rest · diving", fuel: "No running. Drink plenty, since diving dries you out. Normal meals." },
-      { d: "2026-10-25", t: "rest", title: "Rest · diving", fuel: "No running. Drink plenty and eat normally. A weekend off a week out costs you nothing." }
+      { d: "2026-10-24", t: "rest", title: "Rest · diving 🤿",fuel: "No running. Drink plenty, since diving dries you out. Normal meals." },
+      { d: "2026-10-25", t: "rest", title: "Rest · diving 🤿",fuel: "No running. Drink plenty and eat normally. A weekend off a week out costs you nothing." }
     ]},
     { n: 5, range: "26 Oct – 1 Nov", focus: "Race week. Stay loose, sleep well, fuel up.", days: [
       { d: "2026-10-26", t: "rest", title: "Rest · Labour Day" },
@@ -325,9 +325,7 @@ window.PLAN = (function () {
   ];
 
   /* Other all-day calendar events (scripts/build-ics.mjs). `to` is the last day, inclusive. */
-  var EVENTS = [
-    { d: "2026-10-24", to: "2026-10-25", title: "🤿 Scuba diving", note: "No running. Drink plenty, since diving dries you out, and eat normally. Avoid hard exercise straight after a dive. Easy running resumes Tue 27 Oct." }
-  ];
+  var EVENTS = [];
 
   return { WEEKS: WEEKS, DEC: DEC, OPTS: OPTS, NODES: NODES, EDGES: EDGES, TRAIN_FUEL: TRAIN_FUEL, MEALS: MEALS, REMINDERS: REMINDERS, EVENTS: EVENTS, HR_BANDS: HR_BANDS, HR_RACE: HR_RACE };
 })();
