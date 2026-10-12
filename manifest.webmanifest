@@ -6,7 +6,10 @@
   "scope": "./",
   "display": "standalone",
   "background_color": "#EDEFF2",
-  "theme_color": "#2C46C9",
+  "theme_color": "#FBFCFD",
+  "user_preferences": {
+    "color_scheme_dark": { "background_color": "#0D1015", "theme_color": "#151922" }
+  },
   "icons": [
     { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
     { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
