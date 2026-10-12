@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* Writes plan.ics, a calendar feed of every run on the chosen route. GitHub Pages serves it, so Google Calendar
+/* Writes plan.ics, a calendar feed of every run on the chosen route, plus meal reminders and other events such as days away. GitHub Pages serves it, so Google Calendar
    (or any calendar app) can subscribe to it by URL and pick up changes after each push.
    Usage: node scripts/build-ics.mjs [--build A|S] [--d1 pass|fail] [--target 259|305|310|315]
    Events keep the same UID per date, so a re-run updates them. Days that become rest drop out of the feed. */
