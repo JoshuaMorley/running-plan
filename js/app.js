@@ -486,7 +486,7 @@
       ["2026-10-10", subA ? "33 km · Test 1" : "33 km long run", subA ? "Last 8 km at 4:15" : "Longest run ever"],
       ["2026-10-18", l2() === "A1" ? "Half · Test 2" : "Half · pace test", l2() === "A1" ? "16 km at 4:15" : "14 km at 4:30"],
       ["2026-10-19", "Taper starts", "Less volume, same sharpness"],
-      ["2026-10-25", "10 km race practice", "6 km at " + fmtPace(mpSec()) + "/km"],
+      ["2026-10-22", "Last race-pace session", "4 km at " + fmtPace(mpSec()) + "/km"],
       ["2026-10-30", "Carb load starts", loadText() + " a day"],
       [RACE_DATE, "Auckland Marathon", fmtTarget() + " at " + fmtPace(mpSec()) + "/km"]
     ];

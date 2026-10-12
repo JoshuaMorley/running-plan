@@ -51,19 +51,19 @@ window.PLAN = (function () {
       { d: "2026-10-16", t: "rest", title: "Rest", fuel: "Normal meals." },
       { d: "2026-10-17", t: "easy", title: "Easy run + strides", km: 5, detail: "5:30/km easy, then 4 × 20 s relaxed strides.", why: "Strides wake your legs up for tomorrow.", fuel: "Carb-heavy dinner tonight." },
       { d: "2026-10-18", t: "test", title: "Half marathon · pace test", km: 21.1, altBy: "half", shoes: true,
-        detail: ["Run it as a controlled training run, not a race. Two weeks out is too close to race a half", "First 14 km at 4:30/km, your marathon target pace", "Last 7 km easy to steady, 4:45–5:15/km. Don't speed up", "If HR goes past 170 before 14 km, ease off. That tells you something useful, it isn't a failure", "Note your average pace and HR over the first 14 km, and whether you could have kept going"],
+        detail: ["Your dress rehearsal: full race kit and shoes, race breakfast 3 h before, gels on schedule", "Run it as a controlled training run, not a race. Two weeks out is too close to race a half", "First 14 km at 4:30/km, your marathon target pace", "Last 7 km easy to steady, 4:45–5:15/km. Don't speed up", "If HR goes past 170 before 14 km, ease off. That tells you something useful, it isn't a failure", "Note your average pace and HR over the first 14 km, and whether you could have kept going"],
         why: "The best guide to your race pace you'll get before race day, without taking so much out of you that it hurts the marathon.",
         fuel: "Race-day routine: breakfast 3 h before, a gel 10–15 min before the start, then gels at about km 6, 11 and 17, each with water.",
-        alt: { title: "Half marathon · Test 2", detail: ["Run it as a controlled training run, not a race. Two weeks out is too close to race a half", "First 16 km at 4:15/km", "Last 5 km easy to steady, 4:45–5:15/km. Don't speed up", "If HR goes past 170 before 16 km, ease off. That tells you something useful, it isn't a failure", "Note your average pace and HR over the first 16 km, and whether you could have kept going"] } }
+        alt: { title: "Half marathon · Test 2", detail: ["Your dress rehearsal: full race kit and shoes, race breakfast 3 h before, gels on schedule", "Run it as a controlled training run, not a race. Two weeks out is too close to race a half", "First 16 km at 4:15/km", "Last 5 km easy to steady, 4:45–5:15/km. Don't speed up", "If HR goes past 170 before 16 km, ease off. That tells you something useful, it isn't a failure", "Note your average pace and HR over the first 16 km, and whether you could have kept going"] } }
     ]},
-    { n: 4, range: "19 – 25 Oct", focus: "Taper starts. Less volume, same sharpness, full dress rehearsal.", days: [
+    { n: 4, range: "19 – 25 Oct", focus: "Taper starts. Less volume, same sharpness, then a weekend off for diving.", days: [
       { d: "2026-10-19", t: "rest", title: "Rest", fuel: "Recovery day. Eat well after Sunday's test." },
       { d: "2026-10-20", t: "race", title: "Tuesday 5k · last sharp one", km: 5, detail: "Race it if you want. Twelve days out is fine. Otherwise run it at threshold.", why: "One last effort to stay sharp, with 12 days left to recover.", fuel: FUEL_HARD },
       { d: "2026-10-21", t: "rest", title: "Rest" },
-      { d: "2026-10-22", t: "int", title: "Morning intervals · pace + speed", km: 8.5, detail: ["2 km easy warm-up", "3 km at {mp}/km", "4 × 400 m at 3:35/km, 200 m jog between", "1.5 km easy cool-down"], why: "Locks in race pace and keeps some pop in your legs.", fuel: FUEL_HARD },
-      { d: "2026-10-23", t: "rest", title: "Rest" },
-      { d: "2026-10-24", t: "easy", title: "Easy run", km: 6, detail: "5:20–5:45/km.", why: "Easy running to keep the routine going.", fuel: "Tonight, eat the dinner you plan to have the night before the race." },
-      { d: "2026-10-25", t: "long", title: "Race practice · 10 km", km: 10, shoes: true, detail: ["2 km easy", "6 km at {mp}/km", "2 km easy", "Race shoes, race kit, race breakfast, same start time as race day"], why: "A full dress rehearsal, so nothing on race day is new. Only 6 km at race pace, because a week out you want to rehearse, not add fatigue.", fuel: "Race breakfast 3 h before, a gel 10–15 min before, then gels at the first two points on your race schedule. Practise taking gels at pace without slowing." }
+      { d: "2026-10-22", t: "int", title: "Morning intervals · pace + speed", km: 9.5, shoes: true, detail: ["2 km easy warm-up", "4 km at {mp}/km", "4 × 400 m at 3:35/km, 200 m jog between", "1.5 km easy cool-down", "Race shoes and race kit. This replaces the Sunday race practice"], why: "Your last proper race-pace run before race week, so it takes a little of the dropped race practice. The 400s keep some pop in your legs.", fuel: FUEL_HARD },
+      { d: "2026-10-23", t: "easy", title: "Easy run", km: 6, detail: "5:20–5:45/km. Moved from Saturday.", why: "Easy running to keep the routine going before the weekend off.", fuel: FUEL_NONE },
+      { d: "2026-10-24", t: "rest", title: "Rest · diving", fuel: "No running. Drink plenty, since diving dries you out. Normal meals." },
+      { d: "2026-10-25", t: "rest", title: "Rest · diving", fuel: "No running. Drink plenty and eat normally. A weekend off a week out costs you nothing." }
     ]},
     { n: 5, range: "26 Oct – 1 Nov", focus: "Race week. Stay loose, sleep well, fuel up.", days: [
       { d: "2026-10-26", t: "rest", title: "Rest · Labour Day" },
@@ -122,8 +122,7 @@ window.PLAN = (function () {
     ["Easy runs and intervals", "Nothing during. Carbs and protein within an hour after hard sessions."],
     ["29 km · Sun 4 Oct", "Race breakfast 2.5–3 h before. A gel every 25 min from 25 min in, about 60 g of carbs per hour."],
     ["33 km · Sat 10 Oct", "Full race rehearsal: breakfast 3 h before, gel 10–15 min before, then your race schedule. Try your race-day caffeine gel mix."],
-    ["Half · Sun 18 Oct", "Breakfast 3 h before, gel 10–15 min before, then gels at about km 6, 11 and 17."],
-    ["10 km race practice · Sun 25 Oct", "Race breakfast, a gel 10–15 min before, then gels at the first two points on your race schedule."],
+    ["Half · Sun 18 Oct", "Your dress rehearsal. Breakfast 3 h before, gel 10–15 min before, then gels at about km 6, 11 and 17."],
     ["Fri 30 and Sat 31 Oct", "Carb load, low fibre, low fat. Early dinner on Saturday."]
   ];
 
@@ -153,9 +152,8 @@ window.PLAN = (function () {
     "2026-10-18": { s: ["- 14km 4:28-4:32/km Pace", "- 7.1km 4:45-5:15/km Pace"],
       alt: ["- 16km 4:13-4:17/km Pace", "- 5.1km 4:45-5:15/km Pace"] },
     "2026-10-20": { s: ["- 5km"] },
-    "2026-10-22": { s: wu(2).concat(["- 3km {mp-2}-{mp+2}/km Pace", ""], reps(4, ["- 400mtr 3:32-3:38/km Pace", "- 200mtr"]), cd(1.5)) },
-    "2026-10-24": { s: ez(6) },
-    "2026-10-25": { s: wu(2).concat(["- 6km {mp-2}-{mp+2}/km Pace"], cd(2)) },
+    "2026-10-22": { s: wu(2).concat(["- 4km {mp-2}-{mp+2}/km Pace", ""], reps(4, ["- 400mtr 3:32-3:38/km Pace", "- 200mtr"]), cd(1.5)) },
+    "2026-10-23": { s: ez(6) },
     "2026-10-27": { s: ez(5, "5:00-5:15/km Pace") },
     "2026-10-29": { s: wu(2).concat(reps(3, ["- 1km {mp-2}-{mp+2}/km Pace", "- 1m"]), cd(1)) },
     "2026-10-31": { s: ez(4.5, "5:45-6:30/km Pace").concat(["", "Strides"], reps(3, ["- 20s", "- 60s"])) },
@@ -215,14 +213,14 @@ window.PLAN = (function () {
     },
     "2026-10-18": {
       feel: "4:30 should feel steady and almost too easy for the first 10 km. If it feels like work early, that's the answer, not a failure.",
-      how: ["1–2 km easy warm-up and a few strides", "Km 1–14 at 4:28–4:32. Lock in by km 2 and don't bank time", "Km 15–21 at 4:45–5:15. Don't speed up even if you feel great"],
+      how: ["Dress rehearsal: full race kit and shoes, race breakfast 3 h before, ideally at the time you'd eat it on race day", "1–2 km easy warm-up and a few strides", "Km 1–14 at 4:28–4:32. Lock in by km 2 and don't bank time", "Km 15–21 at 4:45–5:15. Don't speed up even if you feel great"],
       hr: ["At 4:30 expect about 150–162, drifting up slowly", "HR past 170 before 14 km: ease off and note when it happened"],
       elev: "If you're picking the route, aim for about 80–150 m of climbing. That's about the race's climbing per km (roughly 5 m/km, plus a bit for the bridge), so the test is honest. Put one longer climb in the first half, like the bridge. Run hills by effort, not pace.",
       stop: ["HR past 170 early, or 4:30 feels forced by km 8: drop to 4:45 and jog it in", "Any sharp pain: stop. A missed test beats a missed race"],
       after: "Write down your average pace and HR over the first 14 km, and how you felt. Carbs and protein within an hour. Then pick your target on the Decisions tab.",
       alt: {
         feel: "4:15 should feel controlled and rhythmic, like marathon effort, not half-marathon effort. The first 10 km should feel almost easy.",
-        how: ["1–2 km easy warm-up and a few strides", "Km 1–16 at 4:13–4:17. Lock in by km 2 and don't bank time", "Km 17–21 at 4:45–5:15. Don't speed up even if you feel great"],
+        how: ["Dress rehearsal: full race kit and shoes, race breakfast 3 h before, ideally at the time you'd eat it on race day", "1–2 km easy warm-up and a few strides", "Km 1–16 at 4:13–4:17. Lock in by km 2 and don't bank time", "Km 17–21 at 4:45–5:15. Don't speed up even if you feel great"],
         hr: ["At 4:15 expect about 158–170, drifting up slowly", "Your 33 km had the last 8 km at 4:15 at HR 167–181, but that was on tired legs. Fresh, it should be lower"],
         elev: "If you're picking the route, aim for about 80–150 m of climbing. That's about the race's climbing per km (roughly 5 m/km, plus a bit for the bridge), so the test is honest. Put one longer climb in the first half, like the bridge. Run hills by effort, not pace.",
         stop: ["HR past 170 before 16 km: ease off and note when it happened", "4:15 feels forced by km 8: drop to 4:30 and finish as the 4:30 test", "Any sharp pain: stop. A missed test beats a missed race"],
@@ -238,27 +236,19 @@ window.PLAN = (function () {
       after: "Carbs and protein within an hour. Rest tomorrow."
     },
     "2026-10-22": {
-      feel: "The 3 km at race pace should feel smooth and familiar. The 400s feel quick and springy, not a sprint.",
-      how: ["2 km easy", "3 km at {mp-2}–{mp+2}/km. Practise exactly how race pace feels", "4 × 400 m at 3:32–3:38/km, 200 m jog between", "1.5 km easy cool-down"],
-      hr: ["400s are too short for HR to mean much. Run by pace"],
+      feel: "The 4 km at race pace should feel smooth and easy enough to hold for 42 km. The 400s feel quick and springy, not a sprint.",
+      how: ["Race shoes and race kit", "2 km easy", "4 km at {mp-2}–{mp+2}/km. Practise exactly how race pace feels", "4 × 400 m at 3:32–3:38/km, 200 m jog between", "1.5 km easy cool-down"],
+      hr: ["At race pace expect about 158–170 by the end of the 4 km. Note it, it's your race-day number", "400s are too short for HR to mean much. Run by pace"],
       elev: FLAT + " Race pace on the flat is what you're memorising.",
       stop: ["If race pace feels hard today, skip the 400s. You need rest, not more work"],
-      after: "Carbs and protein within an hour."
+      after: "Carbs and protein within an hour. Note anything that rubbed or annoyed you in your race kit, and fix it before race week."
     },
-    "2026-10-24": {
+    "2026-10-23": {
       feel: "Easy and relaxed. Full sentences the whole way.",
       how: ["5:20–5:45/km from the first step"],
       elev: "Anything gentle, up to about 50 m.",
-      stop: ["HR over 150: slow down"],
-      after: "Tonight, eat the dinner you plan to have the night before the race."
-    },
-    "2026-10-25": {
-      feel: "A calm rehearsal. Race pace should feel easy enough to hold for 42 km. If it doesn't, adjust your target, don't push.",
-      how: ["Race kit, race shoes, race breakfast 3 h before, same start time as race day", "2 km easy", "6 km at {mp-2}–{mp+2}/km. Take a gel at pace without slowing", "2 km easy"],
-      hr: ["At race pace expect about 158–170. Note it, it's your race-day number"],
-      elev: "Aim for about 50–80 m, with one longer climb in the 6 km if you can, to practise the bridge: keep the effort level, let pace drop 10–20 s/km, and don't chase it back on the way down. Some of the North Shore part of the course is ideal.",
-      stop: ["Race pace feels hard: drop to {mp+10} and finish. That's useful information, not a failure"],
-      after: "Note anything that rubbed, sloshed or annoyed you, and fix it this week. Nothing on race day should be new."
+      stop: ["HR over 150: slow down", "Legs heavy from yesterday: cut it to 4 km"],
+      after: "Nothing special. No running over the weekend while you're diving."
     },
     "2026-10-27": {
       feel: "Easy. You'll feel restless with the taper. That's normal. Don't race it.",
@@ -319,7 +309,7 @@ window.PLAN = (function () {
       steps: ["Spread it across the day. Graze, don't stuff.", "Swap in anything from the carbs table on the Fuel tab, keeping fibre and fat low.", "Sip water or electrolyte drink all day. Pale yellow urine is the goal."] },
     breakfast: { name: "Race breakfast", carbs: "about 160 g", time: "5 min",
       items: ["1 white bagel with 2 tbsp honey (about 85 g)", "1 slice white toast with jam (about 30 g)", "1 banana (about 25 g)", "250 ml juice (about 25 g)", "About 500 ml water or electrolyte drink"],
-      steps: ["Eat it 3 hours before the start, then sip until 30 min before.", "Same breakfast as the 33 km, the half and race practice. Nothing new on race day."] }
+      steps: ["Eat it 3 hours before the start, then sip until 30 min before.", "Same breakfast as the 33 km and the half. Nothing new on race day."] }
   };
 
   /* Timed calendar events for meals (scripts/build-ics.mjs). Times are NZ local. */
@@ -328,13 +318,16 @@ window.PLAN = (function () {
     { d: "2026-10-10", at: "05:00", title: "Race breakfast before the 33 km", meal: "breakfast", note: "Adjust to 3 hours before you start running." },
     { d: "2026-10-17", at: "17:30", title: "Carb-heavy dinner before the half", meal: "rice" },
     { d: "2026-10-18", at: "05:00", title: "Race breakfast before the half", meal: "breakfast", note: "Adjust to 3 hours before you start running." },
-    { d: "2026-10-24", at: "17:30", title: "Race-eve dinner rehearsal", meal: "rice", note: "Eat exactly what you plan to have on Sat 31 Oct, at the same time." },
-    { d: "2026-10-25", at: "03:00", title: "Race breakfast rehearsal", meal: "breakfast", note: "Same start time as race day, so breakfast at 3am for a 6am start." },
     { d: "2026-10-30", at: "07:00", title: "Carb load day 1", meal: "load" },
     { d: "2026-10-31", at: "07:00", title: "Carb load day 2", meal: "load" },
     { d: "2026-10-31", at: "17:00", title: "Early race-eve dinner", meal: "rice", note: "Done by 6pm, so it's settled by bedtime." },
     { d: "2026-11-01", at: "03:00", title: "Race breakfast", meal: "breakfast", note: "3 hours before the 6am start. Check your start time." }
   ];
 
-  return { WEEKS: WEEKS, DEC: DEC, OPTS: OPTS, NODES: NODES, EDGES: EDGES, TRAIN_FUEL: TRAIN_FUEL, MEALS: MEALS, REMINDERS: REMINDERS, HR_BANDS: HR_BANDS, HR_RACE: HR_RACE };
+  /* Other all-day calendar events (scripts/build-ics.mjs). `to` is the last day, inclusive. */
+  var EVENTS = [
+    { d: "2026-10-24", to: "2026-10-25", title: "🤿 Scuba diving", note: "No running. Drink plenty, since diving dries you out, and eat normally. Avoid hard exercise straight after a dive. Easy running resumes Tue 27 Oct." }
+  ];
+
+  return { WEEKS: WEEKS, DEC: DEC, OPTS: OPTS, NODES: NODES, EDGES: EDGES, TRAIN_FUEL: TRAIN_FUEL, MEALS: MEALS, REMINDERS: REMINDERS, EVENTS: EVENTS, HR_BANDS: HR_BANDS, HR_RACE: HR_RACE };
 })();

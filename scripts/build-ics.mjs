@@ -114,6 +114,21 @@ P.REMINDERS.forEach((r) => {
     "END:VEVENT"
   );
 });
+/* Non-running events, such as days away. */
+(P.EVENTS || []).forEach((e) => {
+  lines.push(
+    "BEGIN:VEVENT",
+    "UID:akl-event-" + e.d + "@joshuamorley.github.io",
+    "DTSTAMP:" + stamp,
+    "DTSTART;VALUE=DATE:" + ymd(e.d),
+    "DTEND;VALUE=DATE:" + ymd(nextDay(e.to || e.d)),
+    "SUMMARY:" + esc(e.title),
+    "DESCRIPTION:" + esc((e.note ? e.note + "\n\n" : "") + SITE + "#plan"),
+    "URL:" + SITE + "#plan",
+    "TRANSP:TRANSPARENT",
+    "END:VEVENT"
+  );
+});
 lines.push("END:VCALENDAR");
 
 /* Leave the file alone when only DTSTAMP would change, so the scheduled sync doesn't commit for nothing. */
@@ -124,5 +139,5 @@ try { prev = readFileSync(OUT, "utf8"); } catch {}
 const changed = noStamp(body) !== noStamp(prev);
 if (changed) writeFileSync(OUT, body);
 console.log("Route: " + routeLabel);
-console.log(changed ? "Wrote " + list.length + " runs and " + P.REMINDERS.length + " meal reminders to plan.ics. Commit and push it to update the calendar feed."
+console.log(changed ? "Wrote " + list.length + " runs, " + P.REMINDERS.length + " meal reminders and " + (P.EVENTS || []).length + " other events to plan.ics. Commit and push it to update the calendar feed."
   : "plan.ics is already up to date.");
