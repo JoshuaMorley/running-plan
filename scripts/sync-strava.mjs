@@ -133,6 +133,8 @@ for (const a of all.filter(isFive)) {
   fives.push({
     id: String(a.id), d: a.start_date_local.slice(0, 10), name: a.name, m: Math.round(a.distance), sec: a.moving_time,
     hr: a.average_heartrate ? Math.round(a.average_heartrate) : null, max: a.max_heartrate ? Math.round(a.max_heartrate) : null,
+    /* Start point to 3 decimals (about 100 m), enough to group runs by course. */
+    ll: a.start_latlng && a.start_latlng.length ? [+a.start_latlng[0].toFixed(3), +a.start_latlng[1].toFixed(3)] : undefined,
     temp: await tempFor(a), splits: t5 / 5 < 290 ? await splitsFor(a) : undefined
   });
 }

@@ -581,12 +581,15 @@
 
     renderLoad();
     renderMonthly();
+    renderEasyHR();
     renderPredictor();
     renderBeats();
     renderStride();
     renderCadence();
     renderHills();
     renderTimeOfDay();
+    renderRecords();
+    renderFun();
   }
 
   /* Speed is close to linear in HR across easy to race efforts, so fit speed on HR and read it at the
@@ -817,6 +820,99 @@
       "<div class=\"vol-key\"><span><i class=\"sw-dot\"></i>Morning, before 10 am</span><span><i class=\"sw-dot sat\"></i>Evening, from 4 pm</span>" + (sc ? "<span><i class=\"sw-ln fit\"></i>Morning trend</span><span><i class=\"sw-ln last\"></i>Evening trend</span>" : "") + "</div>";
   }
 
+  /* Easy heart rate at a fixed 5:30/km: each steady easy run's average HR, moved to that pace along the slope of
+     HR against pace across all of them, then averaged by month. */
+  var EASY_REF = 330;
+  function renderEasyHR() {
+    var head = document.getElementById("st-ehr-head"), box = document.getElementById("st-ehr");
+    var runs = ALL.filter(function (r) { return r.hr && r.m >= 4000 && r.pace >= 300 && r.pace <= 390; });
+    if (runs.length < 10) { head.innerHTML = "<p class=\"muted\">Needs at least 10 easy runs with heart rate.</p>"; box.innerHTML = ""; return; }
+    var slope = fitLine(runs.map(function (r) { return [r.pace, r.hr, r.sec]; })).b;
+    runs.forEach(function (r) { r.adj = r.hr - slope * (r.pace - EASY_REF); });
+    var months = {};
+    runs.forEach(function (r) { (months[r.d.slice(0, 7)] = months[r.d.slice(0, 7)] || []).push(r); });
+    var mk = Object.keys(months).sort().filter(function (k) { return months[k].length >= 2; });
+    var line = mk.map(function (k) { return [dayNum(k + "-15"), mean(months[k].map(function (r) { return r.adj; })), k, months[k].length]; });
+    var first = line.slice(0, 3), last = line.slice(-3);
+    var a = mean(first.map(function (p) { return p[1]; })), b = mean(last.map(function (p) { return p[1]; }));
+    /* "May–Jul 2025", or "Dec 2025–Feb 2026" across a new year. */
+    function mRange(list) {
+      var s = list[0][2], e = list[list.length - 1][2], ms = MON[+s.slice(5, 7) - 1], me = MON[+e.slice(5, 7) - 1];
+      return s.slice(0, 4) === e.slice(0, 4) ? ms + "–" + me + " " + e.slice(0, 4) : ms + " " + s.slice(0, 4) + "–" + me + " " + e.slice(0, 4);
+    }
+    head.innerHTML = statTiles([
+      [Math.round(a) + " → " + Math.round(b), "HR at " + fmtPace(EASY_REF) + "/km, " + mRange(first) + " against " + mRange(last)],
+      [signed(b - a) + " bpm", b < a ? "the same easy pace now costs that many fewer beats a minute" : "no drop yet in what easy pace costs you"]
+    ]) + "<p class=\"muted chart-note\">From " + runs.length + " easy runs (5:00–6:30/km, over 4 km). Each run's HR is shifted to 5:30/km using your own trend of " + Math.abs(slope * 10).toFixed(1) + " bpm per 10 s/km. Heat, hills, tiredness and different watches move single runs, so the monthly line matters more than any dot. Months with fewer than 2 easy runs are skipped.</p>";
+    var x0 = dayNum(runs[0].d) - 10, x1 = dayNum(today) + 10, ys = runs.map(function (r) { return r.adj; });
+    var lo = Math.floor((Math.min.apply(null, ys) - 2) / 10) * 10, hi = Math.ceil((Math.max.apply(null, ys) + 2) / 10) * 10, yt = [];
+    for (var v = lo; v <= hi; v += hi - lo > 50 ? 10 : 5) yt.push(v);
+    box.innerHTML = timeSVG({
+      h: 260, x: [x0, x1], y: [lo, hi], yTicks: yt, fy: String, xTicks: monthTicks(x0, x1, x1 - x0 > 300 ? 2 : 1), label: "Easy-run heart rate adjusted to 5:30/km, with monthly averages",
+      lines: [{ cls: "ln ln-avg", pts: line.map(function (p) { return [p[0], p[1]]; }) }],
+      dots: runs.map(function (r) { return { x: dayNum(r.d), y: r.adj, cls: "", tip: niceDate(r.d) + " " + r.d.slice(0, 4) + " · " + r.name + " · " + fmtPace(r.pace) + "/km at HR " + r.hr + " · about " + Math.round(r.adj) + " at 5:30/km" }; }),
+      cols: []
+    }) + "<div class=\"vol-key\"><span><i class=\"sw-dot\"></i>Easy run, HR moved to 5:30/km</span><span><i class=\"sw-ln avg\"></i>Monthly average</span></div>";
+  }
+
+  /* Records since 2025. Fastest km comes from every km split the sync keeps: plan runs, hard 5ks and long runs. */
+  function renderRecords() {
+    var el = document.getElementById("st-records");
+    if (!ALL.length) { el.innerHTML = ""; return; }
+    function maxBy(list, f) { return list.reduce(function (a, x) { return f(x) > f(a) ? x : a; }, list[0]); }
+    function minBy(list, f) { return list.reduce(function (a, x) { return f(x) < f(a) ? x : a; }, list[0]); }
+    var recs = [];
+    var lng = maxBy(ALL, function (r) { return r.m; });
+    recs.push(["Longest run", (Math.round(lng.m / 100) / 10) + " km", lng.d, lng.name]);
+    var tl = maxBy(ALL, function (r) { return r.sec; });
+    recs.push(["Longest time out", fmtClock(tl.sec).replace(/:\d\d$/, "") + " h", tl.d, tl.name]);
+    var best5 = FIVES.filter(function (f) { return f.hard; });
+    if (best5.length) { var b5 = minBy(best5, function (f) { return f.t; }); recs.push(["Fastest 5k", fmtClock(b5.t), b5.d, b5.name]); }
+    /* Every full km split the site has. */
+    var km = [];
+    RUNS.forEach(function (r) { r.splits.forEach(function (s) { km.push({ s: s, d: r.date, name: r.name }); }); });
+    FIVES.concat(LONGS).forEach(function (r) { (r.splits || []).forEach(function (s) { km.push({ s: s, d: r.d, name: r.name }); }); });
+    km = km.filter(function (k) { return k.s[0] >= 980 && k.s[1] / k.s[0] * 1000 > 150; });
+    if (km.length) { var fk = minBy(km, function (k) { return k.s[1] / k.s[0]; }); recs.push(["Fastest km", fmtPace(fk.s[1] / fk.s[0] * 1000), fk.d, fk.name]); }
+    /* Weeks run Monday to Sunday. */
+    var weeks = {};
+    ALL.forEach(function (r) { var w = addDays(r.d, -((dateObj(r.d).getDay() + 6) % 7)); weeks[w] = (weeks[w] || 0) + r.m / 1000; });
+    var bw = maxBy(Object.keys(weeks), function (w) { return weeks[w]; });
+    recs.push(["Biggest week", (Math.round(weeks[bw] * 10) / 10) + " km", bw, "Week of " + niceDate(bw)]);
+    /* Days in a row with a run. */
+    var days = {}, best = { n: 0 }, run = 0, prev = null;
+    ALL.forEach(function (r) { days[r.d] = true; });
+    Object.keys(days).sort().forEach(function (d) {
+      run = prev && addDays(prev, 1) === d ? run + 1 : 1;
+      if (run > best.n) best = { n: run, end: d };
+      prev = d;
+    });
+    recs.push(["Most days in a row", best.n + " days", best.end, "Ending " + niceDate(best.end)]);
+    var climb = maxBy(ALL, function (r) { return r.elev; });
+    recs.push(["Biggest climb", climb.elev + " m", climb.d, climb.name]);
+    var early = minBy(ALL, function (r) { return r.hm; }), late = maxBy(ALL, function (r) { return r.hm; });
+    recs.push(["Earliest start", early.hm, early.d, early.name], ["Latest start", late.hm, late.d, late.name]);
+    el.innerHTML = recs.map(function (x) {
+      return "<div class=\"card rec\"><span class=\"eyebrow\">" + esc(x[0]) + "</span><b class=\"num\">" + esc(x[1]) + "</b><span class=\"muted\">" + niceDate(x[2]) + " " + x[2].slice(0, 4) + " · " + esc(x[3]) + "</span></div>";
+    }).join("");
+  }
+
+  /* Every run since 2025 in familiar units. Road distance Auckland to Wellington is about 640 km. */
+  function renderFun() {
+    var el = document.getElementById("st-fun");
+    if (!ALL.length) { el.innerHTML = ""; return; }
+    var km = 0, sec = 0, climb = 0, beats = 0;
+    ALL.forEach(function (r) { km += r.m / 1000; sec += r.sec; climb += r.elev; if (r.hr) beats += r.hr * r.sec / 60; });
+    el.innerHTML = [
+      [Math.round(km).toLocaleString("en-NZ") + " km", "about " + (Math.round(km / 640 * 10) / 10) + " times Auckland to Wellington by road"],
+      [String(Math.floor(km / MARATHON_KM)), "marathons' worth of running"],
+      [Math.round(sec / 3600) + " h", "running, about " + (Math.round(sec / 86400 * 10) / 10) + " days non-stop"],
+      [Math.round(climb).toLocaleString("en-NZ") + " m", "climbed: " + Math.round(climb / 328) + " Sky Towers, or " + (Math.round(climb / 8849 * 10) / 10) + " Everests"],
+      [(Math.round(beats / 1e5) / 10) + " million", "heartbeats on runs with HR"],
+      [(Math.round(km / ALL.length * 10) / 10) + " km", "average run, from " + ALL.length + " runs"]
+    ].map(function (s) { return "<div class=\"stat\"><b class=\"num\">" + esc(s[0]) + "</b><span>" + esc(s[1]) + "</span></div>"; }).join("");
+  }
+
   /* ---------- charts over time ---------- */
   var DAY0 = "2025-01-01";
   function dayNum(iso) { return daysBetween(DAY0, iso); }
@@ -959,7 +1055,7 @@
   var HARD_PACE = 290;
   var FIVES = ((window.RESULTS && window.RESULTS.fives) || []).filter(function (f) { return f && f.d; }).map(function (f) {
     var t = f.m >= 5000 ? f.sec : f.sec * 5000 / f.m;
-    return { d: f.d, name: f.name, m: f.m, sec: f.sec, hr: f.hr, max: f.max, temp: f.temp, splits: f.splits, t: t, tue: dateObj(f.d).getDay() === 2, hard: t / 5 < HARD_PACE };
+    return { d: f.d, name: f.name, m: f.m, sec: f.sec, hr: f.hr, max: f.max, temp: f.temp, splits: f.splits, ll: f.ll, t: t, tue: dateObj(f.d).getDay() === 2, hard: t / 5 < HARD_PACE };
   });
   /* Tuesdays you raced, not just ran briskly: HR 170 or more, or under 4:10/km when the watch had no HR.
      Same flat course every week, so these are the cleanest measure of 5k fitness. */
@@ -1064,6 +1160,52 @@
     renderPacing();
     renderHeat(tr);
     renderStreak();
+    renderCourses();
+  }
+
+  /* Courses: 5ks grouped by start point (within 500 m), named from run names like "Zoo Parkrun" or "Good George".
+     Two parkruns that start in the same place share a group, so it gets both names. */
+  function courseName(n) {
+    if (/good george|\bgg\b/i.test(n)) return "Good George";
+    var m = /^(.*?)\s*park\s*run/i.exec(n);
+    if (!m) return null;
+    var s = m[1].replace(/^first\s+/i, "").trim();
+    return !s || /^(saturday|morning|evening|afternoon|outdoor)$/i.test(s) ? null : s + " parkrun";
+  }
+  function renderCourses() {
+    var groups = [], noLoc = 0;
+    FIVES.forEach(function (f) {
+      if (!f.ll) { noLoc++; return; }
+      var g = groups.filter(function (x) {
+        var dy = (x.ll[0] - f.ll[0]) * 111, dx = (x.ll[1] - f.ll[1]) * 111 * Math.cos(f.ll[0] * Math.PI / 180);
+        return Math.sqrt(dx * dx + dy * dy) < 0.5;
+      })[0];
+      if (!g) { g = { ll: f.ll, runs: [] }; groups.push(g); }
+      g.runs.push(f);
+    });
+    var unnamed = 0;
+    groups.forEach(function (g) {
+      var counts = {};
+      g.runs.forEach(function (f) { var n = courseName(f.name); if (n) counts[n] = (counts[n] || 0) + 1; });
+      var names = Object.keys(counts).sort(function (a, b) { return counts[b] - counts[a]; });
+      g.name = names.length ? names.join(" / ") : "Unnamed course";
+      if (!names.length) unnamed++;
+      g.best = g.runs.filter(function (f) { return f.hard; }).reduce(function (a, f) { return !a || f.t < a.t ? f : a; }, null);
+      var tue = g.runs.filter(function (f) { return f.tue; }).length;
+      g.days = tue === g.runs.length ? "Tuesdays" : tue ? "Tuesdays and Saturdays" : "Saturdays";
+    });
+    groups.sort(function (a, b) { return b.runs.length - a.runs.length; });
+    document.getElementById("fk-courses").innerHTML = groups.map(function (g) {
+      var last = g.runs[g.runs.length - 1];
+      return "<tr><td>" + esc(g.name) + "<br><span class=\"muted\" style=\"font-size:12px\">" + g.days + "</span></td><td class=\"r num\">" + g.runs.length + "</td><td class=\"r num\">" +
+        (g.best ? fmtClock(g.best.t) + "<br><span class=\"muted\" style=\"font-size:12px\">" + niceDate(g.best.d) + " " + g.best.d.slice(2, 4) + "</span>" : "–") + "</td><td class=\"r nw\">" + niceDate(last.d) + " " + last.d.slice(2, 4) + "</td></tr>";
+    }).join("");
+    var notes = [];
+    if (unnamed) notes.push(unnamed === 1 ? "One course has no name yet, because none of its runs is called something like \"Ōrākei parkrun\". Rename one run on Strava and the next sync picks it up." : unnamed + " courses have no name yet, because none of their runs is called something like \"Ōrākei parkrun\". Rename one run at each on Strava and the next sync picks the names up.");
+    if (noLoc) notes.push(noLoc + " runs had no start location, so they aren't counted here.");
+    var el = document.getElementById("fk-courses-note");
+    el.textContent = notes.join(" ");
+    el.hidden = !notes.length;
   }
 
   /* Speed against endurance: each hard run of 8 km or more next to what your 5k best at the time predicts for
@@ -1737,6 +1879,9 @@
     var t = e.target;
     var tab = t.closest("[data-tab]");
     if (tab) { selectTab(tab.getAttribute("data-tab")); return; }
+    /* Stats contents: scroll rather than link, since the hash picks the tab. */
+    var jump = t.closest("[data-jump]");
+    if (jump) { var target = document.getElementById(jump.getAttribute("data-jump")); if (target) target.scrollIntoView({ behavior: "smooth", block: "start" }); return; }
     var dec = t.closest("[data-dec]");
     if (dec && !dec.disabled) {
       st[dec.getAttribute("data-dec")] = dec.getAttribute("data-val");

@@ -236,6 +236,13 @@ button { -webkit-tap-highlight-color: transparent; }
 .vol-key .sw-ln.avg { border-top-width: 3px; border-color: var(--fg); }
 .vol-key .sw-ln.last { border-color: var(--c-int); }
 .vol-key .sw-ln.faint { border-color: var(--muted); opacity: 0.6; }
+/* Stats tab: contents buttons and group headings. */
+.st-jump { display: flex; flex-wrap: wrap; gap: 8px; }
+.st-group { scroll-margin-top: 90px; margin-top: 18px; padding-top: 14px; border-top: 2px solid var(--line); font-size: 26px; }
+.records { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; }
+.rec { padding: 14px 16px; display: grid; gap: 4px; }
+.rec b { font-family: var(--mono); font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
+.rec .muted { font-size: 12px; overflow-wrap: anywhere; }
 .mo-bar { fill: var(--accent); }
 .mo-bar.pm, .sc-dot.pm { fill: var(--c-int); }
 .mo-bar.proj { fill-opacity: 0.45; }

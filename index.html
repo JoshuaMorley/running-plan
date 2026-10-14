@@ -145,6 +145,15 @@
   <section class="panel" id="p-stats" role="tabpanel" aria-labelledby="tab-stats" hidden>
     <div class="stats" id="st-totals"></div>
 
+    <nav class="st-jump" aria-label="Jump to a group of stats">
+      <button type="button" class="link-btn" data-jump="stg-train">Training</button>
+      <button type="button" class="link-btn" data-jump="stg-race">Race fitness</button>
+      <button type="button" class="link-btn" data-jump="stg-form">Form</button>
+      <button type="button" class="link-btn" data-jump="stg-habits">Habits and records</button>
+    </nav>
+
+    <h2 class="st-group" id="stg-train">Training</h2>
+
     <div class="block">
       <div class="sec-head">
         <h2>Fitness and freshness</h2>
@@ -169,6 +178,19 @@
 
     <div class="block">
       <div class="sec-head">
+        <h2>Easy heart rate</h2>
+        <span class="focus">Your heart rate on easy runs, adjusted to the same 5:30/km pace so runs at different speeds compare. When it falls, your aerobic engine is getting stronger, and that's what carries you through km 30–42.</span>
+      </div>
+      <div class="card chart-card">
+        <div id="st-ehr-head"></div>
+        <div id="st-ehr"></div>
+      </div>
+    </div>
+
+    <h2 class="st-group" id="stg-race">Race fitness</h2>
+
+    <div class="block">
+      <div class="sec-head">
         <h2>Marathon predictor</h2>
         <span class="focus">Every km split from your steady runs, plotted as heart rate against pace. The trend line reads off the pace your heart supports at marathon effort, HR 165–172. Interval days are left out.</span>
       </div>
@@ -185,6 +207,8 @@
       </div>
       <div class="card vol" id="st-beats"></div>
     </div>
+
+    <h2 class="st-group" id="stg-form">Form</h2>
 
     <div class="block">
       <div class="sec-head">
@@ -220,6 +244,8 @@
       </div>
     </div>
 
+    <h2 class="st-group" id="stg-habits">Habits and records</h2>
+
     <div class="block">
       <div class="sec-head">
         <h2>Morning or evening</h2>
@@ -229,6 +255,23 @@
         <div id="st-tod-head"></div>
         <div id="st-tod"></div>
       </div>
+    </div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Records</h2>
+        <span class="focus">Your bests since 2025, from every run synced from Strava.</span>
+      </div>
+      <div class="records" id="st-records"></div>
+    </div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>All of it, added up</h2>
+        <span class="focus">Every run since 2025 in more familiar units.</span>
+      </div>
+      <div class="stats" id="st-fun"></div>
+      <p class="vol-legend">Landmark distances are approximate.</p>
     </div>
   </section>
 
@@ -304,6 +347,20 @@
         <div id="fk-streak-head"></div>
         <div id="fk-streak"></div>
       </div>
+    </div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Your courses</h2>
+        <span class="focus">Runs grouped by where they started, named from your Strava run names. Best times count runs faster than 4:50/km.</span>
+      </div>
+      <div class="card table-box">
+        <table>
+          <thead><tr><th>Course</th><th class="r">Runs</th><th class="r">Best</th><th class="r">Last run</th></tr></thead>
+          <tbody id="fk-courses"></tbody>
+        </table>
+      </div>
+      <p class="vol-legend" id="fk-courses-note"></p>
     </div>
 
     <details class="card fk-all">
