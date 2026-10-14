@@ -56,6 +56,7 @@
     <button type="button" class="tab more-item" role="tab" id="tab-course" aria-controls="p-course" data-tab="course"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.8-6.5-11a6.5 6.5 0 0 1 13 0c0 5.2-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.2"/></svg><span>Course</span></button>
     <button type="button" class="tab" role="tab" id="tab-fuel" aria-controls="p-fuel" data-tab="fuel"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 3L5 14h6.5L10.5 21 19 10h-6.5z"/></svg><span>Fuel</span></button>
     <button type="button" class="tab" role="tab" id="tab-race" aria-controls="p-race" data-tab="race"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4M5 4h12l-2.5 4.5L17 13H5"/></svg><span>Race day</span></button>
+    <button type="button" class="tab more-item" role="tab" id="tab-kerikeri" aria-controls="p-kerikeri" data-tab="kerikeri"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18l5-8 3 4 3-6 7 10z"/><path d="M3 21h18"/></svg><span>Kerikeri</span></button>
     <button type="button" class="tab more-item" role="tab" id="tab-rules" aria-controls="p-rules" data-tab="rules"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-8.5-5.3-8.5-11A4.5 4.5 0 0 1 12 6.6 4.5 4.5 0 0 1 20.5 9c0 5.7-8.5 11-8.5 11z"/></svg><span>Stay healthy</span></button>
   </div>
   <button type="button" class="tab more-btn" id="more-btn" aria-expanded="false" aria-controls="tablist"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18.5" cy="12" r="1.4"/></svg><span id="more-label">More</span></button>
@@ -619,8 +620,8 @@
               <tr><td class="nw">Tue 6 Oct</td><td>Morning intervals. First run at pace in them</td><td class="r">13</td></tr>
               <tr><td class="nw">Sat 10 Oct</td><td>33 km. Checks fit, blisters and calves over a long distance</td><td class="r">33</td></tr>
               <tr><td class="nw">Sun 18 Oct</td><td>Half marathon test</td><td class="r">21</td></tr>
-              <tr><td class="nw">Thu 22 Oct</td><td>Morning intervals, in full race kit</td><td class="r">9.5</td></tr>
-              <tr><td class="nw">Thu 29 Oct</td><td>Pace check. Last run in them before the race</td><td class="r">6</td></tr>
+              <tr><td class="nw">Thu 22 Oct</td><td>Morning intervals, in full race kit</td><td class="r">10</td></tr>
+              <tr><td class="nw">Thu 29 Oct</td><td>Pace check. Last run in them before the race</td><td class="r">6.5</td></tr>
               <tr><td class="nw">Sun 1 Nov</td><td>Auckland Marathon</td><td class="r">42.2</td></tr>
             </tbody>
           </table>
@@ -637,6 +638,89 @@
           </ul>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- KERIKERI -->
+  <section class="panel" id="p-kerikeri" role="tabpanel" aria-labelledby="tab-kerikeri" hidden>
+    <div class="sec-head">
+      <h2>Kerikeri Half Marathon</h2>
+      <span class="focus">Saturday 21 November 2026, 20 days after Auckland. Point to point from Okaihau to the Kerikeri Domain: a climb for the first 7 km, then mostly downhill. The course here comes from your Strava GPS of last year's race.</span>
+    </div>
+    <div class="stats" id="kk-stats"></div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Your target</h2>
+        <span class="focus">Decide after the readiness check on Thu 12 Nov and Tuesday's goal-pace 5k on 17 Nov. The splits below follow your pick. Garmin gets the 1:25 plan.</span>
+      </div>
+      <div class="decide-grid" id="kk-goals" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr))"></div>
+    </div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Elevation and pace</h2>
+        <span class="focus">Planned pace for each km, run by effort: slower up the climb out of Okaihau, faster down the long descent. The pace line is higher where you run slower.</span>
+      </div>
+      <div class="card prof-card">
+        <div class="legend">
+          <span><i class="sw sw-ele"></i>Elevation (left axis, m)</span>
+          <span><i class="sw sw-pace"></i>Planned pace (right axis)</span>
+          <span><i class="sw sw-last"></i>Your 2025 pace</span>
+          <span><i class="sw sw-avg"></i>Target average</span>
+        </div>
+        <svg id="kk-profile" viewBox="0 0 900 300" role="img" aria-label="Kerikeri elevation, planned pace and last year's pace"></svg>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card table-box">
+        <table>
+          <thead><tr><th>Km</th><th class="r">Up / down</th><th class="r">2025</th><th class="r">Plan</th><th class="r">Clock</th></tr></thead>
+          <tbody id="kk-splits"></tbody>
+        </table>
+      </div>
+      <div class="block" style="gap:16px;align-content:start">
+        <div class="card map-card">
+          <svg id="kk-map" viewBox="0 0 400 400" role="img" aria-label="Kerikeri course map"></svg>
+          <p class="vol-legend" style="padding:0 16px 14px">North is up. Okaihau is at the left, Kerikeri at the right. The orange stretch is the steep drop after the high point.</p>
+          <p class="m-credit">Map tiles © <a href="https://www.esri.com" target="_blank" rel="noopener">Esri</a>. Sources: Esri, HERE, Garmin, © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors.</p>
+        </div>
+        <div class="card" id="kk-sections"></div>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card pad">
+        <h3>Should you race it?</h3>
+        <ul>
+          <li><b>Thu 12 Nov:</b> HR under 150 at 5:20–5:30/km and stairs feel normal. Both yes, race it. Either no, run it steady.</li>
+          <li><b>Tue 17 Nov:</b> 5 km at goal pace should feel controlled, with HR under about 175. If it's a fight, pick the next target down.</li>
+          <li><b>Any sore spot</b> that's still there on 17 Nov: run it steady or skip it. Three weeks after a marathon is when overuse injuries show up.</li>
+          <li><b>The descent is hard on quads,</b> and those take longest to recover from a marathon. If they still ache on stairs, don't race the downhill.</li>
+        </ul>
+      </div>
+      <div class="card pad">
+        <h3>How the targets compare</h3>
+        <ul>
+          <li><b>Last year:</b> 1:37:54 at an average HR of 170, with km 1–4 at 4:55–5:30 and the last 6 km at about 4:20.</li>
+          <li><b>Fresh, your 17:44 5k suggests about 1:21–1:22</b> on a flat course. The downhill could make it faster, the climb and the marathon slower.</li>
+          <li><b>Three weeks after Auckland, 1:23–1:27 is realistic.</b> It depends on how hard the marathon was and how you've recovered.</li>
+          <li>These are estimates from your runs and common rules of thumb, not a prediction you can count on.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Race morning</h2>
+        <span class="focus">Set your start time. One listing gives 7:00 am, but it's the only source, so check your bib or the official race page before you plan around it.</span>
+      </div>
+      <div class="card pad" style="gap:0;padding:0">
+        <div class="fields" style="padding:14px 18px"><div class="field"><label for="f-kkstart">Start time</label><input type="time" id="f-kkstart" value="07:00" data-inp="kkstart"></div></div>
+        <div class="timeline" id="kk-timeline"></div>
+      </div>
+      <p class="vol-legend">Race information: <a href="https://raceroster.com/events/2026/119293/northland-waste-kerikeri-half-marathon-2026" target="_blank" rel="noopener">Race Roster</a> and <a href="https://www.runningcalendar.co.nz/event/kerikeri-half-marathon/" target="_blank" rel="noopener">Running Calendar</a>.</p>
     </div>
   </section>
 
@@ -691,6 +775,7 @@
 <script src="js/data.js"></script>
 <script src="js/results.js"></script>
 <script src="js/course.js"></script>
+<script src="js/kerikeri.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>

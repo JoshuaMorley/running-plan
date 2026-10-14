@@ -463,6 +463,9 @@ td.muted { color: var(--muted); }
 .sw-pace { height: 0; border-top: 3px solid var(--key); border-radius: 0; }
 .sw-avg { height: 0; border-top: 2px dashed var(--fg); opacity: 0.6; border-radius: 0; }
 .sw-bridge { background: var(--key-soft); }
+.sw-last { height: 0; border-top: 2px dotted var(--muted); border-radius: 0; }
+#kk-profile, #kk-map { display: block; width: 100%; height: auto; }
+.p-last { fill: none; stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 2 3; stroke-linejoin: round; }
 .kmgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 6px; }
 .kmc { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 7px 9px; display: grid; gap: 0; box-shadow: inset 3px 0 0 var(--kc, var(--line)); font-variant-numeric: tabular-nums; }
 .kmc.slow { --kc: var(--key); }

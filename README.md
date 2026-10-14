@@ -1,6 +1,6 @@
 # Auckland Marathon Build
 
-A five-week branching training plan for the Auckland Marathon on Sunday 1 November 2026.
+A five-week branching training plan for the Auckland Marathon on Sunday 1 November 2026, then three weeks of recovery and rebuilding to the Kerikeri Half Marathon on Saturday 21 November.
 
 - **Overview:** today's session, the decision map, weekly volume and key dates
 - **Plan:** each week day by day, with why each run matters and what to fuel with
@@ -11,6 +11,7 @@ A five-week branching training plan for the Auckland Marathon on Sunday 1 Novemb
 - **Course:** elevation and pace chart from the course GPX, course map on Esri map tiles (dark in dark mode), per-km pace plan and watch-pace adjustment
 - **Fuel:** gel calculator, carb load and race breakfast amounts
 - **Race day:** splits, checkpoint calculator and a race-morning timeline
+- **Kerikeri:** the half marathon three weeks later. Target picker, elevation and per-km pace plan against your 2025 race, course map and sections, a readiness checklist and a race-morning timeline. The course comes from your 2025 Strava GPS (`js/kerikeri.js`)
 - **Stay healthy:** rules for training without getting hurt
 
 Plain HTML, CSS and JavaScript with no build step. Your choices and ticks are saved in your browser's local storage.

@@ -9,6 +9,8 @@ for (const f of ["../js/data.js", "../js/results.js"]) vm.runInNewContext(readFi
 export const P = ctx.window.PLAN;
 /* Strava runs on a date, from scripts/sync-strava.mjs. */
 export function runsOn(date) { return (ctx.window.RESULTS.runs || []).filter((r) => r.date === date); }
+/* The plan carries on past the marathon to the Kerikeri Half, so feeds run to its last day. */
+export const PLAN_END = P.WEEKS[P.WEEKS.length - 1].days.slice(-1)[0].d;
 
 /* ---------- copied from js/app.js; keep in sync ---------- */
 const MARATHON_KM = 42.195;

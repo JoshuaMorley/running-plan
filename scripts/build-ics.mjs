@@ -5,7 +5,7 @@
    Events keep the same UID per date, so a re-run updates them. Days that become rest drop out of the feed. */
 import { readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { P, RACE_DATE, st, routeLabel, sessions, runsOn, fmtPace, fill } from "./plan.mjs";
+import { P, PLAN_END, st, routeLabel, sessions, runsOn, fmtPace, fill } from "./plan.mjs";
 
 const SITE = "https://joshuamorley.github.io/running-plan/";
 const OUT = fileURLToPath(new URL("../plan.ics", import.meta.url));
@@ -27,7 +27,7 @@ const ymd = (iso) => iso.replace(/-/g, "");
 function nextDay(iso) { const d = new Date(iso + "T12:00:00Z"); d.setUTCDate(d.getUTCDate() + 1); return d.toISOString().slice(0, 10); }
 
 const stamp = new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d+/, "");
-const { sessions: list } = sessions(P.WEEKS[0].days[0].d, RACE_DATE);
+const { sessions: list } = sessions(P.WEEKS[0].days[0].d, PLAN_END);
 
 const lines = [
   "BEGIN:VCALENDAR",

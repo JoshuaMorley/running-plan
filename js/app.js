@@ -2,6 +2,7 @@
   var P = window.PLAN;
   var MARATHON_KM = 42.195;
   var RACE_DATE = "2026-11-01";
+  var KK_DATE = "2026-11-21";
   var TARGETS = {
     "259": { sec: 255 * 42.195 },
     "305": { sec: 11100 },
@@ -9,7 +10,7 @@
     "315": { sec: 11700 }
   };
   var ALLOWED = { A1: ["259", "305", "310"], A2: ["305", "310", "315"], S1: ["305", "310", "315"] };
-  var TABS = ["overview", "plan", "decisions", "stats", "fivek", "course", "fuel", "race", "rules"];
+  var TABS = ["overview", "plan", "decisions", "stats", "fivek", "course", "fuel", "race", "kerikeri", "rules"];
   var HALF_KM = 21.0975;
   /* The North Shore hills and the bridge are in the first half, so halfway is planned 25 s behind even pace. */
   var HALF_BANK = 25;
@@ -32,7 +33,7 @@
   if (!TARGETS[st.d2]) st.d2 = "259";
 
   var INP_DEFAULTS = { gel: 26, gph: 70, kg: 80, cpkm: "21.0975", cpt: "1:30:10", start: "06:00",
-    c1pace: "4:15", c1hr: "168", c1slow: "no", c2pace: "4:15", c2hr: "170", c2feel: "just", watch: "42.8" };
+    c1pace: "4:15", c1hr: "168", c1slow: "no", c2pace: "4:15", c2hr: "170", c2feel: "just", watch: "42.8", kkt: "5100", kkstart: "07:00" };
   var inp = loadJSON("akl-inputs", {});
   Object.keys(INP_DEFAULTS).forEach(function (k) { if (inp[k] === undefined || inp[k] === null) inp[k] = INP_DEFAULTS[k]; });
 
@@ -356,12 +357,13 @@
     }).join("<span class=\"arrow\" aria-hidden=\"true\">→</span>");
     document.querySelectorAll("[data-tpl]").forEach(function (el) { el.textContent = fill(el.getAttribute("data-tpl")); });
 
-    var n = daysBetween(today, RACE_DATE);
+    /* After Auckland the countdown moves on to the Kerikeri Half. */
+    var kk = today > RACE_DATE, n = daysBetween(today, kk ? KK_DATE : RACE_DATE);
     var el = document.getElementById("countdown"), lab = document.getElementById("countdown-label");
-    if (n > 1) { el.textContent = n; lab.textContent = "days to go"; }
-    else if (n === 1) { el.textContent = "1"; lab.textContent = "day to go"; }
+    if (n > 1) { el.textContent = n; lab.textContent = kk ? "days to Kerikeri" : "days to go"; }
+    else if (n === 1) { el.textContent = "1"; lab.textContent = kk ? "day to Kerikeri" : "day to go"; }
     else if (n === 0) { el.textContent = "Today"; lab.textContent = "race day"; }
-    else { el.textContent = "Done"; lab.textContent = "race complete"; }
+    else { el.textContent = "Done"; lab.textContent = "season complete"; }
   }
 
   var COLX = [0, 230, 460, 690], NW = 172, NH = 50;
@@ -412,8 +414,8 @@
     });
     if (today < first) {
       html += "<div class=\"card today-card\"><span class=\"eyebrow\">Before the plan</span><h3>Plan starts Mon 28 Sep</h3></div>";
-    } else if (today > RACE_DATE) {
-      html += "<div class=\"card today-card\"><span class=\"eyebrow\">Finished</span><h3>Race complete</h3><p class=\"muted\">Rest up. Easy running only for the next 1–2 weeks.</p></div>";
+    } else if (today > days[days.length - 1].d) {
+      html += "<div class=\"card today-card\"><span class=\"eyebrow\">Finished</span><h3>Plan complete</h3><p class=\"muted\">Both races done. Rest up, then easy running only for the next 1–2 weeks.</p></div>";
     } else if (cur) {
       html += "<div class=\"card today-card\"><span class=\"eyebrow\">Today · " + niceDate(cur.d) + "</span><div class=\"chips\"><span class=\"chip t-" + cur.t + "\">" + TYPE_LABEL[cur.t] + "</span>" + shoesChip(cur) + "</div><h3>" + esc(fill(cur.title)) + (cur.km ? " · " + cur.km + " km" : "") + "</h3>" + detailHTML(cur) + actualHTML(cur) + "<button type=\"button\" class=\"link-btn\" data-goto=\"plan\" data-week=\"" + cur._w + "\">Open this week</button></div>";
     }
@@ -442,7 +444,7 @@
         "<span class=\"num\" style=\"text-align:right\"><b>" + r1(km) + " km</b>" + (act === null ? "" : "<br><span class=\"muted\" style=\"font-size:12px\">" + r1(act) + " run</span>") + "</span></div>";
     }).join("");
     h += "<div class=\"vol-key\"><span><i class=\"sw-plan\"></i>Planned</span><span><i class=\"sw-act\"></i>Run, from Strava</span><span><i class=\"sw-peak\"></i>Previous biggest week, 51 km</span></div>";
-    h += "<p class=\"vol-legend\">Week 5 includes the race. The current week is in orange.</p>";
+    h += "<p class=\"vol-legend\">Week 5 includes the marathon and week 8 the Kerikeri Half. The current week is in orange.</p>";
     document.getElementById("volume").innerHTML = h;
   }
   /* Heart rate drift (aerobic decoupling): how much less pace each heartbeat buys in the second half of
@@ -488,7 +490,9 @@
       ["2026-10-19", "Taper starts", "Less volume, same sharpness"],
       ["2026-10-22", "Last race-pace session", "4 km at " + fmtPace(mpSec()) + "/km"],
       ["2026-10-30", "Carb load starts", loadText() + " a day"],
-      [RACE_DATE, "Auckland Marathon", fmtTarget() + " at " + fmtPace(mpSec()) + "/km"]
+      [RACE_DATE, "Auckland Marathon", fmtTarget() + " at " + fmtPace(mpSec()) + "/km"],
+      ["2026-11-12", "Kerikeri readiness check", "Easy 6 km: HR under 150 at 5:20–5:30?"],
+      [KK_DATE, "Kerikeri Half Marathon", "Target " + kkTargetLabel() + ", Okaihau to Kerikeri"]
     ];
     document.getElementById("dates").innerHTML = list.map(function (x) {
       return "<div class=\"date-row\"><b>" + niceDate(x[0]) + "</b><span><strong>" + esc(x[1]) + "</strong><br><span class=\"muted\" style=\"font-size:13px\">" + esc(x[2]) + "</span></span><span class=\"muted num\" style=\"font-size:13px\">" + relDays(x[0]) + "</span></div>";
@@ -1617,8 +1621,12 @@
       [-10, "Into your start area", "Settle in near your pace group."],
       [0, "Start", "First 5 km at " + fmtPace(mpSec()) + "/km. No faster."]
     ];
+    document.getElementById("timeline").innerHTML = timelineHTML(items, startMin);
+  }
+  /* Race-morning rows: [minutes before the start, title, note]. */
+  function timelineHTML(items, startMin) {
     function hhmm(x) { x = ((x % 1440) + 1440) % 1440; var h = Math.floor(x / 60), mm = x % 60; return String(h).padStart(2, "0") + ":" + String(mm).padStart(2, "0"); }
-    document.getElementById("timeline").innerHTML = items.map(function (it) {
+    return items.map(function (it) {
       var rel = it[0] === 0 ? "gun" : "−" + (Math.floor(-it[0] / 60) ? Math.floor(-it[0] / 60) + " h " : "") + ((-it[0]) % 60 ? ((-it[0]) % 60) + " min" : "");
       return "<div class=\"tl-row" + (it[0] === 0 ? " go" : "") + "\"><b class=\"num\">" + hhmm(startMin + it[0]) + "</b><span class=\"rel\">" + rel.trim() + "</span><span><strong>" + esc(it[1]) + "</strong><br><span class=\"muted\" style=\"font-size:13px\">" + esc(it[2]) + "</span></span></div>";
     }).join("");
@@ -1714,6 +1722,16 @@
     var n = 256 * Math.pow(2, TILE_ZOOM), s = Math.sin(p.lat * Math.PI / 180);
     return [(p.lon + 180) / 360 * n, (0.5 - Math.log((1 + s) / (1 - s)) / (4 * Math.PI)) * n];
   }
+  /* Background and map tiles for a W × H map whose top-left is world pixel (ox, oy), drawn at scale sc. */
+  function tileLayer(ox, oy, sc, W, H) {
+    var style = darkTheme() ? "Dark_Gray_Base" : "Light_Gray_Base", tiles = "";
+    for (var tx = Math.floor(ox / 256); tx * 256 < ox + W / sc; tx++) {
+      for (var ty = Math.floor(oy / 256); ty * 256 < oy + H / sc; ty++) {
+        tiles += "<image href=\"https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_" + style + "/MapServer/tile/" + TILE_ZOOM + "/" + ty + "/" + tx + "\" x=\"" + ((tx * 256 - ox) * sc).toFixed(1) + "\" y=\"" + ((ty * 256 - oy) * sc).toFixed(1) + "\" width=\"" + (256 * sc + 0.5).toFixed(1) + "\" height=\"" + (256 * sc + 0.5).toFixed(1) + "\"></image>";
+      }
+    }
+    return "<rect class=\"m-bg\" width=\"" + W + "\" height=\"" + H + "\"></rect><g class=\"m-tiles\">" + tiles + "</g>";
+  }
   function renderMap() {
     var pts = COURSE.pts, W = 400, H = 400, pad = 26;
     var w = pts.map(worldXY), xs = w.map(function (p) { return p[0]; }), ys = w.map(function (p) { return p[1]; });
@@ -1722,13 +1740,7 @@
     /* World pixel at the top-left of the viewBox. */
     var ox = (minX + maxX) / 2 - W / 2 / sc, oy = (minY + maxY) / 2 - H / 2 / sc;
     MAP = function (p) { var q = worldXY(p); return [(q[0] - ox) * sc, (q[1] - oy) * sc]; };
-    var style = darkTheme() ? "Dark_Gray_Base" : "Light_Gray_Base", tiles = "";
-    for (var tx = Math.floor(ox / 256); tx * 256 < ox + W / sc; tx++) {
-      for (var ty = Math.floor(oy / 256); ty * 256 < oy + H / sc; ty++) {
-        tiles += "<image href=\"https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_" + style + "/MapServer/tile/" + TILE_ZOOM + "/" + ty + "/" + tx + "\" x=\"" + ((tx * 256 - ox) * sc).toFixed(1) + "\" y=\"" + ((ty * 256 - oy) * sc).toFixed(1) + "\" width=\"" + (256 * sc + 0.5).toFixed(1) + "\" height=\"" + (256 * sc + 0.5).toFixed(1) + "\"></image>";
-      }
-    }
-    var base = "<rect class=\"m-bg\" width=\"" + W + "\" height=\"" + H + "\"></rect><g class=\"m-tiles\">" + tiles + "</g>";
+    var base = tileLayer(ox, oy, sc, W, H);
     var route = "", bridge = "";
     pts.forEach(function (p, i) {
       var xy = MAP(p);
@@ -1776,7 +1788,7 @@
     svg.addEventListener("pointermove", handler);
     svg.addEventListener("pointerdown", handler);
     if (narrowMQ) {
-      var redraw = function () { renderProfile(); };
+      var redraw = function () { renderProfile(); renderKKProfile(); };
       if (narrowMQ.addEventListener) narrowMQ.addEventListener("change", redraw);
       else if (narrowMQ.addListener) narrowMQ.addListener(redraw);
     }
@@ -1828,6 +1840,200 @@
     renderProfile(); renderMap(); renderKmGrid(); renderCourseStats(); renderWatch();
   }
 
+  /* ---------- Kerikeri Half ---------- */
+  /* The course is your 2025 Strava GPS (js/kerikeri.js), scaled to the official 21.1 km. */
+  var KK_KM = 21.0975, KK_LAST_ID = "16527046320";
+  var KK_TARGETS = [
+    ["4920", "1:22", "Fully recovered: the 12 Nov check was easy and goal pace felt easy on the 17th."],
+    ["5100", "1:25", "Recovered and feeling normal. The plan's default."],
+    ["5280", "1:28", "Recovered but a bit flat, or Auckland was a hard day."],
+    ["5640", "1:34 · steady", "Not quite recovered. Run it steady and enjoy the downhill."]
+  ];
+  var KK = (function () {
+    var C = window.KERIKERI, scale = KK_KM / C.total;
+    var pts = C.pts.map(function (p) { return { k: p[0] * scale, e: p[1], lat: p[2], lon: p[3] }; });
+    var hiI = 0, i;
+    for (i = 1; i < pts.length; i++) if (pts[i].e > pts[hiI].e) hiI = i;
+    /* The steep drop runs from the top to the first point where the road turns up again (about km 9.6). */
+    var lowI = hiI;
+    while (lowI < pts.length - 1 && pts[lowI + 1].e <= pts[lowI].e) lowI++;
+    var perKm = [];
+    for (var km = 0; km < KK_KM; km++) {
+      var len = Math.min(1, KK_KM - km), g = 0, l = 0;
+      for (var q = 1; q < pts.length; q++) {
+        var mid = (pts[q].k + pts[q - 1].k) / 2;
+        if (mid < km || mid >= km + len) continue;
+        var d = pts[q].e - pts[q - 1].e;
+        if (d > 0) g += d; else l -= d;
+      }
+      perKm.push({ km: km, len: len, gain: g, loss: l });
+    }
+    return { pts: pts, hi: pts[hiI], low: pts[lowI], climb: pts[hiI].e - pts[0].e, drop: pts[0].e - pts[pts.length - 1].e, perKm: perKm };
+  })();
+  function kkTarget() {
+    var t = String(inp.kkt);
+    return KK_TARGETS.some(function (x) { return x[0] === t; }) ? +t : 5100;
+  }
+  function kkTargetLabel() { return fmtClock(kkTarget()).replace(/:00$/, ""); }
+  /* The Auckland effort rule: about 0.9 s per metre climbed and 0.5 s back per metre descended, capped at
+     ±15 s/km on this steeper course, then shifted so the total hits the target. */
+  function kkPlan() {
+    var T = kkTarget(), base = T / KK_KM, w = 0, s = 0;
+    var rows = KK.perKm.map(function (r) {
+      var off = (0.9 * r.gain - 0.5 * r.loss) / r.len;
+      return { km: r.km, len: r.len, gain: r.gain, loss: r.loss, off: Math.max(-15, Math.min(15, off)) };
+    });
+    rows.forEach(function (r) { w += r.len; s += r.off * r.len; });
+    rows.forEach(function (r) { r.pace = base + r.off - s / w; });
+    var cum = [0];
+    rows.forEach(function (r, i) { cum[i + 1] = cum[i] + r.pace * r.len; });
+    return { rows: rows, cum: cum, T: T };
+  }
+  function kkClock(plan, km) {
+    var j = Math.max(0, Math.min(plan.rows.length - 1, Math.floor(km)));
+    return plan.cum[j] + (km - j) * plan.rows[j].pace;
+  }
+  /* Last year's race, from the Strava history. Its km splits line up with the course km closely enough. */
+  function kkLast() {
+    var R = window.RESULTS || {}, list = (R.longs || []).concat(R.fives || [], R.runs || []);
+    for (var i = 0; i < list.length; i++) if (String(list[i].id) === KK_LAST_ID && list[i].splits) return list[i];
+    return null;
+  }
+
+  function renderKKStats() {
+    var last = kkLast(), n = daysBetween(today, KK_DATE);
+    var stats = [
+      [n > 1 ? n + " days" : n === 1 ? "Tomorrow" : n === 0 ? "Today" : "Done", n >= 0 ? "to go · " + daysBetween(RACE_DATE, KK_DATE) + " days after Auckland" : "Sat 21 Nov"],
+      ["+" + Math.round(KK.climb) + " m", "net climb to the high point at km " + KK.hi.k.toFixed(1)],
+      ["−" + Math.round(KK.drop) + " m", "net drop, start to finish"],
+      [last ? fmtClock(last.sec) : "1:37:54", "your time last year" + (last && last.hr ? ", avg HR " + last.hr : "")]
+    ];
+    document.getElementById("kk-stats").innerHTML = stats.map(function (s) { return "<div class=\"stat\"><b class=\"num\">" + esc(s[0]) + "</b><span>" + esc(s[1]) + "</span></div>"; }).join("");
+  }
+  function renderKKGoals() {
+    var cur = String(kkTarget());
+    document.getElementById("kk-goals").innerHTML = KK_TARGETS.map(function (t) {
+      var on = t[0] === cur;
+      return "<button type=\"button\" class=\"opt-card\" data-kk=\"" + t[0] + "\" aria-pressed=\"" + on + "\"><b>" + esc(t[1]) + "</b><span class=\"num\">" + fmtPace(+t[0] / KK_KM) + "/km average</span><span>" + esc(t[2]) + "</span>" + (on ? "<em class=\"picked\">Planning for this</em>" : "") + "</button>";
+    }).join("");
+  }
+  function renderKKProfile() {
+    var small = !!(narrowMQ && narrowMQ.matches);
+    var W = small ? 560 : 900, H = small ? 360 : 300, X0 = small ? 44 : 56, X1 = small ? 486 : 846, Y0 = small ? 34 : 26, Y1 = small ? 312 : 262, EMAX = 400;
+    var plan = kkPlan(), last = kkLast();
+    var lastP = last ? last.splits.map(function (s) { return s[1] / s[0] * 1000; }) : [];
+    var all = plan.rows.map(function (r) { return r.pace; }).concat(lastP);
+    var pmin = Math.floor((Math.min.apply(null, all) - 3) / 10) * 10, pmax = Math.ceil((Math.max.apply(null, all) + 3) / 10) * 10;
+    var step = pmax - pmin > 80 ? 20 : 10;
+    function x(km) { return X0 + km / KK_KM * (X1 - X0); }
+    function ey(e) { return Y1 - Math.max(0, e) / EMAX * (Y1 - Y0); }
+    function py(p) { return Y1 - (p - pmin) / (pmax - pmin) * (Y1 - Y0); }
+    var s = "<rect class=\"p-bridge\" x=\"" + x(KK.hi.k).toFixed(1) + "\" y=\"" + Y0 + "\" width=\"" + (x(KK.low.k) - x(KK.hi.k)).toFixed(1) + "\" height=\"" + (Y1 - Y0) + "\"></rect>";
+    for (var p = pmin; p <= pmax; p += step) {
+      s += "<line class=\"p-grid\" x1=\"" + X0 + "\" x2=\"" + X1 + "\" y1=\"" + py(p).toFixed(1) + "\" y2=\"" + py(p).toFixed(1) + "\"></line>";
+      s += "<text class=\"p-axis-r\" x=\"" + (X1 + 6) + "\" y=\"" + (py(p) + 4).toFixed(1) + "\">" + fmtPace(p) + "</text>";
+    }
+    [0, 100, 200, 300, 400].forEach(function (e) { s += "<text class=\"p-axis\" x=\"" + (X0 - 8) + "\" y=\"" + (ey(e) + 4).toFixed(1) + "\" text-anchor=\"end\">" + e + "</text>"; });
+    s += "<text class=\"p-axis-t\" x=\"" + (X0 - 8) + "\" y=\"" + (small ? 20 : 14) + "\" text-anchor=\"end\">m</text>";
+    s += "<text class=\"p-axis-t\" x=\"" + (X1 + 6) + "\" y=\"" + (small ? 20 : 14) + "\">" + (small ? "pace" : "min/km") + "</text>";
+    for (var k = 0; k <= 20; k += small ? 5 : 2) {
+      s += "<text class=\"p-axis\" x=\"" + x(k).toFixed(1) + "\" y=\"" + (Y1 + (small ? 26 : 18)) + "\" text-anchor=\"middle\">" + k + (k === 0 ? " km" : "") + "</text>";
+    }
+    s += "<line class=\"p-grid\" x1=\"" + X0 + "\" x2=\"" + X1 + "\" y1=\"" + Y1 + "\" y2=\"" + Y1 + "\"></line>";
+    var area = "M" + x(0).toFixed(1) + " " + Y1, line = "";
+    KK.pts.forEach(function (pt, i) {
+      var X = x(pt.k).toFixed(1), Y = ey(pt.e).toFixed(1);
+      area += " L" + X + " " + Y;
+      line += (i ? " L" : "M") + X + " " + Y;
+    });
+    s += "<path class=\"p-area\" d=\"" + area + " L" + x(KK_KM).toFixed(1) + " " + Y1 + " Z\"></path><path class=\"p-line\" d=\"" + line + "\"></path>";
+    s += "<text class=\"p-bridge-l\" x=\"" + (x(KK.hi.k) + 3).toFixed(1) + "\" y=\"" + (Y1 - 8) + "\">" + (small ? "Drop" : "Steep drop") + "</text>";
+    s += "<circle class=\"p-edot\" cx=\"" + x(KK.hi.k).toFixed(1) + "\" cy=\"" + ey(KK.hi.e).toFixed(1) + "\" r=\"4\"></circle>";
+    s += "<text class=\"p-mark-l\" x=\"" + (x(KK.hi.k) + 7).toFixed(1) + "\" y=\"" + (ey(KK.hi.e) - 6).toFixed(1) + "\">" + (small ? "" : "Top ") + Math.round(KK.hi.e) + " m</text>";
+    s += "<line class=\"p-avg\" x1=\"" + X0 + "\" x2=\"" + X1 + "\" y1=\"" + py(plan.T / KK_KM).toFixed(1) + "\" y2=\"" + py(plan.T / KK_KM).toFixed(1) + "\"></line>";
+    function steps(paces, lens) {
+      var d = "", at = 0;
+      paces.forEach(function (pc, i) { var y = py(pc).toFixed(1); d += (i ? " V" + y : "M" + x(0).toFixed(1) + " " + y) + " H" + x(Math.min(KK_KM, at + lens[i])).toFixed(1); at += lens[i]; });
+      return d;
+    }
+    if (last) s += "<path class=\"p-last\" d=\"" + steps(lastP, last.splits.map(function (sp) { return sp[0] / 1000 * KK_KM / (splitsTotal(last) / 1000); })) + "\"></path>";
+    s += "<path class=\"p-pace\" d=\"" + steps(plan.rows.map(function (r) { return r.pace; }), plan.rows.map(function (r) { return r.len; })) + "\"></path>";
+    var svg = document.getElementById("kk-profile");
+    svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+    svg.innerHTML = s;
+  }
+  function renderKKSplits() {
+    var plan = kkPlan(), last = kkLast();
+    document.getElementById("kk-splits").innerHTML = plan.rows.map(function (r, i) {
+      var sp = last && last.splits[i];
+      var lp = sp ? fmtPace(sp[1] / sp[0] * 1000) + (sp[2] ? " <span class=\"muted\" style=\"font-size:12px\">" + sp[2] + "</span>" : "") : "–";
+      var top = KK.hi.k >= r.km && KK.hi.k < r.km + r.len;
+      var label = r.len < 1 ? "Finish" : (r.km + 1) + (top ? " · top" : "");
+      return "<tr" + (r.len < 1 || top ? " class=\"hl\"" : "") + "><td>" + label + "</td><td class=\"r\">+" + Math.round(r.gain) + " / −" + Math.round(r.loss) + "</td><td class=\"r\">" + lp + "</td><td class=\"r\">" + fmtPace(r.pace) + "</td><td class=\"r\">" + fmtClock(plan.cum[i + 1]) + "</td></tr>";
+    }).join("");
+  }
+  function renderKKMap() {
+    var pts = KK.pts, W = 400, H = 400, pad = 26;
+    var w = pts.map(worldXY), xs = w.map(function (p) { return p[0]; }), ys = w.map(function (p) { return p[1]; });
+    var minX = Math.min.apply(null, xs), maxX = Math.max.apply(null, xs), minY = Math.min.apply(null, ys), maxY = Math.max.apply(null, ys);
+    var sc = Math.min((W - 2 * pad) / (maxX - minX), (H - 2 * pad) / (maxY - minY));
+    var ox = (minX + maxX) / 2 - W / 2 / sc, oy = (minY + maxY) / 2 - H / 2 / sc;
+    function at(p) { var q = worldXY(p); return [(q[0] - ox) * sc, (q[1] - oy) * sc]; }
+    var route = "", drop = "";
+    pts.forEach(function (p, i) {
+      var xy = at(p);
+      route += (i ? " L" : "M") + xy[0].toFixed(1) + " " + xy[1].toFixed(1);
+      if (p.k >= KK.hi.k && p.k <= KK.low.k) drop += (drop ? " L" : "M") + xy[0].toFixed(1) + " " + xy[1].toFixed(1);
+    });
+    var s = tileLayer(ox, oy, sc, W, H) + "<path class=\"m-halo\" d=\"" + route + "\"></path><path class=\"m-route\" d=\"" + route + "\"></path><path class=\"m-bridge\" d=\"" + drop + "\"></path>";
+    for (var k = 5; k <= 20; k += 5) {
+      var near = pts.reduce(function (a, b) { return Math.abs(b.k - k) < Math.abs(a.k - k) ? b : a; }), xy = at(near);
+      s += "<circle class=\"m-km\" cx=\"" + xy[0].toFixed(1) + "\" cy=\"" + xy[1].toFixed(1) + "\" r=\"8\"></circle><text class=\"m-km-l\" x=\"" + xy[0].toFixed(1) + "\" y=\"" + (xy[1] + 3.5).toFixed(1) + "\" text-anchor=\"middle\">" + k + "</text>";
+    }
+    [[pts[0], "Okaihau", 8], [pts[pts.length - 1], "Kerikeri", -60]].forEach(function (f) {
+      var xy = at(f[0]);
+      s += "<rect class=\"m-flag\" x=\"" + (xy[0] - 4).toFixed(1) + "\" y=\"" + (xy[1] - 4).toFixed(1) + "\" width=\"8\" height=\"8\"></rect><text class=\"m-flag-l\" x=\"" + (xy[0] + f[2]).toFixed(1) + "\" y=\"" + (xy[1] - 8).toFixed(1) + "\">" + f[1] + "</text>";
+    });
+    document.getElementById("kk-map").innerHTML = s;
+  }
+  function renderKKSections() {
+    var plan = kkPlan(), last = kkLast();
+    var b = [0, KK.hi.k, KK.low.k, 15.3, 17.5, KK_KM];
+    function elev(km) { return KK.pts.reduce(function (a, p) { return Math.abs(p.k - km) < Math.abs(a.k - km) ? p : a; }).e; }
+    function pace(i) { return fmtPace((kkClock(plan, b[i + 1]) - kkClock(plan, b[i])) / (b[i + 1] - b[i])); }
+    function change(i) { var d = Math.round(elev(b[i + 1]) - elev(b[i])); return (d >= 0 ? "up " : "down ") + Math.abs(d) + " m"; }
+    var lastClimb = last ? last.splits.slice(0, 7).map(function (sp) { return sp[1] / sp[0] * 1000; }) : null;
+    var secs = [
+      ["Climb out of Okaihau", "Net " + change(0) + " in three steps, steepest around km 4.5–5 and 6–7. Run by effort at about " + pace(0) + "/km and keep your breathing under control." + (lastClimb ? " Last year you ran it at " + fmtPace(Math.min.apply(null, lastClimb)) + "–" + fmtPace(Math.max.apply(null, lastClimb)) + "/km." : ""), true],
+      ["The steep drop", "Net " + change(1) + ", the steepest part of the course. About " + pace(1) + "/km with quick, light steps. Braking here costs your quads for the rest of the race.", true],
+      ["Rolling down", "Net " + change(2) + " with a couple of short rises. Settle on about " + pace(2) + "/km and take your gel early in this stretch.", false],
+      ["The flatter stretch", "Net " + change(3) + ". It's flatter here and starts to hurt. Hold about " + pace(3) + "/km. Last year km 16 was your slowest of the second half.", true],
+      ["Down into Kerikeri", "Net " + change(4) + " to the Domain. About " + pace(4) + "/km, and empty the tank over the last 3 km.", false]
+    ];
+    document.getElementById("kk-sections").innerHTML = secs.map(function (x, i) {
+      return "<div class=\"sect" + (x[2] ? " hot" : "") + "\"><b class=\"km num\">km " + b[i].toFixed(1).replace(/\.0$/, "") + "–" + (i === secs.length - 1 ? "21.1" : b[i + 1].toFixed(1).replace(/\.0$/, "")) + "</b><div><strong>" + esc(x[0]) + "</strong><p>" + esc(x[1]) + "</p></div></div>";
+    }).join("");
+  }
+  function renderKKTimeline() {
+    var m = /^(\d{1,2}):(\d{2})$/.exec(String(inp.kkstart));
+    var startMin = m ? parseInt(m[1], 10) * 60 + parseInt(m[2], 10) : 420, plan = kkPlan();
+    var items = [
+      [-180, "Breakfast", "Your race breakfast, about " + Math.round(kg() * 1.5) + " g of carbs, a bit less than before Auckland. Then sip water until 30 min before."],
+      [-120, "Travel to Okaihau", "It's point to point. Sort out the day before how you're getting to the start and home from the Kerikeri Domain."],
+      [-60, "Arrive", "First toilet stop. Check whether there's a bag transfer to the finish."],
+      [-30, "Last toilet stop", "Stop drinking after this, apart from small sips."],
+      [-25, "Warm up", "10 min easy jog and 3–4 strides. The race starts on a climb, so warm up properly."],
+      [-12, "Gel 1", "With a few mouthfuls of water. Gel 2 at about km 9."],
+      [-5, "Into the start", "Line up for your target. Don't get dragged up the first hill."],
+      [0, "Start", "First km at about " + fmtPace(plan.rows[0].pace) + "/km. Run the climb by effort."]
+    ];
+    document.getElementById("kk-timeline").innerHTML = timelineHTML(items, startMin);
+  }
+  function renderKerikeri() {
+    renderKKStats(); renderKKGoals(); renderKKProfile(); renderKKSplits(); renderKKMap(); renderKKSections(); renderKKTimeline();
+  }
+  function renderMaps() { renderMap(); renderKKMap(); }
+
   /* ---------- tabs + theme ---------- */
   function selectTab(tab, focus) {
     if (TABS.indexOf(tab) < 0) tab = "overview";
@@ -1867,11 +2073,11 @@
   /* ---------- render ---------- */
   function renderAll() {
     renderHeader(); renderTree(); renderToday(); renderVolume(); renderDrift(); renderFade(); renderDates(); renderCalRoute();
-    renderWeekPick(); renderWeek(); renderDecisions(); renderStats(); renderFiveK(); renderCourse(); renderFuel(); renderRace();
+    renderWeekPick(); renderWeek(); renderDecisions(); renderStats(); renderFiveK(); renderCourse(); renderFuel(); renderRace(); renderKerikeri();
   }
 
   function syncStaticInputs() {
-    document.querySelectorAll("#p-fuel [data-inp], #p-race [data-inp], #p-course [data-inp]").forEach(function (el) { el.value = inp[el.getAttribute("data-inp")]; });
+    document.querySelectorAll("#p-fuel [data-inp], #p-race [data-inp], #p-course [data-inp], #p-kerikeri [data-inp]").forEach(function (el) { el.value = inp[el.getAttribute("data-inp")]; });
   }
 
   /* ---------- events ---------- */
@@ -1888,6 +2094,8 @@
       normalize(); saveRoute(); renderAll();
       return;
     }
+    var kkBtn = t.closest("[data-kk]");
+    if (kkBtn) { inp.kkt = kkBtn.getAttribute("data-kk"); saveInputs(); renderKerikeri(); renderDates(); return; }
     var node = t.closest("[data-node]");
     if (node && node.getAttribute("data-node") !== "root") { pickNode(node.getAttribute("data-node")); return; }
     var go = t.closest("[data-goto]");
@@ -1915,7 +2123,7 @@
     if (t.id === "theme-btn") {
       var cur = store.get("akl-theme") || "auto";
       applyTheme(THEMES[(THEMES.indexOf(cur) + 1) % THEMES.length]);
-      renderMap();
+      renderMaps();
     }
   });
   document.addEventListener("keydown", function (e) {
@@ -1944,6 +2152,7 @@
       if (key.charAt(0) === "c" && key !== "cpkm" && key !== "cpt") updateCheckers();
       else if (key === "cpkm" || key === "cpt") renderCheckpoint();
       else if (key === "start") renderTimeline();
+      else if (key === "kkstart") renderKKTimeline();
       else if (key === "watch") renderWatch();
       else { renderFuel(); renderTimeline(); renderDates(); }
       if (key === "kg" && e.type === "change") renderWeek();
@@ -1968,8 +2177,8 @@
   /* On the auto theme, swap the map tiles when the system switches between light and dark. */
   (function () {
     var mq = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)");
-    if (mq && mq.addEventListener) mq.addEventListener("change", renderMap);
-    else if (mq && mq.addListener) mq.addListener(renderMap);
+    if (mq && mq.addEventListener) mq.addEventListener("change", renderMaps);
+    else if (mq && mq.addListener) mq.addListener(renderMaps);
   })();
   var fromHash = location.hash.slice(1);
   selectTab(TABS.indexOf(fromHash) >= 0 ? fromHash : (store.get("akl-tab") || "overview"));

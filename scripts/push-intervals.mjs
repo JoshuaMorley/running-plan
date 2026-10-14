@@ -3,11 +3,11 @@
    Usage: node --env-file=.env scripts/push-intervals.mjs [--build A|S] [--d1 pass|fail] [--target 259|305|310|315]
           [--from YYYY-MM-DD] [--to YYYY-MM-DD] [--dry-run]
    Re-run after each decision: events are matched on external_id, so they're updated rather than duplicated. */
-import { RACE_DATE, arg, flag, fail, routeLabel, sessions } from "./plan.mjs";
+import { PLAN_END, arg, flag, fail, routeLabel, sessions } from "./plan.mjs";
 
 const dryRun = flag("dry-run");
 const today = new Date().toLocaleDateString("en-CA");
-const from = arg("from", today), to = arg("to", RACE_DATE);
+const from = arg("from", today), to = arg("to", PLAN_END);
 
 const { sessions: list, restWarnings } = sessions(from, to);
 const events = list.map((s) => ({
