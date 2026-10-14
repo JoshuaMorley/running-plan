@@ -227,6 +227,33 @@ button { -webkit-tap-highlight-color: transparent; }
 .vol-key .sw-ln.proj { border-top-style: dashed; border-color: var(--muted); }
 .vol-key .sw-fr.pos { background: var(--good); }
 .vol-key .sw-fr.neg { background: var(--key); }
+.sc-dot.key { fill: var(--key); }
+.ln-faint { stroke: var(--muted); stroke-width: 1.2; opacity: 0.45; }
+.ln-avg { stroke: var(--fg); stroke-width: 3; }
+.ln-last { stroke: var(--c-int); }
+.vol-key .sw-dot.key { background: var(--key); }
+.vol-key .sw-ln.tue { border-color: var(--accent); }
+.vol-key .sw-ln.avg { border-top-width: 3px; border-color: var(--fg); }
+.vol-key .sw-ln.last { border-color: var(--c-int); }
+.vol-key .sw-ln.faint { border-color: var(--muted); opacity: 0.6; }
+/* Attendance grid: one square per Tuesday and Saturday. */
+.grid-scroll { overflow-x: auto; }
+.gc-svg { width: auto; max-width: none; }
+.gc { stroke: var(--surface); stroke-width: 1; }
+.gc-none { fill: var(--sunk); }
+.gc-future { fill: none; stroke: var(--line); stroke-dasharray: 2 2; }
+.gc-tue { fill: var(--accent); }
+.gc-sat { fill: var(--c-int); }
+.gc-easy { fill-opacity: 0.35; }
+.vol-key .sw-gc { width: 12px; height: 12px; border-radius: 3px; }
+.vol-key .sw-gc.gc-tue { background: var(--accent); }
+.vol-key .sw-gc.gc-sat { background: var(--c-int); }
+.vol-key .sw-gc.gc-easy { opacity: 0.35; }
+.vol-key .sw-gc.gc-none { background: var(--sunk); box-shadow: inset 0 0 0 1px var(--line); }
+/* Long-run fade rows: bars grow either way from the middle line. */
+.drift-row.fade-row { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) 92px; }
+.drift-bar.fade { inset: 0 auto 0 auto; border-radius: 4px; }
+.fade-chart { display: grid; gap: 8px; padding-top: 6px; }
 .fk-all summary { padding: 14px 18px; font-weight: 600; cursor: pointer; }
 .chart-tip { position: fixed; z-index: var(--z-tip); pointer-events: none; background: var(--fg); color: var(--surface); font-size: 12px; font-weight: 600; padding: 6px 10px; border-radius: 8px; white-space: nowrap; box-shadow: var(--shadow-hi); }
 .recipe ol { margin: 0; padding-left: 20px; display: grid; gap: 6px; font-size: 14px; }

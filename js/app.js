@@ -807,13 +807,25 @@
   }
 
   /* ---------- 5k page ---------- */
-  /* Tuesday Good George runs and Saturday parkruns from js/results.js, as [date, name, metres, seconds, HR, max HR].
-     Short courses are scaled up to 5 km; long ones keep their watch time, so nothing gets a time it didn't run. */
+  /* Tuesday Good George runs and Saturday parkruns from js/results.js. Short courses are scaled up to 5 km;
+     long ones keep their watch time, so nothing gets a time it didn't run. */
   var HARD_PACE = 290;
-  var FIVES = ((window.RESULTS && window.RESULTS.fives) || []).map(function (f) {
-    var t = f[2] >= 5000 ? f[3] : f[3] * 5000 / f[2];
-    return { d: f[0], name: f[1], m: f[2], sec: f[3], hr: f[4], max: f[5], t: t, tue: dateObj(f[0]).getDay() === 2, hard: t / 5 < HARD_PACE };
+  var FIVES = ((window.RESULTS && window.RESULTS.fives) || []).filter(function (f) { return f && f.d; }).map(function (f) {
+    var t = f.m >= 5000 ? f.sec : f.sec * 5000 / f.m;
+    return { d: f.d, name: f.name, m: f.m, sec: f.sec, hr: f.hr, max: f.max, temp: f.temp, splits: f.splits, t: t, tue: dateObj(f.d).getDay() === 2, hard: t / 5 < HARD_PACE };
   });
+  /* Tuesdays you raced, not just ran briskly: HR 170 or more, or under 4:10/km when the watch had no HR.
+     Same flat course every week, so these are the cleanest measure of 5k fitness. */
+  function raced(f) { return f.tue && f.hard && (f.hr ? f.hr >= 170 : f.t / 5 < 250); }
+  /* Straight-line trend of raced Tuesday times over the last six months. */
+  function fiveTrend() {
+    var pts = FIVES.filter(function (f) { return raced(f) && daysBetween(f.d, today) <= 183; });
+    if (pts.length < 5) return null;
+    var fit = fitLine(pts.map(function (f) { return [dayNum(f.d), f.t]; }));
+    return { fit: fit, pts: pts, last: pts[pts.length - 1] };
+  }
+  var LONGS = ((window.RESULTS && window.RESULTS.longs) || []);
+  function riegel(t, from, to) { return t * Math.pow(to / from, 1.06); }
   (function () {
     var best = {};
     FIVES.forEach(function (f) {
@@ -835,7 +847,14 @@
     if (bs) tiles.push([fmtClock(bs.t), "best Saturday, " + niceDate(bs.d)]);
     if (ft && bt && bt !== ft) tiles.push([fmtClock(ft.t - bt.t) + " faster", "on Tuesdays since " + niceDate(ft.d) + " (" + fmtClock(ft.t) + ")"]);
     tiles.push([String(FIVES.length), "5ks since " + MON[dateObj(FIVES[0].d).getMonth()] + " " + FIVES[0].d.slice(0, 4) + ", " + FIVES.filter(function (f) { return f.hard; }).length + " run hard"]);
-    if (best) tiles.push([fmtClock(best.t * Math.pow(MARATHON_KM * 1000 / 5000, 1.06)).replace(/:\d\d$/, ""), "marathon your 5k best is worth, with the endurance to match"]);
+    if (best) tiles.push([fmtClock(riegel(best.t, 5000, MARATHON_KM * 1000)).replace(/:\d\d$/, ""), "marathon your 5k best is worth, with the endurance to match"]);
+    /* Where the raced-Tuesday trend points, six weeks out. Straight lines overshoot as gains slow, so it's capped there. */
+    var tr = fiveTrend(), AHEAD = 42, projDay = addDays(today, AHEAD);
+    if (tr) {
+      var perMonth = tr.fit.b * 30;
+      tiles.push(perMonth < -1 ? [fmtClock(tr.fit.at(dayNum(projDay))), "on trend by " + niceDate(projDay) + ", " + fmtClock(-perMonth) + " a month faster on raced Tuesdays"]
+        : ["Levelled off", "raced Tuesday times over the last six months"]);
+    }
     el.innerHTML = tiles.map(function (s) { return "<div class=\"stat\"><b class=\"num\">" + esc(s[0]) + "</b><span>" + esc(s[1]) + "</span></div>"; }).join("");
 
     var x0 = dayNum(FIVES[0].d) - 10, x1 = dayNum(today) + 10, span = x1 - x0;
@@ -849,16 +868,19 @@
     }
 
     /* Every 5k, faster up. */
-    var ts = FIVES.map(function (f) { return f.t; });
+    var trendLine = tr ? [[dayNum(tr.pts[0].d), tr.fit.at(dayNum(tr.pts[0].d))], [dayNum(projDay), tr.fit.at(dayNum(projDay))]] : [];
+    var ts = FIVES.map(function (f) { return f.t; }).concat(trendLine.map(function (p) { return p[1]; }));
     var slow = Math.ceil((Math.max.apply(null, ts) + 20) / 60) * 60, fast = Math.floor((Math.min.apply(null, ts) - 20) / 60) * 60;
     var step = slow - fast > 600 ? 120 : 60, yt = [];
     for (var v = fast; v <= slow; v += step) yt.push(v);
+    var tx1 = tr ? dayNum(projDay) + 5 : x1;
     document.getElementById("fk-times").innerHTML = timeSVG({
-      h: 300, x: [x0, x1], y: [slow, fast], yTicks: yt, fy: fmtClock, xTicks: xt, label: "Time for every Tuesday and Saturday 5k, faster at the top",
-      lines: [pbLine(tue, "tue"), pbLine(sat, "sat")],
+      h: 300, x: [x0, tx1], y: [slow, fast], yTicks: yt, fy: fmtClock, xTicks: monthTicks(x0, tx1, tx1 - x0 > 300 ? 2 : 1), label: "Time for every Tuesday and Saturday 5k, faster at the top, with the raced-Tuesday trend",
+      marks: tr ? [{ x: dayNum(today), l: "Today", end: true }] : [],
+      lines: [pbLine(tue, "tue"), pbLine(sat, "sat")].concat(tr ? [{ cls: "ln ln-trend proj", pts: trendLine }] : []),
       dots: FIVES.map(function (f) { return dots(f, f.t); })
-    }) + "<div class=\"vol-key\"><span><i class=\"sw-dot\"></i>Tuesday · Good George</span><span><i class=\"sw-dot sat\"></i>Saturday · parkrun</span><span><i class=\"sw-dot ring\"></i>Jogged, slower than " + fmtPace(HARD_PACE) + "/km</span><span><i class=\"sw-fit\"></i>Best so far</span></div>" +
-      "<p class=\"muted chart-note\">Watch times from Strava, so they can differ from the official results by a few seconds. Courses measured short by GPS are scaled up to 5 km. Saturdays move between parkruns, some of them hilly, so Tuesday's flat course is the cleaner comparison.</p>";
+    }) + "<div class=\"vol-key\"><span><i class=\"sw-dot\"></i>Tuesday · Good George</span><span><i class=\"sw-dot sat\"></i>Saturday · parkrun</span><span><i class=\"sw-dot ring\"></i>Jogged, slower than " + fmtPace(HARD_PACE) + "/km</span><span><i class=\"sw-ln tue\"></i>Best so far</span>" + (tr ? "<span><i class=\"sw-ln proj\"></i>Raced-Tuesday trend, six months, carried six weeks on</span>" : "") + "</div>" +
+      "<p class=\"muted chart-note\">Watch times from Strava, so they can differ from the official results by a few seconds. Courses measured short by GPS are scaled up to 5 km. Saturdays move between parkruns, some of them hilly, so Tuesday's flat course is the cleaner comparison. The trend uses only Tuesdays you raced (HR 170 or more). It's a straight line, and gains usually slow as you get faster, so read it as an upper bound.</p>";
 
     /* Best-ever list. */
     var pbs = FIVES.filter(function (f) { return f.pb !== undefined; });
@@ -890,6 +912,188 @@
     document.getElementById("fk-table").innerHTML = FIVES.slice().reverse().map(function (f) {
       return "<tr><td class=\"nw\">" + niceDate(f.d) + " " + f.d.slice(2, 4) + "</td><td>" + esc(f.name) + "</td><td class=\"r num\">" + (Math.round(f.m / 10) / 100) + " km</td><td class=\"r num\">" + fmtClock(f.t) + (f.pb !== undefined ? " ★" : "") + "</td><td class=\"r num\">" + fmtPace(f.t / 5) + "</td><td class=\"r num\">" + (f.hr || "–") + "</td></tr>";
     }).join("");
+
+    renderEndurance();
+    renderPacing();
+    renderHeat(tr);
+    renderStreak();
+  }
+
+  /* Speed against endurance: each hard run of 8 km or more next to what your 5k best at the time predicts for
+     that distance (Riegel, exponent 1.06). Hard means average HR 165 or more, which also drops GPS glitches. */
+  function renderEndurance() {
+    var head = document.getElementById("fk-end-head"), box = document.getElementById("fk-end");
+    var hardFives = FIVES.filter(function (f) { return f.hard; });
+    function fiveAt(iso) {
+      return hardFives.filter(function (f) { return f.d <= iso && daysBetween(f.d, iso) <= 120; }).reduce(function (a, f) { return !a || f.t < a.t ? f : a; }, null);
+    }
+    var rows = LONGS.filter(function (l) { return l.hr && l.hr >= 165; }).map(function (l) {
+      var f = fiveAt(l.d);
+      return f ? { l: l, f: f, pred: riegel(f.t, 5000, l.m), held: riegel(f.t, 5000, l.m) / l.sec } : null;
+    }).filter(Boolean);
+    var best = hardFives.reduce(function (a, f) { return !a || f.t < a.t ? f : a; }, null);
+    if (!best) { head.innerHTML = "<p class=\"muted\">Needs a hard 5k.</p>"; box.innerHTML = ""; return; }
+    var mPred = riegel(best.t, 5000, MARATHON_KM * 1000), need = mPred / targetSec();
+    var half = rows.filter(function (r) { return r.l.m >= 20000; }).pop();
+    head.innerHTML = "<div class=\"stats\" style=\"padding:0\">" +
+      (half ? "<div class=\"stat\"><b class=\"num\">" + Math.round(half.held * 100) + "%</b><span>of your 5k speed held over " + (Math.round(half.l.m / 100) / 10) + " km, " + esc(half.l.name.replace(/!+$/, "")) + ", " + niceDate(half.l.d) + " " + half.l.d.slice(0, 4) + "</span></div>" : "") +
+      "<div class=\"stat\"><b class=\"num\">" + Math.round(need * 100) + "%</b><span>your " + fmtTarget() + " target needs, against the " + fmtClock(mPred).replace(/:\d\d$/, "") + " your " + fmtClock(best.t) + " 5k predicts</span></div></div>" +
+      "<p class=\"muted chart-note\">100% means you ran exactly what your best 5k at the time predicted for that distance; under 100% is speed your endurance couldn't carry. Riegel's formula assumes your endurance is trained to match your speed. Your 5k has dropped by minutes since your last hard long effort, so the marathon is where the gap gets tested. Your 33 km, with its last 8 km at 4:15, is the best evidence you have.</p>";
+    if (!rows.length) { box.innerHTML = ""; return; }
+    var pts = [], x = [5, 43], ys = [];
+    rows.forEach(function (r) { ys.push(r.l.sec / r.l.m * 1000, r.pred / r.l.m * 1000); });
+    var fastNow = best.t / 5, slowNow = riegel(best.t, 5000, 42195) / 42.195;
+    ys.push(fastNow, slowNow, mpSec());
+    var lo = Math.floor((Math.min.apply(null, ys) - 5) / 15) * 15, hi = Math.ceil((Math.max.apply(null, ys) + 5) / 15) * 15, yt = [];
+    for (var v = lo; v <= hi; v += 15) yt.push(v);
+    /* Pace your 5k best predicts at every distance. */
+    for (var km = 5; km <= 42.2; km += 0.5) pts.push([km, riegel(best.t, 5000, km * 1000) / km]);
+    box.innerHTML = timeSVG({
+      h: 260, x: x, y: [hi, lo], yTicks: yt.filter(function (v, i) { return i % 2 === 0; }), fy: fmtPace, label: "Pace against distance: hard long runs and what your 5k predicts",
+      xTicks: [5, 10, 15, 21.1, 30, 42.2].map(function (k) { return { x: k, l: k === 21.1 ? "Half" : k === 42.2 ? "Full" : k + " km" }; }),
+      lines: [{ cls: "ln ln-trend proj", pts: pts }],
+      dots: rows.map(function (r) { return { x: r.l.m / 1000, y: r.l.sec / r.l.m * 1000, cls: "tue", tip: niceDate(r.l.d) + " " + r.l.d.slice(0, 4) + " · " + r.l.name + " · " + (Math.round(r.l.m / 100) / 10) + " km at " + fmtPace(r.l.sec / r.l.m * 1000) + "/km · HR " + r.l.hr + " · 5k then " + fmtClock(r.f.t) + " predicted " + fmtPace(r.pred / r.l.m * 1000) + "/km · " + Math.round(r.held * 100) + "% held" }; })
+        .concat([{ x: 5, y: fastNow, cls: "sat", tip: "Best 5k " + fmtClock(best.t) + " · " + niceDate(best.d) }, { x: MARATHON_KM, y: mpSec(), cls: "key", tip: "Your target " + fmtTarget() + " · " + fmtPace(mpSec()) + "/km" }])
+    }) + "<div class=\"vol-key\"><span><i class=\"sw-dot sat\"></i>Your best 5k</span><span><i class=\"sw-ln proj\"></i>What it predicts at each distance</span><span><i class=\"sw-dot\"></i>Hard runs of 8 km or more (HR 165+)</span><span><i class=\"sw-dot key\"></i>Marathon target</span></div>" +
+      "<p class=\"muted chart-note\">Each long run is compared with your best 5k in the 4 months before it, not today's. Hover over a dot for the numbers.</p>";
+  }
+
+  /* How you pace a hard 5k: each km against that run's average, for runs with five full km splits. */
+  function renderPacing() {
+    var head = document.getElementById("fk-pace-head"), box = document.getElementById("fk-pace");
+    var runs = FIVES.filter(function (f) { return f.hard && f.splits; }).map(function (f) {
+      var k = f.splits.filter(function (s) { return s[0] >= 900; }).slice(0, 5);
+      if (k.length < 5) return null;
+      var p = k.map(function (s) { return s[1] / s[0] * 1000; }), avg = p.reduce(function (a, b) { return a + b; }, 0) / 5;
+      return { f: f, dev: p.map(function (x) { return x - avg; }), p: p };
+    }).filter(Boolean);
+    if (runs.length < 4) { head.innerHTML = "<p class=\"muted\">Needs at least 4 hard 5ks with km splits.</p>"; box.innerHTML = ""; return; }
+    function mean(list, i) { return list.reduce(function (a, r) { return a + r.dev[i]; }, 0) / list.length; }
+    var avgDev = [0, 1, 2, 3, 4].map(function (i) { return mean(runs, i); });
+    var byTime = runs.slice().sort(function (a, b) { return a.f.t - b.f.t; }), top = byTime.slice(0, 5), rest = byTime.slice(5);
+    var spread = function (list) { return list.reduce(function (a, r) { return a + Math.max.apply(null, r.dev) - Math.min.apply(null, r.dev); }, 0) / list.length; };
+    function sfx(x) { return Math.abs(Math.round(x)) + " s/km " + (x < 0 ? "faster" : "slower"); }
+    head.innerHTML = "<div class=\"stats\" style=\"padding:0\">" +
+      "<div class=\"stat\"><b class=\"num\">" + signed(avgDev[0]) + " s</b><span>km 1 against your average pace, " + sfx(avgDev[0]) + "</span></div>" +
+      "<div class=\"stat\"><b class=\"num\">" + signed(avgDev[4]) + " s</b><span>km 5, " + sfx(avgDev[4]) + "</span></div>" +
+      (rest.length ? "<div class=\"stat\"><b class=\"num\">" + Math.round(spread(top)) + " vs " + Math.round(spread(rest)) + " s</b><span>gap between your fastest and slowest km, in your 5 best runs vs the rest</span></div>" : "") + "</div>" +
+      "<p class=\"muted chart-note\">Each line is one hard 5k: how many seconds per km faster (up) or slower (down) than that run's own average each km was. The thick line is your average. " +
+      (avgDev[0] < -3 && avgDev[4] > 3 ? "You tend to go out fast and pay for it at the end. Even pacing is usually the quicker way round, and the same habit costs far more over 42 km." : "Your pacing is fairly even, which is what you want to carry into the marathon.") + " " + runs.length + " runs.</p>";
+    var all = []; runs.forEach(function (r) { all = all.concat(r.dev); });
+    var m = Math.ceil(Math.max(10, Math.max.apply(null, all.map(Math.abs))) / 5) * 5, yt = [];
+    for (var v = -m; v <= m; v += m > 20 ? 10 : 5) yt.push(v);
+    var last = runs[runs.length - 1];
+    box.innerHTML = timeSVG({
+      w: 520, h: 260, x: [0.7, 5.3], y: [m, -m], yTicks: yt, fy: function (y) { return y ? signed(y) + " s" : "avg"; }, zero: true, label: "Each km of every hard 5k against that run's average pace",
+      xTicks: [1, 2, 3, 4, 5].map(function (k) { return { x: k, l: "km " + k }; }),
+      lines: runs.map(function (r) { return { cls: "ln ln-faint", pts: r.dev.map(function (d, i) { return [i + 1, d]; }) }; })
+        .concat([{ cls: "ln ln-last", pts: last.dev.map(function (d, i) { return [i + 1, d]; }) }, { cls: "ln ln-avg", pts: avgDev.map(function (d, i) { return [i + 1, d]; }) }]),
+      dots: last.dev.map(function (d, i) { return { x: i + 1, y: d, cls: "sat", tip: niceDate(last.f.d) + " · km " + (i + 1) + " at " + fmtPace(last.p[i]) + "/km · " + signed(d) + " s against the run's average" }; })
+    }) + "<div class=\"vol-key\"><span><i class=\"sw-ln avg\"></i>Average of all</span><span><i class=\"sw-ln last\"></i>Latest: " + esc(niceDate(last.f.d)) + "</span><span><i class=\"sw-ln faint\"></i>Each hard 5k</span></div>";
+  }
+
+  /* Heat: how far each raced Tuesday sat above or below the trend, against the temperature at the start
+     (Open-Meteo weather archive). Taking the trend out stops a season of getting fitter looking like weather. */
+  function renderHeat(tr) {
+    var head = document.getElementById("fk-heat-head"), box = document.getElementById("fk-heat");
+    var pts = tr ? tr.pts.filter(function (f) { return typeof f.temp === "number"; }).map(function (f) { return { f: f, r: f.t - tr.fit.at(dayNum(f.d)) }; }) : [];
+    if (pts.length < 5) { head.innerHTML = "<p class=\"muted\">Needs at least 5 raced Tuesdays with weather.</p>"; box.innerHTML = ""; return; }
+    var fit = fitLine(pts.map(function (p) { return [p.f.temp, p.r]; }));
+    var temps = pts.map(function (p) { return p.f.temp; }), t0 = Math.floor(Math.min.apply(null, temps)) - 1, t1 = Math.ceil(Math.max.apply(null, temps)) + 1;
+    var per5 = fit.b * 5;
+    /* Under R² 0.2 the slope is mostly noise, so don't headline a number. */
+    var clear = fit.r2 >= 0.2, range = Math.round(t0 + 1) + " and " + Math.round(t1 - 1) + "°C";
+    head.innerHTML = "<div class=\"stats\" style=\"padding:0\"><div class=\"stat\"><b class=\"num\">" + (clear ? signed(per5) + " s" : "No clear link") + "</b><span>" + (clear ? "on a 5k for every 5°C warmer, between " + range : "between start temperature and your raced Tuesday times, between " + range) + "</span></div></div>" +
+      "<p class=\"muted chart-note\">Dots above the line were faster than your trend for that date. " + pts.length + " runs over a narrow range of cool evenings (R² " + fit.r2.toFixed(2) + ")" + (clear ? ", so treat it as a hint, not a rule." : ": temperature explains almost none of the spread, so day-to-day form matters more at these temperatures.") + " Heat matters far more over 42 km than 5 km, so if race morning is warm, start a little slower.</p>";
+    var rs = pts.map(function (p) { return Math.abs(p.r); }), m = Math.ceil((Math.max.apply(null, rs) + 5) / 10) * 10, yt = [];
+    for (var v = -m; v <= m; v += m > 30 ? 20 : 10) yt.push(v);
+    var xt = []; for (var t = Math.ceil(t0 / 2) * 2; t <= t1; t += 2) xt.push({ x: t, l: t + "°C" });
+    box.innerHTML = timeSVG({
+      w: 520, h: 240, x: [t0, t1], y: [m, -m], yTicks: yt, fy: function (y) { return y ? signed(y) + " s" : "trend"; }, zero: true, xTicks: xt, label: "Seconds faster or slower than trend against start temperature",
+      lines: [{ cls: "ln ln-trend", pts: [[t0, fit.at(t0)], [t1, fit.at(t1)]] }],
+      dots: pts.map(function (p) { return { x: p.f.temp, y: p.r, cls: "tue", tip: niceDate(p.f.d) + " · " + p.f.temp.toFixed(1) + "°C · " + fmtClock(p.f.t) + " · " + Math.abs(Math.round(p.r)) + " s " + (p.r < 0 ? "faster" : "slower") + " than trend" }; })
+    });
+  }
+
+  /* Which Tuesdays and Saturdays you turned up, week by week, and your current run of Tuesdays. */
+  function renderStreak() {
+    var head = document.getElementById("fk-streak-head"), box = document.getElementById("fk-streak");
+    var byDate = {}; FIVES.forEach(function (f) { byDate[f.d] = f; });
+    var firstTue = FIVES.filter(function (f) { return f.tue && f.hard; })[0];
+    if (!firstTue) { head.innerHTML = ""; box.innerHTML = ""; return; }
+    /* Weeks run Monday to Sunday, from the week of your first hard Tuesday to this one. */
+    function monday(iso) { var d = dateObj(iso).getDay(); return addDays(iso, -((d + 6) % 7)); }
+    var weeks = [];
+    for (var w = monday(firstTue.d); w <= today; w = addDays(w, 7)) weeks.push(w);
+    var tueDone = weeks.map(function (w) { var t = addDays(w, 1); return t > today ? null : !!byDate[t]; });
+    var streak = 0;
+    for (var i = tueDone.length - 1; i >= 0; i--) { if (tueDone[i] === null) continue; if (!tueDone[i]) break; streak++; }
+    var longest = 0, run = 0;
+    tueDone.forEach(function (x) { if (x) { run++; longest = Math.max(longest, run); } else if (x === false) run = 0; });
+    var nTue = tueDone.filter(Boolean).length, nPast = tueDone.filter(function (x) { return x !== null; }).length;
+    var nSat = weeks.filter(function (w) { return byDate[addDays(w, 5)]; }).length;
+    head.innerHTML = "<div class=\"stats\" style=\"padding:0\">" +
+      "<div class=\"stat\"><b class=\"num\">" + streak + "</b><span>" + (streak === 1 ? "Tuesday" : "Tuesdays") + " in a row" + (longest > streak ? ", longest " + longest : "") + "</span></div>" +
+      "<div class=\"stat\"><b class=\"num\">" + nTue + " of " + nPast + "</b><span>Tuesdays since " + niceDate(firstTue.d) + "</span></div>" +
+      "<div class=\"stat\"><b class=\"num\">" + nSat + "</b><span>Saturday parkruns in that time</span></div></div>";
+    var CW = 18, GAP = 3, L = 34, T = 18, W = L + weeks.length * (CW + GAP) + 4, H = T + 2 * (CW + GAP) + 18, g = "";
+    ["Tue", "Sat"].forEach(function (lab, r) { g += "<text class=\"sc-ax\" x=\"" + (L - 6) + "\" y=\"" + (T + r * (CW + GAP) + 13) + "\" text-anchor=\"end\">" + lab + "</text>"; });
+    weeks.forEach(function (wk, c) {
+      var x = L + c * (CW + GAP);
+      if (dateObj(wk).getDate() <= 7) g += "<text class=\"sc-ax\" x=\"" + x + "\" y=\"" + (T - 6) + "\">" + MON[dateObj(wk).getMonth()] + "</text>";
+      [1, 5].forEach(function (off, r) {
+        var d = addDays(wk, off), f = byDate[d], y = T + r * (CW + GAP);
+        var cls = d > today ? "gc-future" : !f ? "gc-none" : (off === 1 ? "gc-tue" : "gc-sat") + (f.hard ? "" : " gc-easy");
+        var tip = niceDate(d) + (f ? " · " + f.name + " · " + fmtClock(f.t) + (f.hard ? "" : " (jogged)") : d > today ? " · still to come" : " · no 5k");
+        g += "<rect class=\"gc " + cls + "\" x=\"" + x + "\" y=\"" + y + "\" width=\"" + CW + "\" height=\"" + CW + "\" rx=\"4\" data-tip=\"" + esc(tip) + "\"></rect>";
+      });
+    });
+    box.innerHTML = "<div class=\"grid-scroll\"><svg class=\"scatter gc-svg\" viewBox=\"0 0 " + W + " " + H + "\" style=\"min-width:" + W + "px\" role=\"img\" aria-label=\"Tuesday and Saturday 5ks by week\">" + g + "</svg></div>" +
+      "<div class=\"vol-key\"><span><i class=\"sw-gc gc-tue\"></i>Tuesday, run hard</span><span><i class=\"sw-gc gc-sat\"></i>Saturday, run hard</span><span><i class=\"sw-gc gc-tue gc-easy\"></i>Jogged</span><span><i class=\"sw-gc gc-none\"></i>No 5k</span></div>";
+    var sc = box.querySelector && box.querySelector(".grid-scroll");
+    if (sc) sc.scrollLeft = sc.scrollWidth;
+  }
+
+  /* ---------- long-run fade ---------- */
+  /* How each long run finished: pace, HR and distance per heartbeat over the last 5 km against km 2–10.
+     Your planned fast finishes speed up on purpose, so efficiency is the fairer measure of fade. */
+  function renderFade() {
+    var el = document.getElementById("fade");
+    var runs = LONGS.filter(function (l) { return l.splits && l.m >= 18000 && l.sec / l.m * 1000 < 420; }).map(function (l) {
+      var k = l.splits.filter(function (s) { return s[0] >= 900 && s[2]; });
+      if (k.length < 16) return null;
+      function part(list) {
+        var m = 0, t = 0, b = 0;
+        list.forEach(function (s) { m += s[0]; t += s[1]; b += s[2] * s[1] / 60; });
+        return { pace: t / m * 1000, hr: b / (t / 60), eff: m / b };
+      }
+      var early = part(k.slice(1, 10)), late = part(k.slice(-5));
+      return { l: l, early: early, late: late, eff: (late.eff / early.eff - 1) * 100, k: k };
+    }).filter(Boolean);
+    if (!runs.length) { el.innerHTML = "<p class=\"muted\" style=\"padding:16px 18px;margin:0\">No long runs with heart rate yet.</p>"; return; }
+    var MAX = 15;
+    var rowsH = runs.map(function (o) {
+      var e = o.eff, g = e > -3 ? ["ok", "Held"] : e > -8 ? ["meh", "Some fade"] : ["off", "Faded"];
+      var dp = o.late.pace - o.early.pace, dh = o.late.hr - o.early.hr;
+      var w = Math.min(Math.abs(e), MAX) / MAX * 50;
+      return "<div class=\"drift-row fade-row\" title=\"" + esc(o.l.name) + "\"><span><b>" + niceDate(o.l.d) + " · " + (Math.round(o.l.m / 100) / 10) + " km</b><br><span class=\"muted\" style=\"font-size:12px\">last 5 km " + fmtPace(o.late.pace) + " (" + signed(dp) + " s), HR " + Math.round(o.late.hr) + " (" + signed(dh) + ")</span></span>" +
+        "<div class=\"vol-track\"><div class=\"drift-bar fade " + g[0] + "\" style=\"" + (e < 0 ? "right:50%" : "left:50%") + ";width:" + w.toFixed(1) + "%\"></div><div class=\"vol-mark\" style=\"left:50%\"></div></div>" +
+        "<span class=\"num\" style=\"text-align:right\"><b>" + (e < 0 ? "−" : "+") + Math.abs(e).toFixed(1) + "%</b><br><span class=\"pill " + g[0] + "\">" + g[1] + "</span></span></div>";
+    }).join("");
+    /* Distance per heartbeat for each km, latest run highlighted. */
+    var all = []; runs.forEach(function (o) { o.k.forEach(function (s) { all.push(s[0] / (s[2] * s[1] / 60)); }); });
+    var lo = Math.floor(Math.min.apply(null, all) * 20) / 20, hi = Math.ceil(Math.max.apply(null, all) * 20) / 20, yt = [];
+    for (var v = lo; v <= hi + 1e-9; v += 0.1) yt.push(Math.round(v * 100) / 100);
+    var maxKm = Math.max.apply(null, runs.map(function (o) { return o.k.length; })), last = runs[runs.length - 1];
+    function line(o) { var km = 0; return o.k.map(function (s) { km += s[0] / 1000; return [km, s[0] / (s[2] * s[1] / 60)]; }); }
+    var xt = []; for (var k = 5; k <= maxKm; k += 5) xt.push({ x: k, l: k + " km" });
+    var chart = timeSVG({
+      h: 220, x: [0, maxKm + 1], y: [lo, hi], yTicks: yt, fy: function (y) { return y.toFixed(1) + " m"; }, xTicks: xt, label: "Metres per heartbeat for each km of every long run",
+      lines: runs.map(function (o) { return { cls: "ln " + (o === last ? "ln-fit" : "ln-faint"), pts: line(o) }; }),
+      dots: line(last).map(function (p, i) { var s = last.k[i]; return { x: p[0], y: p[1], cls: "", tip: niceDate(last.l.d) + " · km " + (i + 1) + " · " + fmtPace(s[1] / s[0] * 1000) + "/km · HR " + s[2] + " · " + p[1].toFixed(2) + " m per beat" }; })
+    });
+    el.innerHTML = rowsH + "<div class=\"fade-chart\">" + chart + "<div class=\"vol-key\"><span><i class=\"sw-ln fit\"></i>Latest: " + esc(niceDate(last.l.d)) + "</span><span><i class=\"sw-ln faint\"></i>Earlier long runs</span></div></div>" +
+      "<p class=\"vol-legend\">Last 5 km against km 2–10: pace and HR change in brackets, and the bar shows the change in distance per heartbeat. Holding it while you speed up, as in your fast-finish runs, is a good sign for km 35–42. Hills, heat and gels all move it around. Runs of 18 km or more since 2025, trail runs left out.</p>";
   }
 
   /* One floating tip for every chart dot. */
@@ -1373,7 +1577,7 @@
 
   /* ---------- render ---------- */
   function renderAll() {
-    renderHeader(); renderTree(); renderToday(); renderVolume(); renderDrift(); renderDates(); renderCalRoute();
+    renderHeader(); renderTree(); renderToday(); renderVolume(); renderDrift(); renderFade(); renderDates(); renderCalRoute();
     renderWeekPick(); renderWeek(); renderDecisions(); renderStats(); renderFiveK(); renderCourse(); renderFuel(); renderRace();
   }
 
