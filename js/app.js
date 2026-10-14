@@ -580,9 +580,13 @@
     ].map(function (s) { return "<div class=\"stat\"><b class=\"num\">" + esc(s[0]) + "</b><span>" + esc(s[1]) + "</span></div>"; }).join("");
 
     renderLoad();
+    renderMonthly();
     renderPredictor();
     renderBeats();
     renderStride();
+    renderCadence();
+    renderHills();
+    renderTimeOfDay();
   }
 
   /* Speed is close to linear in HR across easy to race efforts, so fit speed on HR and read it at the
@@ -668,6 +672,149 @@
     }
     document.getElementById("st-stride").innerHTML = chart("stride", fs, function (v) { return v.toFixed(1) + " m"; }, 0.2, "Stride length against pace for each lap, with a trend line");
     document.getElementById("st-cadence").innerHTML = chart("spm", fc, function (v) { return Math.round(v); }, 10, "Cadence against pace for each lap, with a trend line");
+  }
+
+  /* ---------- every run since 2025 ---------- */
+  /* From js/results.js as [date, start time, name, metres, seconds, HR, climb m, steps per minute]. */
+  var ALL = ((window.RESULTS && window.RESULTS.all) || []).map(function (x) {
+    return { d: x[0], hm: x[1], name: x[2], m: x[3], sec: x[4], hr: x[5], elev: x[6], spm: x[7], pace: x[3] ? x[4] / x[3] * 1000 : 0 };
+  }).filter(function (r) { return r.m >= 1000 && r.pace > 150 && r.pace < 600; });
+  function mean(list) { return list.length ? list.reduce(function (a, b) { return a + b; }, 0) / list.length : NaN; }
+  function statTiles(list) { return "<div class=\"stats\" style=\"padding:0\">" + list.map(function (s) { return "<div class=\"stat\"><b class=\"num\">" + esc(s[0]) + "</b><span>" + esc(s[1]) + "</span></div>"; }).join("") + "</div>"; }
+
+  /* Monthly distance, with the longest run of each month on the same km axis. */
+  function renderMonthly() {
+    var head = document.getElementById("st-month-head"), box = document.getElementById("st-month");
+    if (!ALL.length) { head.innerHTML = "<p class=\"muted\">No runs synced yet.</p>"; box.innerHTML = ""; return; }
+    var months = [], d = dateObj(ALL[0].d), end = dateObj(today);
+    for (var y = d.getFullYear(), m = d.getMonth(); y < end.getFullYear() || (y === end.getFullYear() && m <= end.getMonth()); m === 11 ? (y++, m = 0) : m++) {
+      var key = y + "-" + String(m + 1).padStart(2, "0"), runs = ALL.filter(function (r) { return r.d.slice(0, 7) === key; });
+      months.push({ key: key, y: y, m: m, km: runs.reduce(function (a, r) { return a + r.m; }, 0) / 1000, n: runs.length,
+        long: runs.reduce(function (a, r) { return !a || r.m > a.m ? r : a; }, null) });
+    }
+    var cur = months[months.length - 1], big = months.reduce(function (a, x) { return x.km > a.km ? x : a; }, months[0]);
+    var total = months.reduce(function (a, x) { return a + x.km; }, 0), longest = ALL.reduce(function (a, r) { return r.m > a.m ? r : a; }, ALL[0]);
+    function mLabel(x) { return MON[x.m] + " " + x.y; }
+    head.innerHTML = statTiles([
+      [Math.round(total).toLocaleString("en-NZ") + " km", ALL.length + " runs since " + mLabel(months[0])],
+      [Math.round(big.km) + " km", "biggest month, " + mLabel(big)],
+      [Math.round(cur.km) + " km", MON[cur.m] + " so far, " + cur.n + " runs"],
+      [(Math.round(longest.m / 100) / 10) + " km", "longest run, " + niceDate(longest.d)]
+    ]);
+    var max = Math.ceil(Math.max.apply(null, months.map(function (x) { return x.km; }).concat([MARATHON_KM])) / 50) * 50, yt = [];
+    for (var v = 0; v <= max; v += 50) yt.push(v);
+    box.innerHTML = timeSVG({
+      h: 260, x: [-0.6, months.length - 0.4], y: [0, max], yTicks: yt, fy: function (v) { return v + " km"; }, label: "Distance each month, with the longest run of each month",
+      xTicks: months.map(function (x, i) { return { x: i, l: x.m % 3 === 0 || i === 0 ? MON[x.m] + (x.m === 0 || i === 0 ? " " + String(x.y).slice(2) : "") : "" }; }).filter(function (t) { return t.l; }),
+      bars: months.map(function (x, i) { return { x: i, y: x.km, cls: "mo-bar" + (x === cur ? " proj" : "") }; }),
+      dots: months.filter(function (x) { return x.long; }).map(function (x) { var i = months.indexOf(x); return { x: i, y: x.long.m / 1000, cls: "key", tip: mLabel(x) + " · longest " + (Math.round(x.long.m / 100) / 10) + " km, " + niceDate(x.long.d) }; }),
+      cols: months.map(function (x, i) { return { x: i, tip: mLabel(x) + (x === cur ? " so far" : "") + " · " + (Math.round(x.km * 10) / 10) + " km in " + x.n + " runs" }; })
+    }) + "<div class=\"vol-key\"><span><i class=\"sw-plan\" style=\"background:var(--accent);box-shadow:none\"></i>km in the month</span><span><i class=\"sw-dot key\"></i>Longest run that month</span></div>" +
+      "<p class=\"muted chart-note\">Runs only, from Strava. The current month is paler because it isn't finished.</p>";
+  }
+
+  /* Cadence over time, split into easy runs (slower than 5:00/km) and fast ones (under 4:30/km), each with a trend.
+     Watch glitches outside 140–200 steps a minute are left out. */
+  function renderCadence() {
+    var head = document.getElementById("st-cad-head"), box = document.getElementById("st-cad");
+    var pts = ALL.filter(function (r) { return r.spm >= 140 && r.spm <= 200 && r.m >= 3000 && (r.pace >= 300 || r.pace < 270); });
+    var easy = pts.filter(function (r) { return r.pace >= 300; }), fast = pts.filter(function (r) { return r.pace < 270; });
+    if (easy.length < 5) { head.innerHTML = "<p class=\"muted\">Needs more runs with cadence.</p>"; box.innerHTML = ""; return; }
+    function trend(list) {
+      if (list.length < 4) return null;
+      var f = fitLine(list.map(function (r) { return [dayNum(r.d), r.spm]; })), a = dayNum(list[0].d), b = dayNum(list[list.length - 1].d);
+      return { f: f, a: a, b: b, from: f.at(a), to: f.at(b) };
+    }
+    var te = trend(easy), tf = trend(fast);
+    function tile(t, label, first) { return [signed(t.to - t.from) + " spm", label + ", " + Math.round(t.from) + " → " + Math.round(t.to) + " since " + niceDate(first.d) + " " + first.d.slice(0, 4)]; }
+    var tiles = [tile(te, "easy runs", easy[0])];
+    if (tf) tiles.push(tile(tf, "fast runs", fast[0]));
+    head.innerHTML = statTiles(tiles) + "<p class=\"muted chart-note\">Whole-run average steps a minute, from Strava. A few more steps a minute at the same pace usually means shorter, lighter strides, which cost less late in a marathon. Each run's average mixes warm-up and reps, so watch the trend, not single dots.</p>";
+    var x0 = dayNum(pts[0].d) - 10, x1 = dayNum(today) + 10, sp = pts.map(function (r) { return r.spm; });
+    var lo = Math.floor(Math.min.apply(null, sp) / 5) * 5, hi = Math.ceil(Math.max.apply(null, sp) / 5) * 5, yt = [];
+    for (var v = lo; v <= hi; v += 5) yt.push(v);
+    function tip(r) { return niceDate(r.d) + " · " + r.name + " · " + fmtPace(r.pace) + "/km · " + r.spm + " spm"; }
+    box.innerHTML = timeSVG({
+      h: 260, x: [x0, x1], y: [lo, hi], yTicks: yt, fy: String, xTicks: monthTicks(x0, x1, x1 - x0 > 300 ? 2 : 1), label: "Cadence for each run over time, easy and fast runs, with trends",
+      lines: [te, tf].filter(Boolean).map(function (t, i) { return { cls: "ln " + (t === te ? "ln-fit" : "ln-last"), pts: [[t.a, t.from], [t.b, t.to]] }; }),
+      dots: easy.map(function (r) { return { x: dayNum(r.d), y: r.spm, cls: "", tip: tip(r) }; }).concat(fast.map(function (r) { return { x: dayNum(r.d), y: r.spm, cls: "sat", tip: tip(r) }; }))
+    }) + "<div class=\"vol-key\"><span><i class=\"sw-dot\"></i>Easy, slower than 5:00/km</span><span><i class=\"sw-dot sat\"></i>Fast, under 4:30/km</span><span><i class=\"sw-ln fit\"></i>Easy trend</span><span><i class=\"sw-ln last\"></i>Fast trend</span></div>";
+  }
+
+  /* Hills: your hilliest runs against the course's climbing, and what hills cost in heartbeats per km on easy runs. */
+  var COURSE_CLIMB = 217;
+  function renderHills() {
+    var head = document.getElementById("st-hill-head"), box = document.getElementById("st-hill");
+    var top = ALL.filter(function (r) { return r.elev > 0; }).sort(function (a, b) { return b.elev - a.elev; }).slice(0, 8);
+    /* Steady easy runs, 5:00–6:30/km, over 4 km with HR: flat is under 5 m of climb per km, hilly 10 m or more. */
+    var easy = ALL.filter(function (r) { return r.hr && r.m >= 4000 && r.pace >= 300 && r.pace <= 390 && r.d >= addDays(today, -365); });
+    function bpk(r) { return r.hr * r.pace / 60; }
+    var flat = easy.filter(function (r) { return r.elev / r.m * 1000 < 5; }), hilly = easy.filter(function (r) { return r.elev / r.m * 1000 >= 10; });
+    var tiles = [[String(ALL.filter(function (r) { return r.elev >= 150; }).length), "runs with 150 m or more of climbing since " + ALL[0].d.slice(0, 4)]];
+    var cost = null;
+    if (flat.length >= 3 && hilly.length >= 3) {
+      cost = (mean(hilly.map(bpk)) / mean(flat.map(bpk)) - 1) * 100;
+      tiles.push([signed(cost) + "%", "heartbeats per km on hilly easy runs against flat ones (" + hilly.length + " hilly, " + flat.length + " flat, last 12 months)"]);
+    }
+    head.innerHTML = statTiles(tiles) + "<p class=\"muted chart-note\">" +
+      (cost === null ? "" : Math.abs(cost) < 3 ? "Hills barely change what an easy km costs you in heartbeats, which usually means you ease the pace on climbs and keep the effort steady. That's exactly how to run the bridge and the North Shore. " : "Hilly easy runs cost you " + Math.abs(Math.round(cost)) + "% " + (cost > 0 ? "more" : "fewer") + " heartbeats per km. Hilly runs also tend to be slower, so pace explains part of that, not just the hills. ") +
+      "Climbing is from your watch, which can be noisy. The race listing gives the course about " + COURSE_CLIMB + " m, mostly in the first half on the North Shore and the bridge.</p>";
+    var max = Math.max(COURSE_CLIMB, top.length ? top[0].elev : 0) * 1.08;
+    box.innerHTML = top.map(function (r) {
+      return "<div class=\"vol-row\" title=\"" + esc(r.name) + "\"><span><b>" + niceDate(r.d) + " " + r.d.slice(2, 4) + "</b><br><span class=\"muted\" style=\"font-size:12px\">" + (Math.round(r.m / 100) / 10) + " km · " + fmtPace(r.pace) + "/km" + (r.hr ? " · HR " + r.hr : "") + "</span></span>" +
+        "<div class=\"vol-track\"><div class=\"vol-act\" style=\"top:0;bottom:0;width:" + (r.elev / max * 100).toFixed(1) + "%\"></div><div class=\"vol-mark\" style=\"left:" + (COURSE_CLIMB / max * 100).toFixed(1) + "%\"></div></div>" +
+        "<span class=\"num\" style=\"text-align:right\"><b>" + r.elev + " m</b><br><span class=\"muted\" style=\"font-size:12px\">" + (Math.round(r.elev / r.m * 10000) / 10) + " m/km</span></span></div>";
+    }).join("") + "<p class=\"vol-legend\">Your 8 hilliest runs. Dashed line: the marathon's " + COURSE_CLIMB + " m. The course spreads it over 42 km, about " + (Math.round(COURSE_CLIMB / MARATHON_KM * 10) / 10) + " m per km.</p>";
+  }
+
+  /* Morning or evening: when you run, and your heart rate against pace for steady runs at each time of day.
+     Last 6 months only, so fitness gains don't favour whichever time you ran more recently. */
+  function renderTimeOfDay() {
+    var head = document.getElementById("st-tod-head"), box = document.getElementById("st-tod");
+    function hour(r) { return +r.hm.slice(0, 2) + +r.hm.slice(3, 5) / 60; }
+    var recent = ALL.filter(function (r) { return r.d >= addDays(today, -183); });
+    var steady = recent.filter(function (r) { return r.hr && r.m >= 4000 && r.pace >= 285 && r.pace <= 390; });
+    var am = steady.filter(function (r) { return hour(r) < 10; }), pm = steady.filter(function (r) { return hour(r) >= 16; });
+    var counts = []; for (var h = 0; h < 24; h++) counts.push(0);
+    recent.forEach(function (r) { counts[Math.floor(hour(r))]++; });
+    var start = parseInt(String(inp.start || "06:00").slice(0, 2), 10) || 6, early = recent.filter(function (r) { return hour(r) < 9; }).length;
+    var tiles = [[Math.round(early / Math.max(1, recent.length) * 100) + "%", "of your runs in the last 6 months started before 9 am. The race starts at " + (inp.start || "06:00")]];
+    var REF = 330, fa = am.length >= 4 ? fitLine(am.map(function (r) { return [r.pace, r.hr, r.sec]; })) : null, fp = pm.length >= 4 ? fitLine(pm.map(function (r) { return [r.pace, r.hr, r.sec]; })) : null;
+    if (fa && fp) {
+      var ha = fa.at(REF), hp = fp.at(REF);
+      tiles.push([Math.round(ha) + " vs " + Math.round(hp), "HR at " + fmtPace(REF) + "/km, mornings vs evenings (" + am.length + " and " + pm.length + " steady runs)"]);
+    }
+    head.innerHTML = statTiles(tiles) + "<p class=\"muted chart-note\">Steady runs are 4:45–6:30/km and over 4 km. " + (fa && fp ? (Math.abs(ha - hp) < 3 ? "Your heart rate at the same pace is about the same at either time of day, so early starts don't cost you anything you can see here." : "Your heart rate at the same pace is " + Math.round(Math.abs(ha - hp)) + " beats " + (ha < hp ? "lower in the morning" : "higher in the morning") + ". Routes, heat and how tired you were also differ, so it's a hint, not proof.") : "Needs at least 4 steady morning and 4 steady evening runs to compare.") + "</p>";
+    /* When you run: starts by hour of day. */
+    var maxC = Math.max.apply(null, counts), yt = [];
+    var stepC = maxC > 20 ? 10 : 5;
+    for (var v = 0; v <= Math.ceil(maxC / stepC) * stepC; v += stepC) yt.push(v);
+    var hist = timeSVG({
+      w: 520, h: 200, x: [-0.6, 23.6], y: [0, yt[yt.length - 1]], yTicks: yt, fy: String, label: "Number of runs by start hour, last 6 months",
+      xTicks: [0, 3, 6, 9, 12, 15, 18, 21].map(function (h) { return { x: h, l: String(h).padStart(2, "0") + ":00" }; }),
+      marks: [{ x: start, l: "Race start" }],
+      bars: counts.map(function (c, h) { return { x: h, y: c, cls: "mo-bar" + (h < 10 ? "" : " pm") }; }),
+      cols: counts.map(function (c, h) { return { x: h, tip: String(h).padStart(2, "0") + ":00–" + String(h).padStart(2, "0") + ":59 · " + c + " runs" }; })
+    });
+    var sc = "";
+    if (fa && fp) {
+      var paces = am.concat(pm).map(function (r) { return r.pace; }), hrs = am.concat(pm).map(function (r) { return r.hr; });
+      var xs = Math.ceil((Math.max.apply(null, paces) + 5) / 30) * 30, xf = Math.floor((Math.min.apply(null, paces) - 5) / 30) * 30;
+      var y0 = Math.floor((Math.min.apply(null, hrs) - 3) / 10) * 10, y1 = Math.ceil((Math.max.apply(null, hrs) + 3) / 10) * 10, yt2 = [];
+      for (v = y0; v <= y1; v += 10) yt2.push(v);
+      var tip = function (r) { return niceDate(r.d) + " " + r.hm + " · " + r.name + " · " + fmtPace(r.pace) + "/km · HR " + r.hr; };
+      sc = scatterSVG({
+        w: 520, h: 240, x: [xs, xf], y: [y0, y1], xTicks: paceTicks(xf, xs), yTicks: yt2, fx: fmtPace, fy: String, xLabel: "Pace (min/km), faster →", label: "Heart rate against pace for steady morning and evening runs",
+        pts: am.map(function (r) { return { x: r.pace, y: r.hr, tip: tip(r) }; }).concat(pm.map(function (r) { return { x: r.pace, y: r.hr, tip: tip(r), cls: "pm" }; }))
+      }).replace("</svg>", ["am", "pm"].map(function (k) {
+        var f = k === "am" ? fa : fp, W = 520, L = 52, R = 16, T = 14, B = 38, H = 240;
+        function sx(x) { return L + (x - xs) / (xf - xs) * (W - L - R); }
+        function sy(y) { return T + (1 - (y - y0) / (y1 - y0)) * (H - T - B); }
+        return "<path class=\"ln " + (k === "am" ? "ln-fit" : "ln-last") + "\" d=\"M" + sx(xs).toFixed(1) + " " + sy(f.at(xs)).toFixed(1) + " L" + sx(xf).toFixed(1) + " " + sy(f.at(xf)).toFixed(1) + "\"></path>";
+      }).join("") + "</svg>");
+    }
+    box.innerHTML = "<h3 class=\"chart-sub\">When you run</h3>" + hist + (sc ? "<h3 class=\"chart-sub\">Heart rate at the same pace</h3>" + sc : "") +
+      "<div class=\"vol-key\"><span><i class=\"sw-dot\"></i>Morning, before 10 am</span><span><i class=\"sw-dot sat\"></i>Evening, from 4 pm</span>" + (sc ? "<span><i class=\"sw-ln fit\"></i>Morning trend</span><span><i class=\"sw-ln last\"></i>Evening trend</span>" : "") + "</div>";
   }
 
   /* ---------- charts over time ---------- */

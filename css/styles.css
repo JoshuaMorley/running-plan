@@ -236,6 +236,10 @@ button { -webkit-tap-highlight-color: transparent; }
 .vol-key .sw-ln.avg { border-top-width: 3px; border-color: var(--fg); }
 .vol-key .sw-ln.last { border-color: var(--c-int); }
 .vol-key .sw-ln.faint { border-color: var(--muted); opacity: 0.6; }
+.mo-bar { fill: var(--accent); }
+.mo-bar.pm, .sc-dot.pm { fill: var(--c-int); }
+.mo-bar.proj { fill-opacity: 0.45; }
+#st-hill { padding: 0; }
 /* Attendance grid: one square per Tuesday and Saturday. */
 .grid-scroll { overflow-x: auto; }
 .gc-svg { width: auto; max-width: none; }
