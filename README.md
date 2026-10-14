@@ -5,8 +5,9 @@ A five-week branching training plan for the Auckland Marathon on Sunday 1 Novemb
 - **Overview:** today's session, the decision map, weekly volume and key dates
 - **Plan:** each week day by day, with why each run matters and what to fuel with
 - **Decisions:** three branch points, with checkers for the 33 km and half marathon tests
-- **Stats:** marathon predictor from your heart rate trend, heartbeats per km, and stride vs cadence, all from Strava
-- **Course:** elevation and pace chart from the course GPX, course map, per-km pace plan and watch-pace adjustment
+- **Stats:** fitness, fatigue and freshness projected to race day, marathon predictor from your heart rate trend, heartbeats per km, and stride vs cadence, all from Strava
+- **5k races:** every Tuesday Good George run and Saturday parkrun since 2025, best-ever times, and distance per heartbeat over time
+- **Course:** elevation and pace chart from the course GPX, course map on Esri map tiles (dark in dark mode), per-km pace plan and watch-pace adjustment
 - **Fuel:** gel calculator, carb load and race breakfast amounts
 - **Race day:** splits, checkpoint calculator and a race-morning timeline
 - **Stay healthy:** rules for training without getting hurt

@@ -9,7 +9,7 @@
     "315": { sec: 11700 }
   };
   var ALLOWED = { A1: ["259", "305", "310"], A2: ["305", "310", "315"], S1: ["305", "310", "315"] };
-  var TABS = ["overview", "plan", "decisions", "stats", "course", "fuel", "race", "rules"];
+  var TABS = ["overview", "plan", "decisions", "stats", "fivek", "course", "fuel", "race", "rules"];
   var HALF_KM = 21.0975;
   /* The North Shore hills and the bridge are in the first half, so halfway is planned 25 s behind even pace. */
   var HALF_BANK = 25;
@@ -579,6 +579,7 @@
       [kcal.toLocaleString("en-NZ") + " kcal", "about " + Math.round(kcal / gelKcal) + " gels' worth"]
     ].map(function (s) { return "<div class=\"stat\"><b class=\"num\">" + esc(s[0]) + "</b><span>" + esc(s[1]) + "</span></div>"; }).join("");
 
+    renderLoad();
     renderPredictor();
     renderBeats();
     renderStride();
@@ -669,7 +670,229 @@
     document.getElementById("st-cadence").innerHTML = chart("spm", fc, function (v) { return Math.round(v); }, 10, "Cadence against pace for each lap, with a trend line");
   }
 
-  /* One floating tip for every chart dot on the Stats tab. */
+  /* ---------- charts over time ---------- */
+  var DAY0 = "2025-01-01";
+  function dayNum(iso) { return daysBetween(DAY0, iso); }
+  function addDays(iso, n) { return isoLocal(new Date(dateObj(iso).getTime() + n * 86400000)); }
+  /* Month labels between two day numbers, every `every` months, with the year on January and the first label. */
+  function monthTicks(x0, x1, every) {
+    var d = dateObj(addDays(DAY0, x0)), out = [];
+    d = new Date(d.getFullYear(), d.getMonth() + 1, 1, 12);
+    for (; dayNum(isoLocal(d)) <= x1; d = new Date(d.getFullYear(), d.getMonth() + every, 1, 12)) {
+      out.push({ x: dayNum(isoLocal(d)), l: MON[d.getMonth()] + (d.getMonth() === 0 || !out.length ? " " + d.getFullYear() : "") });
+    }
+    return out;
+  }
+  /* A small SVG chart against date (x in day numbers): lines, step lines, bars from zero, dots with tips,
+     marker lines, and hover columns that show a tip for each day. y may run backwards (faster times up). */
+  function timeSVG(o) {
+    var W = o.w || 640, H = o.h || 260, L = 52, R = o.r || 16, T = 16, B = o.xTicks ? 30 : 10;
+    function sx(x) { return L + (x - o.x[0]) / (o.x[1] - o.x[0]) * (W - L - R); }
+    function sy(y) { return T + (1 - (y - o.y[0]) / (o.y[1] - o.y[0])) * (H - T - B); }
+    function path(pts, step) {
+      return pts.map(function (p, i) {
+        var s = (i ? " L" : "M") + sx(p[0]).toFixed(1) + " " + sy(p[1]).toFixed(1);
+        return step && i ? " L" + sx(p[0]).toFixed(1) + " " + sy(pts[i - 1][1]).toFixed(1) + s : s;
+      }).join("");
+    }
+    var g = "", dayW = (W - L - R) / (o.x[1] - o.x[0]);
+    o.yTicks.forEach(function (v) { g += "<line class=\"sc-grid" + (v === 0 && o.zero ? " zero" : "") + "\" x1=\"" + L + "\" x2=\"" + (W - R) + "\" y1=\"" + sy(v) + "\" y2=\"" + sy(v) + "\"></line><text class=\"sc-ax\" x=\"" + (L - 8) + "\" y=\"" + (sy(v) + 4) + "\" text-anchor=\"end\">" + esc(o.fy(v)) + "</text>"; });
+    (o.xTicks || []).forEach(function (t) { g += "<text class=\"sc-ax\" x=\"" + sx(t.x) + "\" y=\"" + (H - B + 18) + "\" text-anchor=\"middle\">" + esc(t.l) + "</text>"; });
+    (o.marks || []).forEach(function (m) {
+      g += "<line class=\"tl-mark\" x1=\"" + sx(m.x) + "\" x2=\"" + sx(m.x) + "\" y1=\"" + T + "\" y2=\"" + (H - B) + "\"></line>";
+      if (m.l) g += "<text class=\"sc-ref-l\" x=\"" + (sx(m.x) + (m.end ? -5 : 5)) + "\" y=\"" + (T + 8) + "\" text-anchor=\"" + (m.end ? "end" : "start") + "\">" + esc(m.l) + "</text>";
+    });
+    (o.bars || []).forEach(function (b) {
+      var y0 = sy(0), y1 = sy(b.y), w = Math.max(1.5, dayW - 2);
+      g += "<rect class=\"" + b.cls + "\" x=\"" + (sx(b.x) - w / 2).toFixed(1) + "\" y=\"" + Math.min(y0, y1).toFixed(1) + "\" width=\"" + w.toFixed(1) + "\" height=\"" + Math.max(0.5, Math.abs(y1 - y0)).toFixed(1) + "\" rx=\"1\"></rect>";
+    });
+    (o.lines || []).forEach(function (l) { if (l.pts.length > 1) g += "<path class=\"" + l.cls + "\" d=\"" + path(l.pts, l.step) + "\"></path>"; });
+    (o.labels || []).forEach(function (t) { g += "<text class=\"tl-lab\" x=\"" + (sx(t.x) + 6) + "\" y=\"" + (sy(t.y) + 4) + "\">" + esc(t.l) + "</text>"; });
+    (o.dots || []).forEach(function (p) {
+      var cx = sx(p.x).toFixed(1), cy = sy(p.y).toFixed(1);
+      g += "<circle class=\"sc-dot " + (p.cls || "") + "\" cx=\"" + cx + "\" cy=\"" + cy + "\" r=\"4.5\"></circle>";
+      g += "<circle class=\"sc-hit\" cx=\"" + cx + "\" cy=\"" + cy + "\" r=\"10\" data-tip=\"" + esc(p.tip) + "\"></circle>";
+    });
+    (o.cols || []).forEach(function (c) { g += "<rect class=\"sc-col\" x=\"" + (sx(c.x) - dayW / 2).toFixed(1) + "\" y=\"" + T + "\" width=\"" + dayW.toFixed(1) + "\" height=\"" + (H - T - B) + "\" data-tip=\"" + esc(c.tip) + "\"></rect>"; });
+    return "<svg class=\"scatter\" viewBox=\"0 0 " + W + " " + H + "\" role=\"img\" aria-label=\"" + esc(o.label) + "\">" + g + "</svg>";
+  }
+
+  /* ---------- fitness and freshness ---------- */
+  /* Training load for each run from heart rate (Banister TRIMP), scaled so an hour at threshold scores 100.
+     Max HR 201 matches your Strava zones and the 200 you hit in the 29 Sep 5k. Threshold HR 179 is 89% of that,
+     the top of Strava's zone 3. Resting HR 50 is a guess; it shifts the numbers a little, not the shape.
+     Runs without HR fall back to pace against a 3:57/km threshold pace. */
+  var HR_MAX = 201, HR_REST = 50, LTHR = 179, THRESH_PACE = 237;
+  function trimpMin(hr) { var x = Math.max(0, Math.min(1, (hr - HR_REST) / (HR_MAX - HR_REST))); return x * 0.64 * Math.exp(1.92 * x); }
+  var LT_HOUR = 60 * trimpMin(LTHR);
+  function hrLoad(sec, hr) { return sec / 60 * trimpMin(hr) / LT_HOUR * 100; }
+  function paceLoad(sec, m) { var f = THRESH_PACE / (sec / m * 1000); return sec / 3600 * f * f * 100; }
+  function runLoad(r) {
+    if (!r.splits.some(function (s) { return s[2]; }) && !r.hr) return paceLoad(r.sec, r.m);
+    return r.splits.reduce(function (t, s) { var hr = s[2] || r.hr; return t + (hr ? hrLoad(s[1], hr) : paceLoad(s[1], s[0])); }, 0);
+  }
+  /* Planned sessions count at a typical pace (s/km) and average HR for their type, from your runs so far. */
+  var PLAN_EFFORT = { easy: [330, 141], long: [335, 145], int: [300, 152], race: [215, 184], test: [275, 162] };
+  /* Fitness is the 42-day average load, fatigue the 7-day one, and freshness is fitness minus fatigue, each
+     as it stands on the morning of the day. Planned sessions carry it on to race morning. */
+  function loadSeries() {
+    var hist = (window.RESULTS && window.RESULTS.history) || [], loads = {}, planned = {};
+    function add(d, l) { loads[d] = (loads[d] || 0) + l; }
+    hist.forEach(function (h) { add(h[0], h[3] ? hrLoad(h[1], h[3]) : paceLoad(h[1], h[2])); });
+    RUNS.forEach(function (r) { add(r.date, runLoad(r)); });
+    allDays().forEach(function (d) {
+      var e = PLAN_EFFORT[d.t];
+      if (!e || !d.km || d.d >= RACE_DATE || d.d < today || (d.d === today && runsOn(today).length)) return;
+      add(d.d, hrLoad(d.km * e[0], e[1]));
+      planned[d.d] = true;
+    });
+    var start = hist.length ? hist[0][0] : (RUNS.length ? RUNS[0].date : P.WEEKS[0].days[0].d);
+    /* Start from the average of the first four weeks, not from zero. */
+    var seed = 0;
+    for (var i = 0; i < 28; i++) seed += loads[addDays(start, i)] || 0;
+    var ctl = seed / 28, atl = ctl, out = [];
+    for (var d = start; d <= RACE_DATE; d = addDays(d, 1)) {
+      var l = loads[d] || 0;
+      out.push({ d: d, ctl: ctl, atl: atl, tsb: ctl - atl, load: l, proj: d > today || !!planned[d] });
+      ctl += (l - ctl) / 42;
+      atl += (l - atl) / 7;
+    }
+    return out;
+  }
+  function signed(x) { x = Math.round(x); return (x > 0 ? "+" : x < 0 ? "−" : "") + Math.abs(x); }
+  function renderLoad() {
+    var head = document.getElementById("st-load-head"), box = document.getElementById("st-load");
+    var all = loadSeries();
+    if (all.length < 42) { head.innerHTML = "<p class=\"muted\">Needs about six weeks of runs.</p>"; box.innerHTML = ""; return; }
+    var from = addDays(P.WEEKS[0].days[0].d, -42), s = all.filter(function (x) { return x.d >= from; });
+    var now = s.filter(function (x) { return x.d <= today; }).pop() || s[0], race = s[s.length - 1];
+    var peak = s.reduce(function (a, x) { return x.ctl > a.ctl ? x : a; }, s[0]);
+    head.innerHTML = "<div class=\"stats\">" +
+      "<div class=\"stat\"><b class=\"num\">" + Math.round(now.ctl) + "</b><span>fitness this morning, " + (peak.proj ? "heading for " : "peak ") + Math.round(peak.ctl) + " on " + niceDate(peak.d) + "</span></div>" +
+      "<div class=\"stat\"><b class=\"num\">" + Math.round(now.atl) + "</b><span>fatigue this morning</span></div>" +
+      "<div class=\"stat\"><b class=\"num\">" + signed(now.tsb) + "</b><span>freshness this morning, " + (now.tsb >= 0 ? "fresh" : "carrying fatigue") + "</span></div>" +
+      "<div class=\"stat\"><b class=\"num\">" + signed(race.tsb) + "</b><span>freshness on race morning, keeping " + Math.round(race.ctl / peak.ctl * 100) + "% of peak fitness</span></div></div>" +
+      "<p class=\"muted chart-note\">Load comes from heart rate in each km split, scaled so an hour at threshold (HR about 179) scores 100. An easy hour scores about 45. Fitness is your 42-day average load, fatigue the 7-day average, and freshness is the gap between them. After today the dashed lines follow the plan on your current route. A common rule of thumb is to race with freshness somewhere around +5 to +25. It's a model built on a guessed resting HR, so read the shape, not the exact numbers.</p>";
+
+    var x0 = dayNum(s[0].d), x1 = dayNum(race.d), tx = dayNum(now.d);
+    var xt = [];
+    for (var d = P.WEEKS[0].days[0].d; d >= s[0].d; d = addDays(d, -14)) xt.unshift({ x: dayNum(d), l: niceDate(d).slice(4) });
+    for (d = addDays(P.WEEKS[0].days[0].d, 14); d <= race.d; d = addDays(d, 14)) xt.push({ x: dayNum(d), l: niceDate(d).slice(4) });
+    function pts(key, proj) {
+      return s.filter(function (x) { return proj ? x.d >= now.d : x.d <= now.d; }).map(function (x) { return [dayNum(x.d), x[key]]; });
+    }
+    var yMax = Math.ceil(Math.max.apply(null, s.map(function (x) { return Math.max(x.ctl, x.atl); })) / 20) * 20, yt = [];
+    for (var v = 0; v <= yMax; v += 20) yt.push(v);
+    function tip(x) { return niceDate(x.d) + (x.proj ? " (planned)" : "") + " · fitness " + Math.round(x.ctl) + " · fatigue " + Math.round(x.atl) + " · freshness " + signed(x.tsb) + (x.load ? " · load that day " + Math.round(x.load) : ""); }
+    var cols = s.map(function (x) { return { x: dayNum(x.d), tip: tip(x) }; });
+    var marks = [{ x: tx, l: "Today" }, { x: dayNum(P.WEEKS[0].days[0].d), l: "Plan starts" }];
+    var top = timeSVG({
+      h: 230, r: 70, x: [x0 - 0.5, x1 + 0.5], y: [0, yMax], yTicks: yt, fy: String, label: "Fitness and fatigue by day, with the plan projected to race day",
+      marks: marks,
+      lines: [{ cls: "ln ln-fit", pts: pts("ctl") }, { cls: "ln ln-fit proj", pts: pts("ctl", true) }, { cls: "ln ln-fat", pts: pts("atl") }, { cls: "ln ln-fat proj", pts: pts("atl", true) }],
+      labels: [{ x: x1, y: race.ctl, l: "Fitness" }, { x: x1, y: race.atl, l: "Fatigue" }],
+      cols: cols
+    });
+    var lo = Math.floor(Math.min.apply(null, s.map(function (x) { return x.tsb; })) / 10) * 10, hi = Math.max(10, Math.ceil(Math.max.apply(null, s.map(function (x) { return x.tsb; })) / 10) * 10), yt2 = [];
+    var step = hi - lo > 60 ? 20 : 10;
+    for (v = Math.ceil(lo / step) * step; v <= hi; v += step) yt2.push(v);
+    var bottom = timeSVG({
+      h: 190, r: 70, x: [x0 - 0.5, x1 + 0.5], y: [lo, hi], yTicks: yt2, fy: signed, zero: true, label: "Freshness by day",
+      xTicks: xt, marks: [{ x: tx }, { x: x1, l: "Race " + signed(race.tsb), end: true }],
+      bars: s.map(function (x) { return { x: dayNum(x.d), y: x.tsb, cls: "fr-bar " + (x.tsb >= 0 ? "pos" : "neg") + (x.proj ? " proj" : "") }; }),
+      cols: cols
+    });
+    box.innerHTML = "<h3 class=\"chart-sub\">Fitness and fatigue</h3>" + top + "<h3 class=\"chart-sub\">Freshness</h3>" + bottom +
+      "<div class=\"vol-key\"><span><i class=\"sw-ln fit\"></i>Fitness</span><span><i class=\"sw-ln fat\"></i>Fatigue</span><span><i class=\"sw-ln proj\"></i>Planned, after today</span><span><i class=\"sw-fr pos\"></i>Fresh</span><span><i class=\"sw-fr neg\"></i>Tired</span></div>";
+  }
+
+  /* ---------- 5k page ---------- */
+  /* Tuesday Good George runs and Saturday parkruns from js/results.js, as [date, name, metres, seconds, HR, max HR].
+     Short courses are scaled up to 5 km; long ones keep their watch time, so nothing gets a time it didn't run. */
+  var HARD_PACE = 290;
+  var FIVES = ((window.RESULTS && window.RESULTS.fives) || []).map(function (f) {
+    var t = f[2] >= 5000 ? f[3] : f[3] * 5000 / f[2];
+    return { d: f[0], name: f[1], m: f[2], sec: f[3], hr: f[4], max: f[5], t: t, tue: dateObj(f[0]).getDay() === 2, hard: t / 5 < HARD_PACE };
+  });
+  (function () {
+    var best = {};
+    FIVES.forEach(function (f) {
+      var k = f.tue ? "tue" : "sat";
+      if (f.hard && (!best[k] || f.t < best[k].t)) { f.pb = best[k] ? best[k].t - f.t : 0; best[k] = f; }
+    });
+  })();
+  function fiveLabel(f) { return f.tue ? "Tuesday" : "Saturday"; }
+  function fiveTip(f) { return niceDate(f.d) + " · " + f.name + " · " + fmtClock(f.t) + " (" + fmtPace(f.t / 5) + "/km)" + (f.hr ? " · HR " + f.hr : "") + (f.pb !== undefined ? " · best so far" : ""); }
+  function renderFiveK() {
+    var el = document.getElementById("fk-stats");
+    if (!FIVES.length) { el.innerHTML = "<p class=\"muted\">No Tuesday or Saturday 5ks synced from Strava yet.</p>"; return; }
+    var tue = FIVES.filter(function (f) { return f.tue; }), sat = FIVES.filter(function (f) { return !f.tue; });
+    function bestOf(list) { return list.filter(function (f) { return f.hard; }).reduce(function (a, f) { return !a || f.t < a.t ? f : a; }, null); }
+    function firstHard(list) { return list.filter(function (f) { return f.hard; })[0]; }
+    var bt = bestOf(tue), bs = bestOf(sat), ft = firstHard(tue), best = bestOf(FIVES);
+    var tiles = [];
+    if (bt) tiles.push([fmtClock(bt.t), "best Tuesday, " + niceDate(bt.d)]);
+    if (bs) tiles.push([fmtClock(bs.t), "best Saturday, " + niceDate(bs.d)]);
+    if (ft && bt && bt !== ft) tiles.push([fmtClock(ft.t - bt.t) + " faster", "on Tuesdays since " + niceDate(ft.d) + " (" + fmtClock(ft.t) + ")"]);
+    tiles.push([String(FIVES.length), "5ks since " + MON[dateObj(FIVES[0].d).getMonth()] + " " + FIVES[0].d.slice(0, 4) + ", " + FIVES.filter(function (f) { return f.hard; }).length + " run hard"]);
+    if (best) tiles.push([fmtClock(best.t * Math.pow(MARATHON_KM * 1000 / 5000, 1.06)).replace(/:\d\d$/, ""), "marathon your 5k best is worth, with the endurance to match"]);
+    el.innerHTML = tiles.map(function (s) { return "<div class=\"stat\"><b class=\"num\">" + esc(s[0]) + "</b><span>" + esc(s[1]) + "</span></div>"; }).join("");
+
+    var x0 = dayNum(FIVES[0].d) - 10, x1 = dayNum(today) + 10, span = x1 - x0;
+    var xt = monthTicks(x0, x1, span > 300 ? 2 : 1);
+    function dots(f, y) { return { x: dayNum(f.d), y: y, cls: (f.tue ? "tue" : "sat") + (f.hard ? "" : " easy"), tip: fiveTip(f) }; }
+    function pbLine(list, cls) {
+      var pts = [];
+      list.forEach(function (f) { if (f.pb !== undefined) pts.push([dayNum(f.d), f.t]); });
+      if (pts.length) pts.push([dayNum(today), pts[pts.length - 1][1]]);
+      return { cls: "ln ln-pb " + cls, pts: pts, step: true };
+    }
+
+    /* Every 5k, faster up. */
+    var ts = FIVES.map(function (f) { return f.t; });
+    var slow = Math.ceil((Math.max.apply(null, ts) + 20) / 60) * 60, fast = Math.floor((Math.min.apply(null, ts) - 20) / 60) * 60;
+    var step = slow - fast > 600 ? 120 : 60, yt = [];
+    for (var v = fast; v <= slow; v += step) yt.push(v);
+    document.getElementById("fk-times").innerHTML = timeSVG({
+      h: 300, x: [x0, x1], y: [slow, fast], yTicks: yt, fy: fmtClock, xTicks: xt, label: "Time for every Tuesday and Saturday 5k, faster at the top",
+      lines: [pbLine(tue, "tue"), pbLine(sat, "sat")],
+      dots: FIVES.map(function (f) { return dots(f, f.t); })
+    }) + "<div class=\"vol-key\"><span><i class=\"sw-dot\"></i>Tuesday · Good George</span><span><i class=\"sw-dot sat\"></i>Saturday · parkrun</span><span><i class=\"sw-dot ring\"></i>Jogged, slower than " + fmtPace(HARD_PACE) + "/km</span><span><i class=\"sw-fit\"></i>Best so far</span></div>" +
+      "<p class=\"muted chart-note\">Watch times from Strava, so they can differ from the official results by a few seconds. Courses measured short by GPS are scaled up to 5 km. Saturdays move between parkruns, some of them hilly, so Tuesday's flat course is the cleaner comparison.</p>";
+
+    /* Best-ever list. */
+    var pbs = FIVES.filter(function (f) { return f.pb !== undefined; });
+    document.getElementById("fk-pbs").innerHTML = pbs.slice().reverse().map(function (f) {
+      return "<tr><td class=\"nw\">" + niceDate(f.d) + " " + f.d.slice(2, 4) + "</td><td>" + fiveLabel(f) + "<br><span class=\"muted\" style=\"font-size:12px\">" + esc(f.name) + "</span></td><td class=\"r num\">" + fmtClock(f.t) + "</td><td class=\"r num\">" + (f.pb ? "−" + fmtClock(f.pb) : "first") + "</td></tr>";
+    }).join("");
+
+    /* Metres per heartbeat on hard runs: more distance for each beat means a fitter engine. */
+    var eff = FIVES.filter(function (f) { return f.hard && f.hr; }).map(function (f) { return { f: f, y: f.m / (f.hr * f.sec / 60) }; });
+    var eh = document.getElementById("fk-eff-head"), eb = document.getElementById("fk-eff");
+    if (eff.length < 4) { eh.innerHTML = "<p class=\"muted\">Needs at least 4 hard 5ks with heart rate.</p>"; eb.innerHTML = ""; }
+    else {
+      var fit = fitLine(eff.map(function (e) { return [dayNum(e.f.d), e.y]; }));
+      var ex0 = dayNum(eff[0].f.d), ex1 = dayNum(eff[eff.length - 1].f.d);
+      var gain = (fit.at(ex1) / fit.at(ex0) - 1) * 100;
+      var ys = eff.map(function (e) { return e.y; });
+      var lo = Math.floor(Math.min.apply(null, ys) * 20) / 20, hi = Math.ceil(Math.max.apply(null, ys) * 20) / 20, yt2 = [];
+      for (v = lo; v <= hi + 1e-9; v += 0.05) yt2.push(Math.round(v * 100) / 100);
+      eh.innerHTML = "<div class=\"stats\" style=\"padding:0\"><div class=\"stat\"><b class=\"num\">" + (gain >= 0 ? "+" : "−") + Math.abs(Math.round(gain)) + "%</b><span>distance per heartbeat on hard 5ks, " + niceDate(eff[0].f.d) + " to " + niceDate(eff[eff.length - 1].f.d) + ", from the trend</span></div></div>" +
+        "<p class=\"muted chart-note\">Distance ÷ total heartbeats, for runs faster than " + fmtPace(HARD_PACE) + "/km. When it goes up, each beat moves you further, so you're running faster for the same heart rate. Heat, hills and how hard you pushed all move single runs around. " + eff.length + " runs.</p>";
+      eb.innerHTML = timeSVG({
+        h: 260, x: [x0, x1], y: [lo, hi], yTicks: yt2, fy: function (y) { return y.toFixed(2) + " m"; }, xTicks: xt, label: "Metres per heartbeat on hard 5ks, with a trend line",
+        lines: [{ cls: "ln ln-trend", pts: [[ex0, fit.at(ex0)], [ex1, fit.at(ex1)]] }],
+        dots: eff.map(function (e) { var p = dots(e.f, e.y); p.tip += " · " + e.y.toFixed(2) + " m per beat"; return p; })
+      }) + "<div class=\"vol-key\"><span><i class=\"sw-dot\"></i>Tuesday</span><span><i class=\"sw-dot sat\"></i>Saturday</span><span><i class=\"sw-fit\"></i>Trend</span></div>";
+    }
+
+    /* Every run, newest first. */
+    document.getElementById("fk-table").innerHTML = FIVES.slice().reverse().map(function (f) {
+      return "<tr><td class=\"nw\">" + niceDate(f.d) + " " + f.d.slice(2, 4) + "</td><td>" + esc(f.name) + "</td><td class=\"r num\">" + (Math.round(f.m / 10) / 100) + " km</td><td class=\"r num\">" + fmtClock(f.t) + (f.pb !== undefined ? " ★" : "") + "</td><td class=\"r num\">" + fmtPace(f.t / 5) + "</td><td class=\"r num\">" + (f.hr || "–") + "</td></tr>";
+    }).join("");
+  }
+
+  /* One floating tip for every chart dot. */
   (function () {
     var tip = document.getElementById("chart-tip");
     document.addEventListener("pointerover", function (e) {
@@ -987,21 +1210,39 @@
   }
 
   var MAP = null;
+  /* Esri's grey canvas map tiles (no API key needed): dark grey in dark mode, light grey in light. The route is drawn
+     in the same Web Mercator projection, so it sits on the streets. Offline, the route still draws on a plain card. */
+  var TILE_ZOOM = 13;
+  function darkTheme() {
+    var t = document.documentElement.getAttribute("data-theme");
+    return t ? t === "dark" : !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  }
+  function worldXY(p) {
+    var n = 256 * Math.pow(2, TILE_ZOOM), s = Math.sin(p.lat * Math.PI / 180);
+    return [(p.lon + 180) / 360 * n, (0.5 - Math.log((1 + s) / (1 - s)) / (4 * Math.PI)) * n];
+  }
   function renderMap() {
     var pts = COURSE.pts, W = 400, H = 400, pad = 26;
-    var lats = pts.map(function (p) { return p.lat; }), lons = pts.map(function (p) { return p.lon; });
-    var minLat = Math.min.apply(null, lats), maxLat = Math.max.apply(null, lats), minLon = Math.min.apply(null, lons), maxLon = Math.max.apply(null, lons);
-    var kx = Math.cos((minLat + maxLat) / 2 * Math.PI / 180);
-    var sx = (W - 2 * pad) / ((maxLon - minLon) * kx), sy = (H - 2 * pad) / (maxLat - minLat), sc = Math.min(sx, sy);
-    var offX = (W - (maxLon - minLon) * kx * sc) / 2, offY = (H - (maxLat - minLat) * sc) / 2;
-    MAP = function (p) { return [offX + (p.lon - minLon) * kx * sc, offY + (maxLat - p.lat) * sc]; };
+    var w = pts.map(worldXY), xs = w.map(function (p) { return p[0]; }), ys = w.map(function (p) { return p[1]; });
+    var minX = Math.min.apply(null, xs), maxX = Math.max.apply(null, xs), minY = Math.min.apply(null, ys), maxY = Math.max.apply(null, ys);
+    var sc = Math.min((W - 2 * pad) / (maxX - minX), (H - 2 * pad) / (maxY - minY));
+    /* World pixel at the top-left of the viewBox. */
+    var ox = (minX + maxX) / 2 - W / 2 / sc, oy = (minY + maxY) / 2 - H / 2 / sc;
+    MAP = function (p) { var q = worldXY(p); return [(q[0] - ox) * sc, (q[1] - oy) * sc]; };
+    var style = darkTheme() ? "Dark_Gray_Base" : "Light_Gray_Base", tiles = "";
+    for (var tx = Math.floor(ox / 256); tx * 256 < ox + W / sc; tx++) {
+      for (var ty = Math.floor(oy / 256); ty * 256 < oy + H / sc; ty++) {
+        tiles += "<image href=\"https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_" + style + "/MapServer/tile/" + TILE_ZOOM + "/" + ty + "/" + tx + "\" x=\"" + ((tx * 256 - ox) * sc).toFixed(1) + "\" y=\"" + ((ty * 256 - oy) * sc).toFixed(1) + "\" width=\"" + (256 * sc + 0.5).toFixed(1) + "\" height=\"" + (256 * sc + 0.5).toFixed(1) + "\"></image>";
+      }
+    }
+    var base = "<rect class=\"m-bg\" width=\"" + W + "\" height=\"" + H + "\"></rect><g class=\"m-tiles\">" + tiles + "</g>";
     var route = "", bridge = "";
     pts.forEach(function (p, i) {
       var xy = MAP(p);
       route += (i ? " L" : "M") + xy[0].toFixed(1) + " " + xy[1].toFixed(1);
       if (p.k >= COURSE.bridge[0] && p.k <= COURSE.bridge[1]) bridge += (bridge ? " L" : "M") + xy[0].toFixed(1) + " " + xy[1].toFixed(1);
     });
-    var s = "<path class=\"m-route\" d=\"" + route + "\"></path><path class=\"m-bridge\" d=\"" + bridge + "\"></path>";
+    var s = base + "<path class=\"m-halo\" d=\"" + route + "\"></path><path class=\"m-route\" d=\"" + route + "\"></path><path class=\"m-bridge\" d=\"" + bridge + "\"></path>";
     for (var k = 5; k <= 40; k += 5) {
       var near = pts.reduce(function (a, b) { return Math.abs(b.k - k) < Math.abs(a.k - k) ? b : a; });
       var xy = MAP(near);
@@ -1133,7 +1374,7 @@
   /* ---------- render ---------- */
   function renderAll() {
     renderHeader(); renderTree(); renderToday(); renderVolume(); renderDrift(); renderDates(); renderCalRoute();
-    renderWeekPick(); renderWeek(); renderDecisions(); renderStats(); renderCourse(); renderFuel(); renderRace();
+    renderWeekPick(); renderWeek(); renderDecisions(); renderStats(); renderFiveK(); renderCourse(); renderFuel(); renderRace();
   }
 
   function syncStaticInputs() {
@@ -1178,6 +1419,7 @@
     if (t.id === "theme-btn") {
       var cur = store.get("akl-theme") || "auto";
       applyTheme(THEMES[(THEMES.indexOf(cur) + 1) % THEMES.length]);
+      renderMap();
     }
   });
   document.addEventListener("keydown", function (e) {
@@ -1227,6 +1469,12 @@
   renderAll();
   loadFeedRoute();
   bindProfile();
+  /* On the auto theme, swap the map tiles when the system switches between light and dark. */
+  (function () {
+    var mq = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)");
+    if (mq && mq.addEventListener) mq.addEventListener("change", renderMap);
+    else if (mq && mq.addListener) mq.addListener(renderMap);
+  })();
   var fromHash = location.hash.slice(1);
   selectTab(TABS.indexOf(fromHash) >= 0 ? fromHash : (store.get("akl-tab") || "overview"));
 })();

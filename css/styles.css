@@ -199,6 +199,35 @@ button { -webkit-tap-highlight-color: transparent; }
 .vol-key .sw-dot.hot { background: var(--key); }
 .vol-key .sw-fit { height: 0; border-top: 2px solid var(--fg); border-radius: 0; }
 .vol-key .sw-band { background: var(--accent-soft); }
+/* Charts over time: fitness and freshness on Stats, and the 5k page. */
+.chart-sub { font-size: 15px !important; margin: 4px 0 -6px; }
+.sc-grid.zero { stroke: var(--muted); }
+.sc-col { fill: transparent; cursor: crosshair; }
+.sc-col:hover { fill: var(--fg); fill-opacity: 0.06; }
+.tl-mark { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 3; }
+.tl-lab { fill: var(--fg); font: 600 11px var(--body); }
+.ln { fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.ln.proj { stroke-dasharray: 5 4; }
+.ln-fit { stroke: var(--accent); }
+.ln-fat { stroke: var(--c-int); }
+.ln-pb.tue { stroke: var(--accent); }
+.ln-pb.sat { stroke: var(--c-int); }
+.ln-trend { stroke: var(--fg); }
+.fr-bar.pos { fill: var(--good); }
+.fr-bar.neg { fill: var(--key); }
+.fr-bar.proj { fill-opacity: 0.45; }
+.sc-dot.sat { fill: var(--c-int); }
+.sc-dot.easy { fill: var(--surface); stroke: var(--accent); stroke-width: 2; }
+.sc-dot.sat.easy { stroke: var(--c-int); }
+.vol-key .sw-dot.sat { background: var(--c-int); }
+.vol-key .sw-dot.ring { background: transparent; box-shadow: inset 0 0 0 2px var(--muted); }
+.vol-key .sw-ln { height: 0; border-top: 2px solid; border-radius: 0; }
+.vol-key .sw-ln.fit { border-color: var(--accent); }
+.vol-key .sw-ln.fat { border-color: var(--c-int); }
+.vol-key .sw-ln.proj { border-top-style: dashed; border-color: var(--muted); }
+.vol-key .sw-fr.pos { background: var(--good); }
+.vol-key .sw-fr.neg { background: var(--key); }
+.fk-all summary { padding: 14px 18px; font-weight: 600; cursor: pointer; }
 .chart-tip { position: fixed; z-index: var(--z-tip); pointer-events: none; background: var(--fg); color: var(--surface); font-size: 12px; font-weight: 600; padding: 6px 10px; border-radius: 8px; white-space: nowrap; box-shadow: var(--shadow-hi); }
 .recipe ol { margin: 0; padding-left: 20px; display: grid; gap: 6px; font-size: 14px; }
 .dates { display: grid; gap: 0; }
@@ -406,6 +435,10 @@ td.muted { color: var(--muted); }
 .p-dot, .m-dot { fill: var(--key); stroke: var(--surface); stroke-width: 2; }
 .map-card { overflow: hidden; }
 #map { display: block; width: 100%; height: auto; }
+.m-bg { fill: var(--sunk); }
+.m-halo { fill: none; stroke: var(--surface); stroke-width: 6; stroke-linejoin: round; stroke-linecap: round; opacity: 0.85; }
+.m-credit { font-size: 11px; color: var(--muted); padding: 0 16px 14px; margin: -8px 0 0; }
+.m-credit a { color: inherit; }
 .m-route { fill: none; stroke: var(--accent); stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
 .m-bridge { fill: none; stroke: var(--key); stroke-width: 5; stroke-linecap: round; }
 .m-km { fill: var(--surface); stroke: var(--accent); stroke-width: 1.5; }

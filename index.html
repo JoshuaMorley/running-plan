@@ -52,6 +52,7 @@
     <button type="button" class="tab" role="tab" id="tab-plan" aria-controls="p-plan" data-tab="plan"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span>Plan</span></button>
     <button type="button" class="tab more-item" role="tab" id="tab-decisions" aria-controls="p-decisions" data-tab="decisions"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="5" r="2"/><circle cx="6" cy="19" r="2"/><circle cx="18" cy="7" r="2"/><path d="M6 7v10M18 9v1a5 5 0 0 1-5 5H8"/></svg><span>Decisions</span></button>
     <button type="button" class="tab more-item" role="tab" id="tab-stats" aria-controls="p-stats" data-tab="stats"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M7 16v-4M12 16V6M17 16V9"/></svg><span>Stats</span></button>
+    <button type="button" class="tab more-item" role="tab" id="tab-fivek" aria-controls="p-fivek" data-tab="fivek"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13.5" r="7"/><path d="M12 13.5V10M10 3h4M12 3v3.5"/></svg><span>5k races</span></button>
     <button type="button" class="tab more-item" role="tab" id="tab-course" aria-controls="p-course" data-tab="course"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.8-6.5-11a6.5 6.5 0 0 1 13 0c0 5.2-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.2"/></svg><span>Course</span></button>
     <button type="button" class="tab" role="tab" id="tab-fuel" aria-controls="p-fuel" data-tab="fuel"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 3L5 14h6.5L10.5 21 19 10h-6.5z"/></svg><span>Fuel</span></button>
     <button type="button" class="tab" role="tab" id="tab-race" aria-controls="p-race" data-tab="race"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4M5 4h12l-2.5 4.5L17 13H5"/></svg><span>Race day</span></button>
@@ -138,6 +139,17 @@
 
     <div class="block">
       <div class="sec-head">
+        <h2>Fitness and freshness</h2>
+        <span class="focus">Each run's training load from your heart rate, rolled into fitness (the last six weeks) and fatigue (the last week). The taper drops fatigue faster than fitness, so freshness should climb towards race day. Tap or hover over a day to see it.</span>
+      </div>
+      <div class="card chart-card">
+        <div id="st-load-head"></div>
+        <div id="st-load"></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="sec-head">
         <h2>Marathon predictor</h2>
         <span class="focus">Every km split from your steady runs, plotted as heart rate against pace. The trend line reads off the pace your heart supports at marathon effort, HR 165–172. Interval days are left out.</span>
       </div>
@@ -166,7 +178,53 @@
         <div class="card chart-card"><h3>Cadence</h3><div id="st-cadence"></div></div>
       </div>
     </div>
-    <div class="chart-tip" id="chart-tip" hidden></div>
+  </section>
+
+  <!-- 5K RACES -->
+  <section class="panel" id="p-fivek" role="tabpanel" aria-labelledby="tab-fivek" hidden>
+    <div class="sec-head">
+      <h2>5k races</h2>
+      <span class="focus">Your Tuesday evening Good George runs and Saturday morning parkruns, from Strava. Hover over or tap a dot to see the run.</span>
+    </div>
+    <div class="stats" id="fk-stats"></div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Every 5k</h2>
+        <span class="focus">Faster times are higher up. Filled dots are runs you pushed, hollow ones you jogged. The stepped lines show your best so far on each day.</span>
+      </div>
+      <div class="card chart-card" id="fk-times"></div>
+    </div>
+
+    <div class="grid2">
+      <div class="block">
+        <div class="sec-head"><h2>Best-ever times</h2></div>
+        <div class="card table-box">
+          <table>
+            <thead><tr><th>Date</th><th>Run</th><th class="r">Time</th><th class="r">Gain</th></tr></thead>
+            <tbody id="fk-pbs"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="block">
+        <div class="sec-head"><h2>Same beats, more distance</h2></div>
+        <div class="card chart-card">
+          <div id="fk-eff-head"></div>
+          <div id="fk-eff"></div>
+        </div>
+      </div>
+    </div>
+
+    <details class="card fk-all">
+      <summary>All 5ks</summary>
+      <div class="table-box">
+        <table>
+          <thead><tr><th>Date</th><th>Run</th><th class="r">Distance</th><th class="r">5k time</th><th class="r">Pace</th><th class="r">HR</th></tr></thead>
+          <tbody id="fk-table"></tbody>
+        </table>
+      </div>
+      <p class="vol-legend" style="padding:0 16px 14px">★ best so far on that day of the week. Times for courses under 5 km are scaled up to 5 km.</p>
+    </details>
   </section>
 
   <!-- DECISIONS -->
@@ -234,6 +292,7 @@
       <div class="card map-card">
         <svg id="map" viewBox="0 0 400 400" role="img" aria-label="Course map"></svg>
         <p class="vol-legend" style="padding:0 16px 14px">North is up. The orange section is the Harbour Bridge. The Tamaki Drive section is out and back, so it overlaps on the map.</p>
+        <p class="m-credit">Map tiles © <a href="https://www.esri.com" target="_blank" rel="noopener">Esri</a>. Sources: Esri, HERE, Garmin, © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors.</p>
       </div>
       <div class="card" id="sections"></div>
     </div>
@@ -474,6 +533,7 @@
   </footer>
 </main>
 
+<div class="chart-tip" id="chart-tip" hidden></div>
 <dialog id="guide" class="guide" aria-label="Run guide">
   <div class="guide-in">
     <button type="button" id="guide-close" class="guide-x" aria-label="Close">×</button>
