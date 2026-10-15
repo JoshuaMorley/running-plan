@@ -33,7 +33,7 @@
   if (!TARGETS[st.d2]) st.d2 = "259";
 
   var INP_DEFAULTS = { gel: 26, gph: 70, kg: 80, cpkm: "21.0975", cpt: "1:30:10", start: "06:00",
-    c1pace: "4:15", c1hr: "168", c1slow: "no", c2pace: "4:15", c2hr: "170", c2feel: "just", watch: "42.8", kkt: "5100", kkstart: "07:00" };
+    c1pace: "4:15", c1hr: "168", c1slow: "no", c2pace: "4:15", c2hr: "170", c2feel: "just", watch: "42.8", kkt: "5100", kkstart: "07:00", thw: "6" };
   var inp = loadJSON("akl-inputs", {});
   Object.keys(INP_DEFAULTS).forEach(function (k) { if (inp[k] === undefined || inp[k] === null) inp[k] = INP_DEFAULTS[k]; });
 
@@ -555,14 +555,20 @@
       var d = "";
       for (var i = 0; i <= 40; i++) {
         var x = o.x[0] + (o.x[1] - o.x[0]) * i / 40, y = o.curve(x);
-        if (y < Math.min(o.y[0], o.y[1]) || y > Math.max(o.y[0], o.y[1])) continue;
+        if (!(y >= Math.min(o.y[0], o.y[1]) && y <= Math.max(o.y[0], o.y[1]))) continue;
         d += (d ? " L" : "M") + sx(x).toFixed(1) + " " + sy(y).toFixed(1);
       }
       g += "<path class=\"sc-fit\" d=\"" + d + "\"></path>";
     }
+    (o.vrefs || []).forEach(function (r) {
+      g += "<line class=\"sc-ref" + (r.cls ? " " + r.cls : "") + "\" x1=\"" + sx(r.x) + "\" x2=\"" + sx(r.x) + "\" y1=\"" + T + "\" y2=\"" + (H - B) + "\"></line><text class=\"sc-ref-l" + (r.cls ? " " + r.cls : "") + "\" x=\"" + (sx(r.x) + (r.end ? -6 : 6)) + "\" y=\"" + (T + 12) + "\" text-anchor=\"" + (r.end ? "end" : "start") + "\">" + esc(r.label) + "</text>";
+    });
+    (o.segs || []).forEach(function (s) {
+      g += "<line class=\"" + (s.cls || "sc-fit") + "\" x1=\"" + sx(s.x0).toFixed(1) + "\" y1=\"" + sy(s.y0).toFixed(1) + "\" x2=\"" + sx(s.x1).toFixed(1) + "\" y2=\"" + sy(s.y1).toFixed(1) + "\"></line>";
+    });
     o.pts.forEach(function (p) {
       var cx = sx(p.x).toFixed(1), cy = sy(p.y).toFixed(1);
-      g += "<circle class=\"sc-dot" + (p.cls ? " " + p.cls : "") + "\" cx=\"" + cx + "\" cy=\"" + cy + "\" r=\"4.5\"></circle>";
+      g += "<circle class=\"sc-dot" + (p.cls ? " " + p.cls : "") + "\" cx=\"" + cx + "\" cy=\"" + cy + "\" r=\"" + (p.r || 4.5) + "\"></circle>";
       g += "<circle class=\"sc-hit\" cx=\"" + cx + "\" cy=\"" + cy + "\" r=\"10\" data-tip=\"" + esc(p.tip) + "\"></circle>";
     });
     return "<svg class=\"scatter\" viewBox=\"0 0 " + W + " " + H + "\" role=\"img\" aria-label=\"" + esc(o.label) + "\">" + g + "</svg>";
@@ -587,6 +593,7 @@
     renderMonthly();
     renderEasyHR();
     renderPredictor();
+    renderThreshold();
     renderBeats();
     renderStride();
     renderCadence();
@@ -629,6 +636,162 @@
       curve: function (hr) { return 1000 / f.at(hr); },
       pts: pts.map(function (p) { return { x: p.hr, y: 1000 / p.v, tip: p.tip, cls: p.fast ? "hot" : "" }; })
     }) + "<div class=\"vol-key\"><span><i class=\"sw-dot\"></i>Steady km</span><span><i class=\"sw-dot hot\"></i>Faster than 4:50/km</span><span><i class=\"sw-fit\"></i>Trend</span><span><i class=\"sw-band\"></i>Marathon HR 165–172</span></div>";
+  }
+
+  /* ---------- threshold finder ---------- */
+  /* Heart rate climbs in a straight line with speed until around lactate threshold, then bends away and flattens
+     (the idea behind the Conconi test). Every km split from runs of 5 km or more is plotted as HR against speed, a
+     smooth curve is fitted, and the bend is found by Dmax: the point on the curve farthest from the straight line
+     joining its two ends. Dmax held steady on your data where a two-straight-lines fit jumped between 3:45 and 4:40.
+     Skips each run's first km (HR still rising), partial and walking kms, and interval days.
+     Refitting on runs picked at random, with repeats, gives a likely range. */
+  var TH_WINDOWS = [["3", "3 months"], ["6", "6 months"], ["12", "12 months"], ["all", "Everything"]];
+  function thresholdRuns(win) {
+    var byDate = {}, seen = {}, out = [], R = window.RESULTS || {};
+    allDays().forEach(function (d) { byDate[d.d] = d; });
+    var from = win === "all" ? "0000" : addDays(today, -Math.round(+win * 30.44));
+    RUNS.map(function (r) { return { id: r.id, d: r.date, m: r.m, splits: r.splits }; }).concat(R.fives || [], R.longs || []).forEach(function (r) {
+      if (!r.splits || seen[r.id] || r.d < from || r.m < 4800 || (byDate[r.d] && byDate[r.d].t === "int")) return;
+      seen[r.id] = true;
+      var pos = 0, kms = [];
+      r.splits.forEach(function (s, i) {
+        pos += s[0];
+        var pace = s[1] / s[0] * 1000;
+        if (i > 0 && s[0] >= 900 && s[2] && pace >= 180 && pace <= 420) {
+          kms.push({ v: 3.6 * s[0] / s[1], hr: s[2], tip: niceDate(r.d) + " · km " + Math.round(pos / 1000) + " · " + fmtPace(pace) + "/km · HR " + s[2] });
+        }
+      });
+      if (kms.length) out.push(kms);
+    });
+    return out;
+  }
+  /* Least squares cubic, HR on speed, centred on the mean speed to keep the sums well behaved. */
+  function cubicFit(pts) {
+    var mv = pts.reduce(function (t, p) { return t + p.v; }, 0) / pts.length, A = [], B = [0, 0, 0, 0], i, j, k;
+    for (i = 0; i < 4; i++) A.push([0, 0, 0, 0]);
+    pts.forEach(function (p) {
+      var d = p.v - mv, x = [1, d, d * d, d * d * d];
+      for (j = 0; j < 4; j++) { B[j] += x[j] * p.hr; for (k = 0; k < 4; k++) A[j][k] += x[j] * x[k]; }
+    });
+    var m = A.map(function (r, n) { return r.concat([B[n]]); });
+    for (i = 0; i < 4; i++) {
+      var piv = i;
+      for (j = i + 1; j < 4; j++) if (Math.abs(m[j][i]) > Math.abs(m[piv][i])) piv = j;
+      var t = m[i]; m[i] = m[piv]; m[piv] = t;
+      if (Math.abs(m[i][i]) < 1e-9) return null;
+      for (j = 0; j < 4; j++) if (j !== i) { var f = m[j][i] / m[i][i]; for (k = i; k < 5; k++) m[j][k] -= f * m[i][k]; }
+    }
+    var c = m.map(function (r, n) { return r[4] / r[n]; });
+    return function (v) { var d = v - mv; return c[0] + d * (c[1] + d * (c[2] + d * c[3])); };
+  }
+  /* Dmax over the 5th to 98th percentile of speeds, which keeps a stray km at either end from steering it. */
+  function dmaxOf(pts) {
+    var vs = pts.map(function (p) { return p.v; }).sort(function (a, b) { return a - b; });
+    var lo = vs[Math.floor(vs.length * 0.05)], hi = vs[Math.floor(vs.length * 0.98)], f = cubicFit(pts);
+    if (!f || hi - lo < 1) return null;
+    var y0 = f(lo), y1 = f(hi), best = null;
+    for (var v = lo; v <= hi; v += 0.02) {
+      var d = f(v) - (y0 + (y1 - y0) * (v - lo) / (hi - lo));
+      if (!best || d > best.d) best = { v: v, hr: f(v), d: d };
+    }
+    return best && best.d > 0 ? { v: best.v, hr: best.hr, d: best.d, lo: lo, hi: hi, f: f, chord: function (x) { return y0 + (y1 - y0) * (x - lo) / (hi - lo); } } : null;
+  }
+  /* The bend for a window, plus its 10th–90th percentile range over 150 resamples of whole runs. */
+  function thresholdFor(win) {
+    var runs = thresholdRuns(win), pts = [].concat.apply([], runs);
+    var fast = pts.filter(function (p) { return p.v >= 14; }).length;
+    var res = { runs: runs, pts: pts, fast: fast, dm: pts.length >= 40 && fast >= 8 ? dmaxOf(pts) : null, vs: [], hs: [] };
+    if (!res.dm) return res;
+    var rand = seeded(pts.length * 7919 + runs.length);
+    for (var b = 0; b < 150; b++) {
+      var sample = [];
+      for (var i = 0; i < runs.length; i++) sample = sample.concat(runs[Math.floor(rand() * runs.length)]);
+      var x = dmaxOf(sample);
+      if (x) { res.vs.push(x.v); res.hs.push(x.hr); }
+    }
+    res.vs.sort(function (a, c) { return a - c; }); res.hs.sort(function (a, c) { return a - c; });
+    res.ranged = res.vs.length >= 50;
+    return res;
+  }
+  /* Small seeded random generator, so the range doesn't change on every render. */
+  function seeded(seed) {
+    return function () {
+      seed = (seed + 0x6D2B79F5) | 0;
+      var t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function pct(sorted, q) { return sorted[Math.min(sorted.length - 1, Math.max(0, Math.round(q * (sorted.length - 1))))]; }
+
+  function renderThreshold() {
+    var head = document.getElementById("st-th-head"), box = document.getElementById("st-th");
+    var win = TH_WINDOWS.some(function (w) { return w[0] === inp.thw; }) ? inp.thw : "6";
+    var picker = "<div class=\"th-pick\" role=\"group\" aria-label=\"How far back to look\">" + TH_WINDOWS.map(function (w) {
+      return "<button type=\"button\" class=\"link-btn\" data-thw=\"" + w[0] + "\" aria-pressed=\"" + (w[0] === win) + "\">" + esc(w[1]) + "</button>";
+    }).join("") + "</div>";
+    var res = thresholdFor(win), runs = res.runs, pts = res.pts, dm = res.dm;
+    if (pts.length < 40 || res.fast < 8) {
+      head.innerHTML = picker + "<p class=\"muted chart-note\">Not enough to go on here: " + pts.length + " km splits, " + res.fast + " of them faster than 4:17/km. Try a longer window.</p>";
+      box.innerHTML = "";
+      return;
+    }
+    var vSamp = res.vs, hSamp = res.hs, enough = res.ranged;
+
+    var vs = pts.map(function (p) { return p.v; }), hrs = pts.map(function (p) { return p.hr; });
+    var x0 = Math.floor(Math.min.apply(null, vs) * 2) / 2, x1 = Math.ceil(Math.max.apply(null, vs) * 2) / 2;
+    var y0 = Math.floor((Math.min.apply(null, hrs) - 4) / 10) * 10, y1 = Math.ceil((Math.max.apply(null, hrs) + 4) / 10) * 10;
+    var xt = [420, 390, 360, 330, 300, 270, 240, 210, 180].map(function (p) { return 3600 / p; }).filter(function (v) { return v >= x0 && v <= x1; });
+    var yt = []; for (var y = y0; y <= y1; y += 10) yt.push(y);
+
+    /* Median HR in 10 s/km pace bins, to show the shape through the scatter. */
+    var bins = {};
+    pts.forEach(function (p) { var k = Math.round(3600 / p.v / 10) * 10; (bins[k] = bins[k] || []).push(p.hr); });
+    var meds = Object.keys(bins).filter(function (k) { return bins[k].length >= 3; }).map(function (k) {
+      var h = bins[k].sort(function (a, c) { return a - c; });
+      return { x: 3600 / +k, y: pct(h, 0.5), r: 6.5, tip: fmtPace(+k) + "/km · median HR " + pct(h, 0.5) + " from " + h.length + " kms" };
+    });
+
+    var o = { x: [x0, x1], y: [y0, y1], xTicks: xt, yTicks: yt, fx: function (v) { return fmtPace(3600 / v); }, fy: String,
+      xLabel: "Pace, faster to the right →", label: "Heart rate against speed for each km split, with a two-line fit",
+      pts: pts.map(function (p) { return { x: p.v, y: p.hr, r: 3, cls: "faint", tip: p.tip }; }).concat(meds),
+      vrefs: [{ x: 3600 / mpSec(), label: "Race pace", end: false }] };
+    var stats = "", note, table = "";
+    if (dm) {
+      var v0 = dm.v, h0 = dm.hr, gap = mpSec() - 3600 / v0;
+      /* The fitted curve, the straight line joining its ends, and the gap between them at the bend. */
+      o.curve = function (v) { return v >= dm.lo && v <= dm.hi ? dm.f(v) : NaN; };
+      o.segs = [
+        { x0: dm.lo, y0: dm.chord(dm.lo), x1: dm.hi, y1: dm.chord(dm.hi), cls: "sc-fit th-ext" },
+        { x0: v0, y0: dm.chord(v0), x1: v0, y1: h0, cls: "sc-fit th-above" }
+      ];
+      o.vrefs.push({ x: v0, label: "Bend " + fmtPace(3600 / v0), cls: "th-mark", end: true });
+      if (enough) o.band = [[pct(vSamp, 0.1), pct(vSamp, 0.9)]];
+      stats = "<div class=\"stats\">" +
+        "<div class=\"stat\"><b class=\"num\">" + fmtPace(3600 / v0) + "/km</b><span>where your HR bends away from speed</span></div>" +
+        "<div class=\"stat\"><b class=\"num\">" + Math.round(h0) + " bpm</b><span>HR at the bend</span></div>" +
+        (enough ? "<div class=\"stat\"><b class=\"num\">" + fmtPace(3600 / pct(vSamp, 0.9)) + "–" + fmtPace(3600 / pct(vSamp, 0.1)) + "</b><span>likely range, HR " + Math.round(pct(hSamp, 0.1)) + "–" + Math.round(pct(hSamp, 0.9)) + "</span></div>" : "") +
+        "<div class=\"stat\"><b class=\"num\">" + (Math.abs(gap) < 1 ? "Same" : Math.round(Math.abs(gap)) + " s/km " + (gap > 0 ? "slower" : "faster")) + "</b><span>race pace " + fmtPace(mpSec()) + " against the bend</span></div></div>";
+      note = "From " + pts.length + " km splits in " + runs.length + " runs. The dashed line joins the two ends of the curve, and the bend is where the curve sits farthest above it" +
+        (enough ? ". The shaded band is where the bend lands in 80% of refits on runs picked at random" : "") + ". " +
+        "This is one estimate, and it reads slower than the others: your 17:44 5k suggests a threshold nearer 3:45–3:50/km and HR 176–180, and the fitness chart assumes " + LTHR + ". " +
+        "Field data drags the bend slower. Your fastest kms come mostly from 5k races, where HR is still catching up, and many 4:15–4:30 kms come late in long runs, where HR has drifted up. " +
+        (gap < 8 ? "So race pace close to the bend doesn't by itself mean " + fmtPace(mpSec()) + " is too fast. Test 1 (8 km at 4:15 after 25 km) is better evidence. " : "") +
+        "A proper test is one run that speeds up in steps, such as 1 km at a time from 5:00/km down to 3:40/km, after Kerikeri.";
+      table = "<div class=\"table-box\"><table><thead><tr><th>Looking back</th><th class=\"r\">Bend</th><th class=\"r\">HR</th><th class=\"r\">Likely range</th><th class=\"r\">kms</th></tr></thead><tbody>" +
+        TH_WINDOWS.map(function (w) {
+          var r = w[0] === win ? res : thresholdFor(w[0]);
+          if (!r.dm) return "<tr><td>" + esc(w[1]) + "</td><td class=\"r\" colspan=\"4\">not enough fast kms</td></tr>";
+          return "<tr" + (w[0] === win ? " class=\"cur\"" : "") + "><td>" + esc(w[1]) + "</td><td class=\"r\">" + fmtPace(3600 / r.dm.v) + "</td><td class=\"r\">" + Math.round(r.dm.hr) + "</td><td class=\"r\">" + (r.ranged ? fmtPace(3600 / pct(r.vs, 0.9)) + "–" + fmtPace(3600 / pct(r.vs, 0.1)) : "–") + "</td><td class=\"r\">" + r.pts.length + "</td></tr>";
+        }).join("") + "</tbody></table></div><p class=\"vol-legend\">Longer windows mix in older, less fit months, so they read slower. A bend moving faster over time means your threshold is improving.</p>";
+    } else {
+      var line = fitLine(pts.map(function (p) { return [p.v, p.hr]; }));
+      o.curve = function (v) { return line.at(v); };
+      note = "No bend in this window: HR keeps rising in a straight line with speed (" + pts.length + " km splits, " + runs.length + " runs). That can mean too few fast kms, or a mix of fitness levels. Try another window.";
+    }
+    head.innerHTML = picker + stats + "<p class=\"muted chart-note\">" + esc(note) + "</p>";
+    box.innerHTML = scatterSVG(o) + "<div class=\"vol-key\"><span><i class=\"sw-dot faint\"></i>Km split</span><span><i class=\"sw-dot\"></i>Median HR for each 10 s of pace</span>" +
+      (dm ? "<span><i class=\"sw-fit\"></i>Fitted curve</span><span><i class=\"sw-fit th-ext\"></i>Straight line between its ends</span><span><i class=\"sw-fit th-above\"></i>Biggest gap: the bend</span>" + (enough ? "<span><i class=\"sw-band\"></i>Likely range</span>" : "") : "<span><i class=\"sw-fit\"></i>Straight-line fit</span>") + "</div>" + table;
   }
 
   function renderBeats() {
@@ -2094,6 +2257,8 @@
       normalize(); saveRoute(); renderAll();
       return;
     }
+    var thBtn = t.closest("[data-thw]");
+    if (thBtn) { inp.thw = thBtn.getAttribute("data-thw"); saveInputs(); renderThreshold(); return; }
     var kkBtn = t.closest("[data-kk]");
     if (kkBtn) { inp.kkt = kkBtn.getAttribute("data-kk"); saveInputs(); renderKerikeri(); renderDates(); return; }
     var node = t.closest("[data-node]");

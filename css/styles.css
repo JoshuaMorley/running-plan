@@ -199,6 +199,18 @@ button { -webkit-tap-highlight-color: transparent; }
 .vol-key .sw-dot.hot { background: var(--key); }
 .vol-key .sw-fit { height: 0; border-top: 2px solid var(--fg); border-radius: 0; }
 .vol-key .sw-band { background: var(--accent-soft); }
+/* Threshold finder */
+#st-th-head { display: grid; gap: 12px; }
+.th-pick { display: flex; flex-wrap: wrap; gap: 6px; }
+.th-pick .link-btn { padding: 5px 11px; font-size: 13px; }
+.th-pick .link-btn[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+.sc-dot.faint { fill: var(--muted); fill-opacity: 0.35; stroke: none; }
+.vol-key .sw-dot.faint { background: var(--muted); opacity: 0.45; }
+.sc-fit.th-above, .vol-key .sw-fit.th-above { stroke: var(--key); border-top-color: var(--key); }
+.sc-fit.th-ext { stroke-dasharray: 5 5; opacity: 0.45; }
+.vol-key .sw-fit.th-ext { border-top-style: dashed; opacity: 0.6; }
+.sc-ref.th-mark { stroke: var(--key); stroke-dasharray: none; }
+.sc-ref-l.th-mark { fill: var(--key); }
 /* Charts over time: fitness and freshness on Stats, and the 5k page. */
 .chart-sub { font-size: 15px !important; margin: 4px 0 -6px; }
 .sc-grid.zero { stroke: var(--muted); }
