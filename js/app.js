@@ -33,7 +33,7 @@
   if (!TARGETS[st.d2]) st.d2 = "259";
 
   var INP_DEFAULTS = { gel: 26, gph: 70, kg: 80, cpkm: "21.0975", cpt: "1:30:10", start: "06:00",
-    c1pace: "4:15", c1hr: "168", c1slow: "no", c2pace: "4:15", c2hr: "170", c2feel: "just", watch: "42.8", kkt: "5100", kkstart: "07:00", thw: "6" };
+    c1pace: "4:15", c1hr: "168", c1slow: "no", c2pace: "4:15", c2hr: "170", c2feel: "just", watch: "42.8", kkt: "5100", kkstart: "07:00", thw: "6", sew: "6" };
   var inp = loadJSON("akl-inputs", {});
   Object.keys(INP_DEFAULTS).forEach(function (k) { if (inp[k] === undefined || inp[k] === null) inp[k] = INP_DEFAULTS[k]; });
 
@@ -594,6 +594,7 @@
     renderEasyHR();
     renderPredictor();
     renderThreshold();
+    renderSettle();
     renderBeats();
     renderStride();
     renderCadence();
@@ -792,6 +793,131 @@
     head.innerHTML = picker + stats + "<p class=\"muted chart-note\">" + esc(note) + "</p>";
     box.innerHTML = scatterSVG(o) + "<div class=\"vol-key\"><span><i class=\"sw-dot faint\"></i>Km split</span><span><i class=\"sw-dot\"></i>Median HR for each 10 s of pace</span>" +
       (dm ? "<span><i class=\"sw-fit\"></i>Fitted curve</span><span><i class=\"sw-fit th-ext\"></i>Straight line between its ends</span><span><i class=\"sw-fit th-above\"></i>Biggest gap: the bend</span>" + (enough ? "<span><i class=\"sw-band\"></i>Likely range</span>" : "") : "<span><i class=\"sw-fit\"></i>Straight-line fit</span>") + "</div>" + table;
+  }
+
+  /* ---------- does HR settle? ---------- */
+  /* At a pace you can hold, HR rises for the first few minutes and then levels out. Go faster than that and it
+     never settles: it keeps climbing until you slow down. From runs of 30 minutes or more, each stretch of 3+ kms
+     held at one pace (every km within 10 s/km of the stretch so far) is plotted as HR against minutes at that pace,
+     grouped into 15 s/km pace bands. How fast HR is still rising is measured after the first km of each stretch
+     and after the first 8 minutes of the run, so the warm-up climb and the lag after a pace change don't count. */
+  var SE_BANDS = [390, 375, 360, 345, 330, 315, 300, 285, 270, 255, 240];
+  function settleStretches(win) {
+    var byDate = {}, out = [], R = window.RESULTS || {};
+    allDays().forEach(function (d) { byDate[d.d] = d; });
+    var from = win === "all" ? "0000" : addDays(today, -Math.round(+win * 30.44));
+    (R.settle || []).forEach(function (r) {
+      if (r.sec < 1800 || r.d < from || !r.splits || (byDate[r.d] && byDate[r.d].t === "int")) return;
+      var t = 0, kms = r.splits.map(function (s) {
+        var k = { t0: t, t1: t + s[1], pace: s[1] / s[0] * 1000, hr: s[2], ok: s[0] >= 900 && s[2] && s[1] / s[0] * 1000 <= 400 };
+        t += s[1];
+        return k;
+      });
+      var runs = [], i = 0;
+      while (i < kms.length) {
+        if (!kms[i].ok) { i++; continue; }
+        var j = i, sum = 0;
+        while (j < kms.length && kms[j].ok && (j === i || Math.abs(kms[j].pace - sum / (j - i)) <= 10)) { sum += kms[j].pace; j++; }
+        var band = Math.max(240, Math.round(sum / (j - i) / 15) * 15), prev = runs[runs.length - 1];
+        /* A long steady run can drift a few seconds and split in two; join the halves back up if they share a band. */
+        if (prev && prev.band === band && prev.kms[prev.kms.length - 1] === kms[i - 1]) prev.kms = prev.kms.concat(kms.slice(i, j));
+        else runs.push({ band: band, kms: kms.slice(i, j) });
+        i = j;
+      }
+      runs.forEach(function (s) {
+        if (s.kms.length < 3 || SE_BANDS.indexOf(s.band) < 0) return;
+        var t0 = s.kms[0].t0;
+        s.d = r.d; s.name = r.name; s.startMin = t0 / 60;
+        s.pts = s.kms.map(function (k) { return { x: ((k.t0 + k.t1) / 2 - t0) / 60, y: k.hr, run: (k.t0 + k.t1) / 2 / 60 }; });
+        s.pace = s.kms.reduce(function (a, k) { return a + k.pace; }, 0) / s.kms.length;
+        var late = s.pts.filter(function (p, n) { return n > 0 && p.run >= 8; });
+        s.slope = late.length >= 2 ? fitLine(late.map(function (p) { return [p.x, p.y]; })).b * 10 : null;
+        s.mins = (s.kms[s.kms.length - 1].t1 - t0) / 60;
+        out.push(s);
+      });
+    });
+    return out;
+  }
+  function settleVerdict(slope) { return slope <= 1.5 ? "Levels out" : slope <= 4 ? "Drifts up" : "Keeps climbing"; }
+  function renderSettle() {
+    var head = document.getElementById("st-se-head"), box = document.getElementById("st-se");
+    var win = TH_WINDOWS.some(function (w) { return w[0] === inp.sew; }) ? inp.sew : "6";
+    var picker = "<div class=\"th-pick\" role=\"group\" aria-label=\"How far back to look\">" + TH_WINDOWS.map(function (w) {
+      return "<button type=\"button\" class=\"link-btn\" data-sew=\"" + w[0] + "\" aria-pressed=\"" + (w[0] === win) + "\">" + esc(w[1]) + "</button>";
+    }).join("") + "</div>";
+    var all = settleStretches(win);
+    /* A pace band needs stretches from at least two runs to get its own line. */
+    var bands = SE_BANDS.map(function (b) {
+      var list = all.filter(function (s) { return s.band === b; }), days = {};
+      list.forEach(function (s) { days[s.d] = 1; });
+      if (Object.keys(days).length < 2) return null;
+      var med = [];
+      for (var k = 0; ; k++) {
+        var at = list.filter(function (s) { return s.pts[k]; });
+        if (at.length < 2) break;
+        var xs = at.map(function (s) { return s.pts[k].x; }).sort(function (a, c) { return a - c; });
+        var ys = at.map(function (s) { return s.pts[k].y; }).sort(function (a, c) { return a - c; });
+        med.push({ x: pct(xs, 0.5), y: pct(ys, 0.5), n: at.length });
+      }
+      var sl = list.filter(function (s) { return s.slope !== null; }), w = sl.reduce(function (a, s) { return a + s.mins; }, 0);
+      var slope = w ? sl.reduce(function (a, s) { return a + s.slope * s.mins; }, 0) / w : null;
+      var settled = [].concat.apply([], list.map(function (s) { return s.pts.filter(function (p) { return p.x >= 10; }).map(function (p) { return p.y; }); })).sort(function (a, c) { return a - c; });
+      /* Two stretches can agree by luck, so a pace needs three before it gets a verdict. */
+      return { band: b, i: SE_BANDS.indexOf(b), list: list, med: med, slope: sl.length >= 3 ? slope : null, settled: settled.length ? pct(settled, 0.5) : null, runs: Object.keys(days).length };
+    }).filter(Boolean);
+    if (!bands.length) {
+      head.innerHTML = picker + "<p class=\"muted chart-note\">Not enough steady stretches here: " + all.length + " found, and each pace needs them from two different runs. Try a longer window.</p>";
+      box.innerHTML = "";
+      return;
+    }
+
+    /* Headline: the fastest pace whose HR levels out, and the next faster one that doesn't. */
+    var judged = bands.filter(function (b) { return b.slope !== null; });
+    var holds = judged.filter(function (b) { return b.slope <= 1.5; }).sort(function (a, c) { return a.band - c.band; })[0];
+    var breaks = holds && judged.filter(function (b) { return b.band < holds.band && b.slope > 4; }).sort(function (a, c) { return c.band - a.band; })[0];
+    var sls = judged.map(function (b) { return Math.round(b.slope); }), slLo = Math.min.apply(null, sls), slHi = Math.max.apply(null, sls);
+    var stats = "<div class=\"stats\">" +
+      (holds ? "<div class=\"stat\"><b class=\"num\">" + fmtPace(holds.band) + "/km</b><span>fastest pace where HR levels out, around " + holds.settled + " bpm</span></div>" : "") +
+      (breaks ? "<div class=\"stat\"><b class=\"num\">" + fmtPace(breaks.band) + "/km</b><span>HR keeps climbing, " + signed(breaks.slope) + " bpm every 10 min</span></div>" :
+        !holds && judged.length ? "<div class=\"stat\"><b class=\"num\">" + signed(slLo) + (slHi !== slLo ? " to " + signed(slHi) : "") + " bpm</b><span>rise every 10 min at each pace " + fmtPace(judged[judged.length - 1].band) + "–" + fmtPace(judged[0].band) + "/km: none pulls away</span></div>" : "") +
+      "<div class=\"stat\"><b class=\"num\">" + all.length + "</b><span>steady stretches from runs of 30 min or more</span></div></div>";
+
+    var ys = [].concat.apply([], all.filter(function (s) { return bands.some(function (b) { return b.band === s.band; }); }).map(function (s) { return s.pts.map(function (p) { return p.y; }); }));
+    var y0 = Math.floor((Math.min.apply(null, ys) - 4) / 10) * 10, y1 = Math.ceil((Math.max.apply(null, ys) + 4) / 10) * 10;
+    var maxX = Math.max.apply(null, [].concat.apply([], bands.map(function (b) { return b.list.map(function (s) { return s.pts[s.pts.length - 1].x; }); })));
+    var x1 = Math.max(30, Math.ceil((maxX + 6) / 10) * 10), step = x1 > 90 ? 20 : 10;
+    var yt = []; for (var y = y0; y <= y1; y += 10) yt.push(y);
+    var xt = []; for (var x = 0; x <= x1; x += step) xt.push({ x: x, l: x ? x + " min" : "0" });
+
+    var lines = [], dots = [], labels = [];
+    bands.forEach(function (b) {
+      b.list.forEach(function (s) { lines.push({ cls: "se-run se-" + b.i, pts: s.pts.map(function (p) { return [p.x, p.y]; }) }); });
+    });
+    bands.forEach(function (b) {
+      lines.push({ cls: "se-line se-" + b.i, pts: b.med.map(function (p) { return [p.x, p.y]; }) });
+      b.med.forEach(function (p) {
+        dots.push({ x: p.x, y: p.y, cls: "se-dot se-" + b.i, tip: fmtPace(b.band) + "/km · " + Math.round(p.x) + " min in · median HR " + p.y + " from " + p.n + " stretches" });
+      });
+      var end = b.med[b.med.length - 1];
+      if (end) labels.push({ x: end.x, y: end.y, l: fmtPace(b.band) });
+    });
+    /* Keep the pace labels at the line ends from sitting on top of each other. */
+    var gap = (y1 - y0) * 13 / 254;
+    labels.sort(function (a, c) { return a.y - c.y; }).forEach(function (l, n, arr) { if (n && Math.abs(l.y - arr[n - 1].y) < gap && Math.abs(l.x - arr[n - 1].x) < x1 / 12) l.y = arr[n - 1].y + gap; });
+
+    var note = "Each faint line is one stretch of a run held at one pace, starting from when that pace began; the bold line for each pace is the median of its stretches. " +
+      "A pace you can hold shows HR rising for the first 10 minutes or so and then flattening. A pace that's too fast keeps climbing, and a stretch that ends while HR is still rising was either too short to settle or too fast to. " +
+      "Stretches that start mid-run begin from wherever HR already was, and fast stretches here come mostly from fast finishes after long runs, where tired legs and heat push HR up faster than fresh running would. 5k races are left out because they're under 30 minutes.";
+    head.innerHTML = picker + stats + "<p class=\"muted chart-note\">" + esc(note) + "</p>";
+
+    var table = "<div class=\"table-box\"><table><thead><tr><th>Pace</th><th class=\"r\">Stretches</th><th class=\"r\">HR after 10 min</th><th class=\"r\">Rise per 10 min</th><th>After warming up</th></tr></thead><tbody>" +
+      bands.slice().reverse().map(function (b) {
+        return "<tr" + (holds && b.band === holds.band ? " class=\"cur\"" : "") + "><td><i class=\"se-sw se-" + b.i + "\"></i>" + fmtPace(b.band) + "/km</td><td class=\"r\">" + b.list.length + "</td><td class=\"r\">" + (b.settled || "–") + "</td><td class=\"r\">" +
+          (b.slope === null ? "–" : signed(b.slope)) + "</td><td>" + (b.slope === null ? "<span class=\"muted\">too few stretches to tell</span>" : settleVerdict(b.slope)) + "</td></tr>";
+      }).join("") + "</tbody></table></div><p class=\"vol-legend\">Levels out: under 1.5 bpm per 10 min. Drifts up: 1.5–4, normal over a long run as you warm and dehydrate. Keeps climbing: over 4, which you can't hold for long.</p>";
+    box.innerHTML = timeSVG({ x: [0, x1], y: [y0, y1], xTicks: xt, yTicks: yt, fy: String, h: 300, r: 40, lines: lines, dots: dots, labels: labels,
+      label: "Heart rate against minutes at a steady pace, one line per pace" }) +
+      "<div class=\"vol-key\"><span><i class=\"sw-ln se-k-run\"></i>One stretch</span><span><i class=\"sw-ln se-k-line\"></i>Median for that pace, darker is faster</span><span>x axis: minutes at that pace</span></div>" + table;
   }
 
   function renderBeats() {
@@ -2259,6 +2385,8 @@
     }
     var thBtn = t.closest("[data-thw]");
     if (thBtn) { inp.thw = thBtn.getAttribute("data-thw"); saveInputs(); renderThreshold(); return; }
+    var seBtn = t.closest("[data-sew]");
+    if (seBtn) { inp.sew = seBtn.getAttribute("data-sew"); saveInputs(); renderSettle(); return; }
     var kkBtn = t.closest("[data-kk]");
     if (kkBtn) { inp.kkt = kkBtn.getAttribute("data-kk"); saveInputs(); renderKerikeri(); renderDates(); return; }
     var node = t.closest("[data-node]");

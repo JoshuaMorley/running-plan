@@ -211,6 +211,25 @@ button { -webkit-tap-highlight-color: transparent; }
 .vol-key .sw-fit.th-ext { border-top-style: dashed; opacity: 0.6; }
 .sc-ref.th-mark { stroke: var(--key); stroke-dasharray: none; }
 .sc-ref-l.th-mark { fill: var(--key); }
+/* Does HR settle: one hue, faint for slow paces to full strength for fast ones (6:30/km is se-0, 4:00 is se-10). */
+#st-se-head { display: grid; gap: 12px; }
+.se-0 { --se: color-mix(in oklab, var(--key) 30%, var(--surface)); }
+.se-1 { --se: color-mix(in oklab, var(--key) 37%, var(--surface)); }
+.se-2 { --se: color-mix(in oklab, var(--key) 44%, var(--surface)); }
+.se-3 { --se: color-mix(in oklab, var(--key) 51%, var(--surface)); }
+.se-4 { --se: color-mix(in oklab, var(--key) 58%, var(--surface)); }
+.se-5 { --se: color-mix(in oklab, var(--key) 65%, var(--surface)); }
+.se-6 { --se: color-mix(in oklab, var(--key) 72%, var(--surface)); }
+.se-7 { --se: color-mix(in oklab, var(--key) 79%, var(--surface)); }
+.se-8 { --se: color-mix(in oklab, var(--key) 86%, var(--surface)); }
+.se-9 { --se: color-mix(in oklab, var(--key) 93%, var(--surface)); }
+.se-10 { --se: var(--key); }
+.se-run { fill: none; stroke: var(--se); stroke-width: 1; opacity: 0.4; }
+.se-line { fill: none; stroke: var(--se); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.sc-dot.se-dot { fill: var(--se); }
+.se-sw { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--se); margin-right: 8px; }
+.vol-key .sw-ln.se-k-run { border-color: var(--key); opacity: 0.4; border-top-width: 1px; }
+.vol-key .sw-ln.se-k-line { border-color: var(--key); }
 /* Charts over time: fitness and freshness on Stats, and the 5k page. */
 .chart-sub { font-size: 15px !important; margin: 4px 0 -6px; }
 .sc-grid.zero { stroke: var(--muted); }
