@@ -33,7 +33,7 @@
   if (!TARGETS[st.d2]) st.d2 = "259";
 
   var INP_DEFAULTS = { gel: 26, gph: 70, kg: 80, cpkm: "21.0975", cpt: "1:30:10", start: "06:00",
-    c1pace: "4:15", c1hr: "168", c1slow: "no", c2pace: "4:15", c2hr: "170", c2feel: "just", watch: "42.8", kkt: "5100", kkstart: "07:00", thw: "6", sew: "6" };
+    c1pace: "4:15", c1hr: "168", c1slow: "no", c2pace: "4:14", c2hr: "164", c2feel: "easy", watch: "42.8", kkt: "5100", kkstart: "07:00", thw: "6", sew: "6" };
   var inp = loadJSON("akl-inputs", {});
   Object.keys(INP_DEFAULTS).forEach(function (k) { if (inp[k] === undefined || inp[k] === null) inp[k] = INP_DEFAULTS[k]; });
 

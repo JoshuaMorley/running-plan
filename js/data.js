@@ -51,6 +51,7 @@ window.PLAN = (function () {
       { d: "2026-10-16", t: "rest", title: "Rest", fuel: "Normal meals." },
       { d: "2026-10-17", t: "easy", title: "Easy run + strides", km: 5, detail: "5:30/km easy, then 4 × 20 s relaxed strides.", why: "Strides wake your legs up for tomorrow.", fuel: "Carb-heavy dinner tonight." },
       { d: "2026-10-18", t: "test", title: "Half marathon · pace test", km: 21.1, altBy: "half", shoes: true,
+        result: "Done: 21.1 km in 1:31:16, a half marathon best. 16 km at 4:14/km (every km 4:12–4:17), avg HR 164, max 171, settling from 167 to about 164 after km 8. Then 5 km at 4:35/km (HR 153–159). Felt comfortable and fuelling was fine. Sub-3 stays the target", done: true,
         detail: ["Your dress rehearsal: full race kit and shoes, race breakfast 3 h before, gels on schedule", "Run it as a controlled training run, not a race. Two weeks out is too close to race a half", "First 14 km at 4:30/km, your marathon target pace", "Last 7 km easy to steady, 4:45–5:15/km. Don't speed up", "If HR goes past 170 before 14 km, ease off. That tells you something useful, it isn't a failure", "Note your average pace and HR over the first 14 km, and whether you could have kept going"],
         why: "The best guide to your race pace you'll get before race day, without taking so much out of you that it hurts the marathon.",
         fuel: "Race-day routine: breakfast 3 h before, a gel 10–15 min before the start, then gels at about km 6, 11 and 17, each with water.",
