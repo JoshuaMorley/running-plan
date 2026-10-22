@@ -62,12 +62,12 @@ window.PLAN = (function () {
       { d: "2026-10-20", t: "race", title: "Tuesday 5k · last sharp one", km: 5, detail: "Race it if you want. Twelve days out is fine. Otherwise run it at threshold.", why: "One last effort to stay sharp, with 12 days left to recover.", fuel: FUEL_HARD },
       { d: "2026-10-21", t: "rest", title: "Rest" },
       { d: "2026-10-22", t: "int", title: "Morning intervals · pace + speed", km: 10, shoes: true, detail: ["2 km easy warm-up", "4 km at {mp}/km", "4 × 400 m at 3:35/km, 200 m jog between", "1.5 km easy cool-down", "Race shoes and race kit. This replaces the Sunday race practice"], why: "Your last proper race-pace run before race week, so it takes a little of the dropped race practice. The 400s keep some pop in your legs.", fuel: FUEL_HARD },
-      { d: "2026-10-23", t: "easy", title: "Easy run", km: 6, detail: "5:20–5:45/km. Moved from Saturday.", why: "Easy running to keep the routine going before the weekend off.", fuel: FUEL_NONE },
+      { d: "2026-10-23", t: "rest", title: "Rest · run moved to Monday" },
       { d: "2026-10-24", t: "rest", title: "Rest · diving 🤿",fuel: "No running. Drink plenty, since diving dries you out. Normal meals." },
       { d: "2026-10-25", t: "rest", title: "Rest · diving 🤿",fuel: "No running. Drink plenty and eat normally. A weekend off a week out costs you nothing." }
     ]},
     { n: 5, range: "26 Oct – 1 Nov", focus: "Race week. Stay loose, sleep well, fuel up.", days: [
-      { d: "2026-10-26", t: "rest", title: "Rest · Labour Day" },
+      { d: "2026-10-26", t: "easy", title: "Easy evening run", km: 5, detail: "5:30–5:45/km. Moved from Friday. Keep it short.", why: "Loosens the legs after four days off, ahead of Tuesday's 5k.", fuel: FUEL_NONE },
       { d: "2026-10-27", t: "easy", title: "Tuesday 5k · easy", km: 5, detail: "5:00–5:15/km. Don't race it this week.", why: "Keeps the legs moving. Your fitness is already built.", fuel: FUEL_NONE },
       { d: "2026-10-28", t: "rest", title: "Rest" },
       { d: "2026-10-29", t: "int", title: "Morning pace check", km: 6.5, shoes: true, detail: ["2 km easy", "3 × 1 km at {mp}/km, 1 min jog between", "1 km easy"], why: "Reminds your legs what race pace feels like.", fuel: FUEL_NONE },
@@ -182,7 +182,7 @@ window.PLAN = (function () {
       alt: ["- 16km 4:13-4:17/km Pace", "- 5.1km 4:45-5:15/km Pace"] },
     "2026-10-20": { s: ["- 5km"] },
     "2026-10-22": { s: wu(2).concat(["- 4km {mp-2}-{mp+2}/km Pace", ""], reps(4, ["- 400mtr 3:32-3:38/km Pace", "- 200mtr"]), cd(1.5)) },
-    "2026-10-23": { s: ez(6) },
+    "2026-10-26": { s: ez(5, "5:30-5:45/km Pace") },
     "2026-10-27": { s: ez(5, "5:00-5:15/km Pace") },
     "2026-10-29": { s: wu(2).concat(reps(3, ["- 1km {mp-2}-{mp+2}/km Pace", "- 1m"]), cd(1)) },
     "2026-10-31": { s: ez(4.5, "5:45-6:30/km Pace").concat(["", "Strides"], reps(3, ["- 20s", "- 60s"])) },
@@ -282,12 +282,12 @@ window.PLAN = (function () {
       stop: ["If race pace feels hard today, skip the 400s. You need rest, not more work"],
       after: "Carbs and protein within an hour. Note anything that rubbed or annoyed you in your race kit, and fix it before race week."
     },
-    "2026-10-23": {
-      feel: "Easy and relaxed. Full sentences the whole way.",
-      how: ["5:20–5:45/km from the first step"],
+    "2026-10-26": {
+      feel: "Easy and relaxed. Full sentences the whole way. Legs may feel stale after the weekend off. That's normal.",
+      how: ["5:30–5:45/km from the first step", "25–30 minutes is plenty"],
       elev: "Anything gentle, up to about 50 m.",
-      stop: ["HR over 150: slow down", "Legs heavy from yesterday: cut it to 4 km"],
-      after: "Nothing special. No running over the weekend while you're diving."
+      stop: ["HR over 150: slow down", "Anything tight: cut it to 3 km"],
+      after: "Nothing special. Easy 5k tomorrow."
     },
     "2026-10-27": {
       feel: "Easy. You'll feel restless with the taper. That's normal. Don't race it.",
