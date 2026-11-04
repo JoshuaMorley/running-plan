@@ -91,7 +91,7 @@ window.PLAN = (function () {
       { d: "2026-11-12", t: "easy", title: "Easy run · readiness check", km: 6, detail: ["6:10–6:45/km", "The check: HR under 150 at about 6:15/km, and stairs and hills feel normal", "Both yes: run Kerikeri at 1:49. Either no: jog it slower, or skip it"], why: "The simplest honest test of whether the marathon has worn off.", fuel: FUEL_NONE },
       { d: "2026-11-13", t: "rest", title: "Rest" },
       { d: "2026-11-14", t: "easy", title: "Saturday parkrun · easy + strides", km: 5, detail: ["6:10–6:45/km, relaxed and comfortable", "Then 4 × 20 s relaxed strides"], why: "The strides remind your legs how to run fast again.", fuel: FUEL_NONE },
-      { d: "2026-11-15", t: "easy", title: "Easy long-ish run", km: 10, detail: ["6:15–6:45/km, HR under 150", "Include some gentle downhill if you can. Kerikeri drops about 275 m"], why: "Your longest run since Auckland. The downhill gets your quads ready for the course.", fuel: FUEL_NONE }
+      { d: "2026-11-15", t: "long", title: "Easy long-ish run", km: 10, detail: ["6:15–6:45/km, HR under 150", "Include some gentle downhill if you can. Kerikeri drops about 275 m"], why: "Your longest run since Auckland. The downhill gets your quads ready for the course.", fuel: FUEL_NONE }
     ]},
     { n: 8, range: "16 – 22 Nov", focus: "Keep it light, then run the Kerikeri Half at 1:49 on Saturday. Not a race.", days: [
       { d: "2026-11-16", t: "rest", title: "Rest" },
