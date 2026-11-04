@@ -75,7 +75,7 @@ window.PLAN = (function () {
       { d: "2026-10-31", t: "easy", title: "Shakeout", km: 5, detail: "Very easy, 5:45/km or slower, plus 3 strides. Lay out your kit, pin your bib, count your gels, and plan the trip to Devonport.", why: "Settles the nerves and loosens the legs.", fuel: "Keep carb loading: {load}. Have an early dinner you've eaten before." },
       { d: "2026-11-01", t: "race", title: "Auckland Marathon", km: 42.2, shoes: true, detail: "Target {full} at {mp}/km. See the Race day tab for splits and checks.", fuel: "Breakfast 3 h before, gel 1 10–15 min before the start, then your race gel schedule." }
     ]},
-    { n: 6, range: "2 – 8 Nov", focus: "Recovery after the hospital stay. Cardiology said you can keep running. Keep it short and very easy, and stop if you feel dizzy, breathless or your heart races.", days: [
+    { n: 6, range: "2 – 8 Nov", focus: "Recovery. Keep it short and very easy, and stop if you feel dizzy, breathless or your heart races.", days: [
       { d: "2026-11-02", t: "rest", title: "Rest · walk 20–30 min", fuel: "Recovery day. Eat well, top up carbs and protein, and rehydrate." },
       { d: "2026-11-03", t: "rest", title: "Rest", fuel: "Normal meals with plenty of protein." },
       { d: "2026-11-04", t: "rest", title: "Rest or optional jog 20 min", optKm: 3 },
@@ -88,18 +88,18 @@ window.PLAN = (function () {
       { d: "2026-11-09", t: "rest", title: "Rest" },
       { d: "2026-11-10", t: "easy", title: "Tuesday 5k · easy", km: 5, detail: "5:00–5:15/km. Let the racers go. Too soon after a marathon to race.", why: "Back into the Tuesday routine without the effort.", fuel: FUEL_NONE },
       { d: "2026-11-11", t: "rest", title: "Rest" },
-      { d: "2026-11-12", t: "easy", title: "Easy run · readiness check", km: 6, detail: ["5:20–5:45/km", "The check: HR under 150 at 5:20–5:30/km, and stairs and hills feel normal", "Both yes: run Kerikeri at an easy 1:49. Either no: jog it slower, or skip it"], why: "The simplest honest test of whether the marathon has worn off.", fuel: FUEL_NONE },
+      { d: "2026-11-12", t: "easy", title: "Easy run · readiness check", km: 6, detail: ["5:20–5:45/km", "The check: HR under 150 at 5:20–5:30/km, and stairs and hills feel normal", "Both yes: run Kerikeri at 1:49. Either no: jog it slower, or skip it"], why: "The simplest honest test of whether the marathon has worn off.", fuel: FUEL_NONE },
       { d: "2026-11-13", t: "rest", title: "Rest" },
       { d: "2026-11-14", t: "easy", title: "Easy run + strides", km: 8, detail: "5:20–5:40/km, then 4 × 20 s relaxed strides.", why: "The strides remind your legs how to run fast again.", fuel: FUEL_NONE },
       { d: "2026-11-15", t: "easy", title: "Easy long-ish run", km: 10, detail: ["5:20–5:40/km, HR under 150", "Include some gentle downhill if you can. Kerikeri drops about 275 m"], why: "Your longest run since Auckland. The downhill gets your quads ready for the course.", fuel: FUEL_NONE }
     ]},
-    { n: 8, range: "16 – 22 Nov", focus: "Stay easy, then run the Kerikeri Half at an easy 1:49 on Saturday. Not a race.", days: [
+    { n: 8, range: "16 – 22 Nov", focus: "Keep it light, then run the Kerikeri Half at 1:49 on Saturday. Not a race.", days: [
       { d: "2026-11-16", t: "rest", title: "Rest" },
-      { d: "2026-11-17", t: "easy", title: "Tuesday 5k · Kerikeri pace", km: 5, shoes: true, detail: ["About 5:10/km, your pace for an easy 1:49. Not a race", "Race shoes, to check they still feel right"], why: "A feel for Kerikeri pace, four days out, without any hard effort.", fuel: FUEL_NONE },
+      { d: "2026-11-17", t: "easy", title: "Tuesday 5k · Kerikeri pace", km: 5, shoes: true, detail: ["About 5:10/km, your pace for 1:49. Not a race", "Race shoes, to check they still feel right"], why: "A feel for Kerikeri pace, four days out, without any hard effort.", fuel: FUEL_NONE },
       { d: "2026-11-18", t: "rest", title: "Rest" },
       { d: "2026-11-19", t: "easy", title: "Easy run + strides", km: 5, detail: "5:30/km easy, then 4 × 20 s relaxed strides.", why: "Keeps the legs loose before Saturday.", fuel: FUEL_NONE },
       { d: "2026-11-20", t: "rest", title: "Rest", fuel: "Carb-heavy dinner tonight, such as the rice bowl. No need for a full carb load before a half." },
-      { d: "2026-11-21", t: "race", title: "Kerikeri Half Marathon", km: 21.1, shoes: true, detail: ["Okaihau to Kerikeri, point to point. Climbs about 95 m in the first 7 km, then drops about 275 m to the finish", "An easy 1:49, not a race. Splits are on the Kerikeri tab", "Last year: 1:37:54"], why: "An easy run to finish the season on, three weeks after Auckland.", fuel: "Breakfast 2.5–3 h before, a gel 10–15 min before the start, and one more at about km 9, after the top of the climb." },
+      { d: "2026-11-21", t: "race", title: "Kerikeri Half Marathon", km: 21.1, shoes: true, detail: ["Okaihau to Kerikeri, point to point. Climbs about 95 m in the first 7 km, then drops about 275 m to the finish", "1:49, not a race. Splits are on the Kerikeri tab", "Last year: 1:37:54"], why: "A run to finish the season on, three weeks after Auckland.", fuel: "Breakfast 2.5–3 h before, a gel 10–15 min before the start, and one more at about km 9, after the top of the climb." },
       { d: "2026-11-22", t: "rest", title: "Rest", fuel: "Recovery day. Eat well and celebrate." }
     ]}
   ];
@@ -195,7 +195,7 @@ window.PLAN = (function () {
     "2026-11-15": { s: ez(10, "5:20-5:40/km Pace") },
     "2026-11-17": { s: ["- 5km 5:05-5:15/km Pace"] },
     "2026-11-19": { s: ez(4.5, "5:25-5:35/km Pace").concat(["", "Strides"], reps(4, ["- 20s", "- 60s"])) },
-    /* Paced for an easy 1:49: slower up the climb, faster down the long descent. Other targets are on the Kerikeri tab. */
+    /* Paced for 1:49: slower up the climb, faster down the long descent. Other targets are on the Kerikeri tab. */
     "2026-11-21": { s: ["- 7.3km 5:15-5:25/km Pace", "- 13.8km 5:00-5:10/km Pace"] }
   };
   /* Heart rate guide shown with each run on the site, in the calendar and in Garmin notes: [fastest pace in seconds/km
@@ -362,8 +362,8 @@ window.PLAN = (function () {
       after: "Carbs and protein within an hour."
     },
     "2026-11-17": {
-      feel: "Easy and smooth. You should finish feeling you've hardly started.",
-      how: ["5 km at about 5:10/km, your pace for an easy 1:49", "Race shoes"],
+      feel: "Smooth and controlled. You should finish feeling you could keep going.",
+      how: ["5 km at about 5:10/km, your pace for 1:49", "Race shoes"],
       hr: ["Expect about 140–150", "Over 155: slow down. It's too early after Auckland to push"],
       elev: FLAT,
       stop: ["Dizziness, chest pain, palpitations or unusual breathlessness: stop and see a doctor"],
@@ -377,8 +377,8 @@ window.PLAN = (function () {
       after: "Pack for Kerikeri: race kit and shoes, 2 gels, breakfast, and warm clothes for the start."
     },
     "2026-11-21": {
-      feel: "Easy the whole way. An easy 1:49, three weeks after Auckland and the hospital. Not a race.",
-      how: ["5 min easy jog to warm up", "Km 0–7.3, the climb out of Okaihau: about 5:15–5:25/km, by effort", "Km 7.3–9.6, the steep drop: quick, light steps. Let gravity do it rather than braking or bounding", "Km 9.6–21.1: about 5:00–5:10/km. No fast finish", "Carry electrolytes and drink at every station, more if it's sunny and warm"],
+      feel: "Controlled the whole way. 1:49, three weeks after Auckland. Not a race.",
+      how: ["5 min jog to warm up", "Km 0–7.3, the climb out of Okaihau: about 5:15–5:25/km, by effort", "Km 7.3–9.6, the steep drop: quick, light steps. Let gravity do it rather than braking or bounding", "Km 9.6–21.1: about 5:00–5:10/km. No fast finish", "Carry electrolytes and drink at every station, more if it's sunny and warm"],
       hr: ["Climb: under about 155", "Descent and flat: under about 160. Over that, slow down, even if it costs you 1:49", "Your HR will drift up if it warms up. Slow down rather than hold pace"],
       elev: "About 95 m of climbing in the first 7.3 km, then about 275 m of descent to the finish, steepest from km 7.3 to 9.6. Numbers come from your 2025 GPS and may be a little off.",
       stop: ["Dizziness, chest pain, palpitations, confusion or unusual breathlessness: stop and get help from the medics", "Quads cramping or sore on the descent: ease to a jog", "Any sharp pain: stop"],

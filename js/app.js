@@ -2137,7 +2137,7 @@
     ["5100", "1:25", "Recovered and feeling normal."],
     ["5280", "1:28", "Recovered but a bit flat, or Auckland was a hard day."],
     ["5640", "1:34 · steady", "Not quite recovered. Run it steady and enjoy the downhill."],
-    ["6540", "1:49 · easy", "After Auckland and the hospital stay. Easy effort, not a race. The plan's default."]
+    ["6540", "1:49", "A run, not a race, after a hard day at Auckland. The plan's default."]
   ];
   var KK = (function () {
     var C = window.KERIKERI, scale = KK_KM / C.total;
