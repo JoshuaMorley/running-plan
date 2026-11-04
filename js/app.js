@@ -33,7 +33,7 @@
   if (!TARGETS[st.d2]) st.d2 = "259";
 
   var INP_DEFAULTS = { gel: 26, gph: 70, kg: 80, cpkm: "21.0975", cpt: "1:30:10", start: "06:00",
-    c1pace: "4:15", c1hr: "168", c1slow: "no", c2pace: "4:14", c2hr: "164", c2feel: "easy", watch: "42.8", kkt: "5100", kkstart: "07:00", thw: "6", sew: "6" };
+    c1pace: "4:15", c1hr: "168", c1slow: "no", c2pace: "4:14", c2hr: "164", c2feel: "easy", watch: "42.8", kkt: "6540", kkstart: "07:00", thw: "6", sew: "6" };
   var inp = loadJSON("akl-inputs", {});
   Object.keys(INP_DEFAULTS).forEach(function (k) { if (inp[k] === undefined || inp[k] === null) inp[k] = INP_DEFAULTS[k]; });
 
@@ -2134,9 +2134,10 @@
   var KK_KM = 21.0975, KK_LAST_ID = "16527046320";
   var KK_TARGETS = [
     ["4920", "1:22", "Fully recovered: the 12 Nov check was easy and goal pace felt easy on the 17th."],
-    ["5100", "1:25", "Recovered and feeling normal. The plan's default."],
+    ["5100", "1:25", "Recovered and feeling normal."],
     ["5280", "1:28", "Recovered but a bit flat, or Auckland was a hard day."],
-    ["5640", "1:34 · steady", "Not quite recovered. Run it steady and enjoy the downhill."]
+    ["5640", "1:34 · steady", "Not quite recovered. Run it steady and enjoy the downhill."],
+    ["6540", "1:49 · easy", "After Auckland and the hospital stay. Easy effort, not a race. The plan's default."]
   ];
   var KK = (function () {
     var C = window.KERIKERI, scale = KK_KM / C.total;
@@ -2161,7 +2162,7 @@
   })();
   function kkTarget() {
     var t = String(inp.kkt);
-    return KK_TARGETS.some(function (x) { return x[0] === t; }) ? +t : 5100;
+    return KK_TARGETS.some(function (x) { return x[0] === t; }) ? +t : 6540;
   }
   function kkTargetLabel() { return fmtClock(kkTarget()).replace(/:00$/, ""); }
   /* The Auckland effort rule: about 0.9 s per metre climbed and 0.5 s back per metre descended, capped at
