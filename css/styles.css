@@ -353,7 +353,7 @@ a.link-btn { text-decoration: none; }
 .d-date span { font-size: 12px; color: var(--muted); }
 .chip { justify-self: start; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; padding: 3px 8px; border-radius: 6px; color: var(--cc); background: var(--cs); white-space: nowrap; }
 .t-easy { --cc: var(--c-easy); --cs: var(--c-easy-soft); }
-.t-int { --cc: var(--c-int); --cs: var(--c-int-soft); }
+.t-int, .t-pace { --cc: var(--c-int); --cs: var(--c-int-soft); }
 .t-long { --cc: var(--accent); --cs: var(--accent-soft); }
 .t-race, .t-test { --cc: var(--key); --cs: var(--key-soft); }
 .t-rest { --cc: var(--c-rest); --cs: transparent; padding-inline: 0; }

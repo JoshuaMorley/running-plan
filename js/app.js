@@ -14,7 +14,7 @@
   var HALF_KM = 21.0975;
   /* The North Shore hills and the bridge are in the first half, so halfway is planned 25 s behind even pace. */
   var HALF_BANK = 25;
-  var TYPE_LABEL = { rest: "Rest", easy: "Easy", int: "Intervals", long: "Long", race: "Race", test: "Test" };
+  var TYPE_LABEL = { rest: "Rest", easy: "Easy", int: "Intervals", pace: "Race pace", long: "Long", race: "Race", test: "Test" };
   var DOW = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   var MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 

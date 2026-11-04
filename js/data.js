@@ -95,7 +95,7 @@ window.PLAN = (function () {
     ]},
     { n: 8, range: "16 – 22 Nov", focus: "Keep it light, then run the Kerikeri Half at 1:49 on Saturday. Not a race.", days: [
       { d: "2026-11-16", t: "rest", title: "Rest" },
-      { d: "2026-11-17", t: "easy", title: "Tuesday 5k · Kerikeri pace", km: 5, shoes: true, detail: ["About 5:10/km, your pace for 1:49. Not a race", "Race shoes, to check they still feel right"], why: "A feel for Kerikeri pace, four days out, without any hard effort.", fuel: FUEL_NONE },
+      { d: "2026-11-17", t: "pace", title: "Tuesday 5k · Kerikeri pace", km: 5, shoes: true, detail: ["About 5:10/km, your pace for 1:49. Not a race", "Race shoes, to check they still feel right"], why: "A feel for Kerikeri pace, four days out, without any hard effort.", fuel: FUEL_NONE },
       { d: "2026-11-18", t: "rest", title: "Rest" },
       { d: "2026-11-19", t: "easy", title: "Easy run + strides", km: 5, detail: "6:15/km easy, then 4 × 20 s relaxed strides.", why: "Keeps the legs loose before Saturday.", fuel: FUEL_NONE },
       { d: "2026-11-20", t: "rest", title: "Rest", fuel: "Carb-heavy dinner tonight, such as the rice bowl. No need for a full carb load before a half." },
