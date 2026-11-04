@@ -10,7 +10,7 @@
     "315": { sec: 11700 }
   };
   var ALLOWED = { A1: ["259", "305", "310"], A2: ["305", "310", "315"], S1: ["305", "310", "315"] };
-  var TABS = ["overview", "plan", "decisions", "stats", "fivek", "course", "fuel", "race", "kerikeri", "rules"];
+  var TABS = ["overview", "plan", "stats", "fivek", "course", "fuel", "race", "kerikeri", "rules"];
   var HALF_KM = 21.0975;
   /* The North Shore hills and the bridge are in the first half, so halfway is planned 25 s behind even pace. */
   var HALF_BANK = 25;
@@ -1706,10 +1706,8 @@
   function renderWeek() {
     var w = P.WEEKS[ui.week], km = weekKm(w);
     var h = "";
-    if (w.decBefore) h += decisionHTML(w.decBefore, true);
     h += "<div class=\"sec-head\"><h2>Week " + w.n + " <span class=\"eyebrow\" style=\"font-family:var(--body)\">" + esc(w.range) + "</span></h2><span class=\"focus\">" + esc(w.focus) + "</span><span class=\"week-km num\">" + (Math.round(km * 10) / 10) + " km <small>planned</small></span></div>";
     h += "<div class=\"card days\">" + weekDays(w).map(dayRowHTML).join("") + "</div>";
-    if (w.decAfter) h += decisionHTML(w.decAfter, true);
     document.getElementById("week-view").innerHTML = h;
   }
 
@@ -2161,8 +2159,7 @@
     return { pts: pts, hi: pts[hiI], low: pts[lowI], climb: pts[hiI].e - pts[0].e, drop: pts[0].e - pts[pts.length - 1].e, perKm: perKm };
   })();
   function kkTarget() {
-    var t = String(inp.kkt);
-    return KK_TARGETS.some(function (x) { return x[0] === t; }) ? +t : 6540;
+    return 6540;
   }
   function kkTargetLabel() { return fmtClock(kkTarget()).replace(/:00$/, ""); }
   /* The Auckland effort rule: about 0.9 s per metre climbed and 0.5 s back per metre descended, capped at

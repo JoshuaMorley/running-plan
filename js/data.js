@@ -81,23 +81,23 @@ window.PLAN = (function () {
       { d: "2026-11-04", t: "rest", title: "Rest or optional jog 20 min", optKm: 3 },
       { d: "2026-11-05", t: "easy", title: "Recovery jog", km: 4, detail: ["5:45–6:15/km, slower is fine", "Stop and walk home if anything feels sore rather than stiff"], why: "Gets blood moving through tired legs without adding damage.", fuel: FUEL_NONE },
       { d: "2026-11-06", t: "rest", title: "Rest" },
-      { d: "2026-11-07", t: "easy", title: "Easy run", km: 5, detail: ["5:30–6:00/km, HR under 145", "A parkrun jogged easy counts. Don't race it"], why: "Checks how the legs are coming back.", fuel: FUEL_NONE },
+      { d: "2026-11-07", t: "easy", title: "Saturday parkrun · easy", km: 5, detail: ["6:10–6:45/km, HR under 145", "Relaxed and comfortable, with Mia"], why: "Checks how the legs are coming back.", fuel: FUEL_NONE },
       { d: "2026-11-08", t: "rest", title: "Rest" }
     ]},
     { n: 7, range: "9 – 15 Nov", focus: "Easy rebuild. Easy running only, with strides at the end of the week. Thursday is the check for whether to race Kerikeri.", days: [
       { d: "2026-11-09", t: "rest", title: "Rest" },
-      { d: "2026-11-10", t: "easy", title: "Tuesday 5k · easy", km: 5, detail: "5:00–5:15/km. Let the racers go. Too soon after a marathon to race.", why: "Back into the Tuesday routine without the effort.", fuel: FUEL_NONE },
+      { d: "2026-11-10", t: "easy", title: "Tuesday 5k · easy", km: 5, detail: "6:00–6:15/km, relaxed and smooth.", why: "Back into the Tuesday routine without the effort.", fuel: FUEL_NONE },
       { d: "2026-11-11", t: "rest", title: "Rest" },
-      { d: "2026-11-12", t: "easy", title: "Easy run · readiness check", km: 6, detail: ["5:20–5:45/km", "The check: HR under 150 at 5:20–5:30/km, and stairs and hills feel normal", "Both yes: run Kerikeri at 1:49. Either no: jog it slower, or skip it"], why: "The simplest honest test of whether the marathon has worn off.", fuel: FUEL_NONE },
+      { d: "2026-11-12", t: "easy", title: "Easy run · readiness check", km: 6, detail: ["6:10–6:45/km", "The check: HR under 150 at about 6:15/km, and stairs and hills feel normal", "Both yes: run Kerikeri at 1:49. Either no: jog it slower, or skip it"], why: "The simplest honest test of whether the marathon has worn off.", fuel: FUEL_NONE },
       { d: "2026-11-13", t: "rest", title: "Rest" },
-      { d: "2026-11-14", t: "easy", title: "Easy run + strides", km: 8, detail: "5:20–5:40/km, then 4 × 20 s relaxed strides.", why: "The strides remind your legs how to run fast again.", fuel: FUEL_NONE },
-      { d: "2026-11-15", t: "easy", title: "Easy long-ish run", km: 10, detail: ["5:20–5:40/km, HR under 150", "Include some gentle downhill if you can. Kerikeri drops about 275 m"], why: "Your longest run since Auckland. The downhill gets your quads ready for the course.", fuel: FUEL_NONE }
+      { d: "2026-11-14", t: "easy", title: "Saturday parkrun · easy + strides", km: 5, detail: ["6:10–6:45/km, relaxed and comfortable", "Then 4 × 20 s relaxed strides"], why: "The strides remind your legs how to run fast again.", fuel: FUEL_NONE },
+      { d: "2026-11-15", t: "easy", title: "Easy long-ish run", km: 10, detail: ["6:15–6:45/km, HR under 150", "Include some gentle downhill if you can. Kerikeri drops about 275 m"], why: "Your longest run since Auckland. The downhill gets your quads ready for the course.", fuel: FUEL_NONE }
     ]},
     { n: 8, range: "16 – 22 Nov", focus: "Keep it light, then run the Kerikeri Half at 1:49 on Saturday. Not a race.", days: [
       { d: "2026-11-16", t: "rest", title: "Rest" },
       { d: "2026-11-17", t: "easy", title: "Tuesday 5k · Kerikeri pace", km: 5, shoes: true, detail: ["About 5:10/km, your pace for 1:49. Not a race", "Race shoes, to check they still feel right"], why: "A feel for Kerikeri pace, four days out, without any hard effort.", fuel: FUEL_NONE },
       { d: "2026-11-18", t: "rest", title: "Rest" },
-      { d: "2026-11-19", t: "easy", title: "Easy run + strides", km: 5, detail: "5:30/km easy, then 4 × 20 s relaxed strides.", why: "Keeps the legs loose before Saturday.", fuel: FUEL_NONE },
+      { d: "2026-11-19", t: "easy", title: "Easy run + strides", km: 5, detail: "6:15/km easy, then 4 × 20 s relaxed strides.", why: "Keeps the legs loose before Saturday.", fuel: FUEL_NONE },
       { d: "2026-11-20", t: "rest", title: "Rest", fuel: "Carb-heavy dinner tonight, such as the rice bowl. No need for a full carb load before a half." },
       { d: "2026-11-21", t: "race", title: "Kerikeri Half Marathon", km: 21.1, shoes: true, detail: ["Okaihau to Kerikeri, point to point. Climbs about 95 m in the first 7 km, then drops about 275 m to the finish", "1:49, not a race. Splits are on the Kerikeri tab", "Last year: 1:37:54"], why: "A run to finish the season on, three weeks after Auckland.", fuel: "Breakfast 2.5–3 h before, a gel 10–15 min before the start, and one more at about km 9, after the top of the climb." },
       { d: "2026-11-22", t: "rest", title: "Rest", fuel: "Recovery day. Eat well and celebrate." }
@@ -188,13 +188,13 @@ window.PLAN = (function () {
     "2026-10-31": { s: ez(4.5, "5:45-6:30/km Pace").concat(["", "Strides"], reps(3, ["- 20s", "- 60s"])) },
     "2026-11-01": { s: ["- 42.2km {mp-3}-{mp+3}/km Pace"] },
     "2026-11-05": { s: ez(4, "5:45-6:15/km Pace") },
-    "2026-11-07": { s: ez(5, "5:30-6:00/km Pace") },
-    "2026-11-10": { s: ez(5, "5:00-5:15/km Pace") },
-    "2026-11-12": { s: ez(6) },
-    "2026-11-14": { s: ez(7, "5:20-5:40/km Pace").concat(["", "Strides"], reps(4, ["- 20s", "- 60s"])) },
-    "2026-11-15": { s: ez(10, "5:20-5:40/km Pace") },
+    "2026-11-07": { s: ez(5, "6:10-6:45/km Pace") },
+    "2026-11-10": { s: ez(5, "6:00-6:15/km Pace") },
+    "2026-11-12": { s: ez(6, "6:10-6:45/km Pace") },
+    "2026-11-14": { s: ez(5, "6:10-6:45/km Pace").concat(["", "Strides"], reps(4, ["- 20s", "- 60s"])) },
+    "2026-11-15": { s: ez(10, "6:15-6:45/km Pace") },
     "2026-11-17": { s: ["- 5km 5:05-5:15/km Pace"] },
-    "2026-11-19": { s: ez(4.5, "5:25-5:35/km Pace").concat(["", "Strides"], reps(4, ["- 20s", "- 60s"])) },
+    "2026-11-19": { s: ez(4.5, "6:10-6:30/km Pace").concat(["", "Strides"], reps(4, ["- 20s", "- 60s"])) },
     /* Paced for 1:49: slower up the climb, faster down the long descent. Other targets are on the Kerikeri tab. */
     "2026-11-21": { s: ["- 7.3km 5:15-5:25/km Pace", "- 13.8km 5:00-5:10/km Pace"] }
   };
@@ -327,36 +327,36 @@ window.PLAN = (function () {
     },
     "2026-11-07": {
       feel: "Easy and relaxed. Probably still a bit flat. That's normal a week out from a marathon.",
-      how: ["5:30–6:00/km from the first step", "A parkrun is fine if you jog it. Don't get pulled into racing"],
+      how: ["6:10–6:45/km from the first step", "Run it with Mia, relaxed the whole way"],
       elev: FLAT,
       stop: ["HR over 145 at easy pace: slow down. Your body is still recovering"],
       after: "Normal meals."
     },
     "2026-11-10": {
       feel: "Easy. You may feel ready to race. It's too early, so let them go.",
-      how: ["5:00–5:15/km the whole way"],
+      how: ["6:00–6:15/km the whole way"],
       elev: FLAT,
       stop: ["Anything sore: drop to 5:30 or jog it"],
       after: "Normal dinner."
     },
     "2026-11-12": {
       feel: "Easy and normal. This run is the check for whether you race Kerikeri.",
-      how: ["5:20–5:45/km", "Note your average HR over km 2–5 at 5:20–5:30/km", "Go up a flight of stairs afterwards and notice whether your quads complain"],
-      hr: ["Under 150 at 5:20–5:30, as before Auckland: recovered", "Over 150, or it feels like work: not yet. Run Kerikeri steady"],
+      how: ["6:10–6:45/km", "Note your average HR over km 2–5 at about 6:15/km", "Go up a flight of stairs afterwards and notice whether your quads complain"],
+      hr: ["Under 150 at about 6:15: recovered", "Over 150, or it feels like work: not yet. Run Kerikeri steady"],
       elev: FLAT,
       stop: ["Anything sharp: stop. Kerikeri is optional, the next season isn't"],
       after: "Pick your Kerikeri target on the Kerikeri tab."
     },
     "2026-11-14": {
       feel: "Easy, with the strides feeling quick and light. Your legs should feel like yours again.",
-      how: ["7 km at 5:20–5:40/km", "4 × 20 s strides: build to about 3:30/km pace, stay tall and relaxed", "60 s walk or jog between strides"],
+      how: ["5 km parkrun at 6:10–6:45/km", "4 × 20 s strides: build to about 3:30/km pace, stay tall and relaxed", "60 s walk or jog between strides"],
       elev: FLAT,
       stop: ["Anything tight: skip the strides"],
       after: "Normal meals."
     },
     "2026-11-15": {
       feel: "Easy and comfortable. Full sentences the whole way.",
-      how: ["5:20–5:40/km", "If your route has a gentle downhill, run it at the same easy effort with quick, light steps"],
+      how: ["6:15–6:45/km", "If your route has a gentle downhill, run it at the same easy effort with quick, light steps"],
       elev: "Some gentle downhill is useful: 50–100 m of descent gets your quads used to it before Kerikeri. Avoid anything steep.",
       stop: ["HR over 150: slow down", "Sore quads on the downhill: run the rest flat"],
       after: "Carbs and protein within an hour."
@@ -371,7 +371,7 @@ window.PLAN = (function () {
     },
     "2026-11-19": {
       feel: "Loose and easy, with the strides feeling quick and light.",
-      how: ["4.5 km at about 5:30/km", "4 × 20 s strides, 60 s easy between"],
+      how: ["4.5 km at about 6:15/km", "4 × 20 s strides, 60 s easy between"],
       elev: FLAT,
       stop: ["Anything tight: skip the strides"],
       after: "Pack for Kerikeri: race kit and shoes, 2 gels, breakfast, and warm clothes for the start."
