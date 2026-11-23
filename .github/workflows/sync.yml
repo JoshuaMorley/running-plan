@@ -4,10 +4,9 @@
 name: Sync
 
 on:
-  schedule:
-    # Every 30 minutes, off the hour and half hour: GitHub is busiest at the top of the hour
-    # and delays or drops scheduled runs then.
-    - cron: "7,37 * * * *"
+  # No schedule between plans. To sync every 30 minutes again, add back:
+  #   schedule:
+  #     - cron: "7,37 * * * *"   # off the hour and half hour, when GitHub drops fewer scheduled runs
   push:
     branches: [main]
     paths: [route.json, js/data.js]

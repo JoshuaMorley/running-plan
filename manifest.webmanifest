@@ -1,7 +1,7 @@
 {
-  "name": "Auckland Marathon Build",
-  "short_name": "Marathon",
-  "description": "Five-week branching training plan to the Auckland Marathon on 1 November 2026.",
+  "name": "Running Plans",
+  "short_name": "Running",
+  "description": "Past training plans, with the Auckland Marathon and Kerikeri Half plan from 2026.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

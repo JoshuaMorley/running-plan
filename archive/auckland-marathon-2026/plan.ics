@@ -1,0 +1,929 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//joshuamorley//Auckland Marathon plan//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Auckland Marathon plan
+X-WR-CALDESC:Runs on the sub-3 build\, Test 1 pass\, target 259 (4:15/km). 
+ https://joshuamorley.github.io/running-plan/
+X-WR-TIMEZONE:Pacific/Auckland
+REFRESH-INTERVAL;VALUE=DURATION:PT6H
+X-PUBLISHED-TTL:PT6H
+X-AKL-ROUTE:A-pass-259
+BEGIN:VEVENT
+UID:akl-2026-09-29@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART;VALUE=DATE:20260929
+DTEND;VALUE=DATE:20260930
+SUMMARY:✓ Tuesday 5k race · 5 km
+DESCRIPTION:Done: 17:44\, 3rd place\, avg HR 184\n\nStrava: 5 km at 3:32/km
+ \, avg HR 184\n\n• Good George 5k.\n\nHeart rate guide (estimated from y
+ our recent runs\, may be off):\n• Race effort: HR climbs past 180 (your 
+ 5k averaged 184). Run it by feel\n\nhttps://joshuamorley.github.io/running
+ -plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-09-30@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART;VALUE=DATE:20260930
+DTEND;VALUE=DATE:20261001
+SUMMARY:✓ Easy run · 6 km
+DESCRIPTION:Strava: 5 km at 5:46/km\, avg HR 150\n\n• 5:20–5:45/km\, HR
+  under 150\n• You should be able to talk in full sentences the whole way
+ \n\nWhy: Adds the extra easy volume a sub-3 attempt needs without adding s
+ tress.\n\nFuel: None needed. Eat a normal carb-based meal afterwards.\n\nH
+ eart rate guide (estimated from your recent runs\, may be off):\n• 5:20
+ –5:45/km: easy\, HR 125–150. Over 150 means slow down\n\nhttps://joshu
+ amorley.github.io/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-10-01@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART;VALUE=DATE:20261001
+DTEND;VALUE=DATE:20261002
+SUMMARY:✓ Morning intervals · threshold · 10.5 km
+DESCRIPTION:Strava: 6.7 km at 5:51/km\, avg HR 134\n\n• 2 km easy warm-up
+ \n• 5 × 1 km at 3:45–3:50/km\, 90 s jog between\n• 2 km easy cool-d
+ own\n• Reps should feel hard but even. If the last rep is more than 5 s 
+ slower than the first\, stop there\n\nWhy: Raises your threshold so marath
+ on pace feels easier. Kept below 5k pace because you raced two days ago.\n
+ \nFuel: None during. Have carbs and protein within an hour afterwards.\n\n
+ Heart rate guide (estimated from your recent runs\, may be off):\n• 5:20
+ –5:45/km: easy\, HR 125–150. Over 150 means slow down\n• 3:45–3:50
+ /km: HR about 172–182\n\nhttps://joshuamorley.github.io/running-plan/#pl
+ an
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-10-03@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART;VALUE=DATE:20261003
+DTEND;VALUE=DATE:20261004
+SUMMARY:✓ Easy run · 6 km
+DESCRIPTION:Done: 6.0 km parkrun jogged at 5:20/km\, avg HR 145\n\nStrava: 
+ 6 km at 5:20/km\, avg HR 146\n\n• 5:20–5:45/km\, conversational\n• A
+  parkrun jogged easy counts\n\nWhy: Loosens the legs before Sunday.\n\nFue
+ l: None needed. Eat a normal carb-based meal afterwards.\n\nHeart rate gui
+ de (estimated from your recent runs\, may be off):\n• 5:20–5:45/km: ea
+ sy\, HR 125–150. Over 150 means slow down\n\nhttps://joshuamorley.github
+ .io/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-10-04@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART;VALUE=DATE:20261004
+DTEND;VALUE=DATE:20261005
+SUMMARY:✓ Long run · 29 km rolling hills
+DESCRIPTION:Done: 29.0 km in 2:37:48\, +219 m. 24 km at 5:35/km (avg HR abo
+ ut 130)\, then 5 km at 4:18/km\, quickening from 4:24 to 4:13 (HR 153–16
+ 8). 5 gels\, stomach fine. Felt really good\n\nStrava: 29 km at 5:26/km\, 
+ avg HR 135\n\n• 5:30–5:45/km for the first 24 km\, HR under 150\n• L
+ ast 5 km at 4:20/km only if your legs have recovered from Tuesday. Otherwi
+ se stay easy\n• Run the hills by effort\, not pace\n\nWhy: Builds time o
+ n your feet and starts training your gut to take race fuel.\n\nFuel: Gut t
+ raining starts here. Eat your planned race breakfast 2.5–3 h before. Tak
+ e a gel every 25 min from 25 min in (about 6)\, each with water. That's ab
+ out 60 g of carbs per hour.\n\nHeart rate guide (estimated from your recen
+ t runs\, may be off):\n• 5:30–5:45/km: easy\, HR 125–150. Over 150 m
+ eans slow down\n• 4:17–4:23/km: HR about 158–170\n\nhttps://joshuamo
+ rley.github.io/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-10-06@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART;VALUE=DATE:20261006
+DTEND;VALUE=DATE:20261007
+SUMMARY:✓ Morning intervals · faster than race pace · 13 km
+DESCRIPTION:Done instead: 7 × 1 min hard\, 1 min walk recovery (2:44–3:3
+ 3/km\, max HR 183)\, 7.5 km total. The 3 × 3 km is dropped\, not made up\
+ n\nStrava: 7.5 km at 5:59/km\, avg HR 141\n\n• Moved from Thursday. No e
+ vening 5k this week\n• 1.5 km easy warm-up\n• 3 × 3 km at 4:05/km\, 2
+  min jog between\n• 1.5 km easy cool-down\n• If you can't hold 4:05 on
+  rep 3\, stop. That means you need recovery\, not more work\n\nWhy: Faster
+  than sub-3 pace\, so 4:15 feels comfortable by comparison.\n\nFuel: None 
+ during. Have carbs and protein within an hour afterwards.\n\nHeart rate gu
+ ide (estimated from your recent runs\, may be off):\n• 5:20–5:45/km: e
+ asy\, HR 125–150. Over 150 means slow down\n• 4:03–4:07/km: HR about
+  165–175\n\nhttps://joshuamorley.github.io/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-10-07@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART;VALUE=DATE:20261007
+DTEND;VALUE=DATE:20261008
+SUMMARY:✓ Easy run · 5 km
+DESCRIPTION:Done: 5.0 km at 5:27/km\, avg HR about 140\n\nStrava: 5 km at 5
+ :27/km\, avg HR 141\n\n• 5:20–5:45/km\, HR under 150.\n\nWhy: Easy vol
+ ume. Keep it genuinely easy.\n\nFuel: None needed. Eat a normal carb-based
+  meal afterwards.\n\nHeart rate guide (estimated from your recent runs\, m
+ ay be off):\n• 5:20–5:45/km: easy\, HR 125–150. Over 150 means slow 
+ down\n\nhttps://joshuamorley.github.io/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-10-08@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART;VALUE=DATE:20261008
+DTEND;VALUE=DATE:20261009
+SUMMARY:✓ Easy run · 5 km
+DESCRIPTION:Strava: 5 km at 5:22/km\, avg HR 145\n\n• 5:30–5:45/km. Fre
+ sh legs for Saturday matter more than pace.\n\nWhy: Keeps the legs moving 
+ before your biggest run.\n\nFuel: None needed. Eat a normal carb-based mea
+ l afterwards.\n\nHeart rate guide (estimated from your recent runs\, may b
+ e off):\n• 5:30–5:45/km: easy\, HR 125–150. Over 150 means slow down
+ \n\nhttps://joshuamorley.github.io/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-10-10@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART;VALUE=DATE:20261010
+DTEND;VALUE=DATE:20261011
+SUMMARY:✓ Long run · 33 km · Test 1
+DESCRIPTION:Done: 33.0 km in 2:54:07\, +35 m. 25 km at 5:36/km (avg HR abou
+ t 144)\, then 8 km at 4:15/km\, last 2 km at 4:11 (HR 167–181\, max 185)
+ . 6 gels about every 22 min\, caffeine in the last 2. A little sloshing th
+ at settled quickly\n\nStrava: 33 km at 5:17/km\, avg HR 150\n\n• First 2
+ 5 km easy at 5:30–5:45/km\n• Last 8 km at 4:15/km\, your sub-3 race pa
+ ce\n• Note your average pace and HR over the last 8 km\, and whether the
+  final 2–3 km slowed\n• If you slow by more than 10 s/km\, ease back t
+ o easy and jog it home. That's your answer for Decision 2\n\nWhy: Sub-3 pa
+ ce on tired legs is the closest you can get to the last 10 km of the race.
+ \n\nFuel: Full race rehearsal. Race breakfast 3 h before\, a gel 10–15 m
+ in before you start\, then gels on your race schedule (see the Fuel tab)\,
+  each with water. Use your race-day flavour mix: non-caffeine early\, caff
+ eine gels from about km 18.\n\nHeart rate guide (estimated from your recen
+ t runs\, may be off):\n• 5:30–5:45/km: easy\, HR 125–150. Over 150 m
+ eans slow down\n• 4:13–4:17/km: HR about 158–170\n\nhttps://joshuamo
+ rley.github.io/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-10-13@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART;VALUE=DATE:20261013
+DTEND;VALUE=DATE:20261014
+SUMMARY:✓ Tuesday 5k · steady · 5 km
+DESCRIPTION:Strava: 5 km at 4:09/km\, avg HR 162\n\n• Around 4:00–4:10/
+ km. Controlled\, not a race\n• Expect HR about 165–175\, creeping up i
+ n the last km or two\n• If HR is past 178 before 4 km\, ease off. That's
+  race effort\, and Sunday matters more\n\nWhy: Keeps your legs sharp witho
+ ut taking anything out of them for Sunday.\n\nFuel: None needed. Eat a nor
+ mal carb-based meal afterwards.\n\nHeart rate guide (estimated from your r
+ ecent runs\, may be off):\n• 4:00–4:10/km: HR about 165–175\n\nRUN G
+ UIDE\n\nHow it should feel: Comfortably hard. You can say a few words but 
+ wouldn't want to chat. Smooth and in control\, never straining.\n\nHow to 
+ run it:\n• Jog 1–2 km beforehand and do 2–3 strides\n• Km 1 at 4:1
+ 0. Don't go out with the racers\n• Km 2–4 settle at 4:00–4:05\n• K
+ m 5 hold the pace. No sprint finish\n\nHeart rate:\n• Expect about 165
+ –175\, creeping up in the last km or two\n• The 33 km may still be in 
+ your legs\, and a warm evening adds 3–5 bpm\n\nElevation: Flat. Under 20
+  m of climbing\, like the Good George course (+5 m) or your usual morning 
+ loop.\n\nBack off if:\n• HR past 178 before 4 km: ease to 4:15\n• Any 
+ niggle from Saturday: jog it easy and call it a recovery run\n\nAfterwards
+ : Jog 1 km to cool down. Normal dinner. Tomorrow is rest or an easy 30 min
+ .\n\nhttps://joshuamorley.github.io/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-10-14@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART;VALUE=DATE:20261014
+DTEND;VALUE=DATE:20261015
+SUMMARY:✓ Easy run · 5 km
+DESCRIPTION:Strava: 5 km at 5:33/km\, avg HR 141\n\n• 5:20–5:45/km. Kee
+ p it short before Sunday.\n\nWhy: Easy volume\, nothing more.\n\nFuel: Non
+ e needed. Eat a normal carb-based meal afterwards.\n\nHeart rate guide (es
+ timated from your recent runs\, may be off):\n• 5:20–5:45/km: easy\, H
+ R 125–150. Over 150 means slow down\n\nRUN GUIDE\n\nHow it should feel: 
+ Very easy. Full sentences the whole way. This only adds volume\, so it sho
+ uld feel like nothing.\n\nHow to run it:\n• 5:20–5:45/km from the firs
+ t step\n• Skip it if your legs are heavy after last night\n\nElevation: 
+ Anything gentle\, up to about 40 m. Walk any steep pinch rather than pushi
+ ng.\n\nBack off if:\n• HR over 150: slow down\n• Tight calves or hamst
+ rings: stop and walk home. Sunday matters more\n\nAfterwards: Nothing spec
+ ial. Normal meals.\n\nhttps://joshuamorley.github.io/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-10-15@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART;VALUE=DATE:20261015
+DTEND;VALUE=DATE:20261016
+SUMMARY:✓ Morning intervals · light · 9.5 km
+DESCRIPTION:Strava: 9.6 km at 4:41/km\, avg HR 157\n\n• 2 km easy warm-up
+ \n• 4 × 1 km at 3:50/km\, 2 min jog between\n• 2 km easy cool-down\n\
+ nWhy: Sharpens you up without tiring you before the test.\n\nFuel: None du
+ ring. Have carbs and protein within an hour afterwards.\n\nHeart rate guid
+ e (estimated from your recent runs\, may be off):\n• 5:20–5:45/km: eas
+ y\, HR 125–150. Over 150 means slow down\n• 3:48–3:52/km: HR about 1
+ 72–182\n\nRUN GUIDE\n\nHow it should feel: Reps feel strong and quick bu
+ t relaxed\, like the middle of a 10k race. You finish wanting one more.\n\
+ nHow to run it:\n• 2 km easy\, then 3–4 strides\n• 4 × 1 km at 3:48
+ –3:52/km. Rep 1 at 3:52\, then settle\n• 2 min easy jog between\, not 
+ a walk\n• 2 km easy cool-down\n\nHeart rate:\n• HR won't settle in a 1
+  km rep. Run by pace and breathing\n• Expect the end of each rep around 
+ 170–178\n\nElevation: Flat. Under 20 m of climbing\, like the Good Georg
+ e course (+5 m) or your usual morning loop. Do the reps on the flattest st
+ retch you have\, so the paces mean something.\n\nBack off if:\n• If a re
+ p is more than 5 s slower than rep 1\, stop there\n• Three days before t
+ he test\, so leave something in the tank\n\nAfterwards: Carbs and protein 
+ within an hour. Rest tomorrow.\n\nhttps://joshuamorley.github.io/running-p
+ lan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-10-17@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART;VALUE=DATE:20261017
+DTEND;VALUE=DATE:20261018
+SUMMARY:✓ Easy run + strides · 5 km
+DESCRIPTION:Strava: 5.5 km at 5:16/km\, avg HR 139\n\n• 5:30/km easy\, th
+ en 4 × 20 s relaxed strides.\n\nWhy: Strides wake your legs up for tomorr
+ ow.\n\nFuel: Carb-heavy dinner tonight.\n\nHeart rate guide (estimated fro
+ m your recent runs\, may be off):\n• 5:25–5:35/km: easy\, HR 125–150
+ . Over 150 means slow down\n\nRUN GUIDE\n\nHow it should feel: Loose and e
+ asy\, with the strides feeling quick and light\, not sprinting.\n\nHow to 
+ run it:\n• 4.5 km at about 5:30/km\n• 4 × 20 s strides: build to abou
+ t 3:30/km pace\, stay tall and relaxed\n• 60 s walk or jog between strid
+ es\n\nElevation: Flat. Under 20 m of climbing\, like the Good George cours
+ e (+5 m) or your usual morning loop.\n\nBack off if:\n• Anything tight: 
+ skip the strides\n\nAfterwards: Carb-heavy dinner. Lay out your kit and ge
+ ls for tomorrow. Early night.\n\nhttps://joshuamorley.github.io/running-pl
+ an/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-10-18@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART;VALUE=DATE:20261018
+DTEND;VALUE=DATE:20261019
+SUMMARY:✓ Half marathon · Test 2 · 21.1 km
+DESCRIPTION:Done: 21.1 km in 1:31:16\, a half marathon best. 16 km at 4:14/
+ km (every km 4:12–4:17)\, avg HR 164\, max 171\, settling from 167 to ab
+ out 164 after km 8. Then 5 km at 4:35/km (HR 153–159). Felt comfortable 
+ and fuelling was fine. Sub-3 stays the target\n\nStrava: 22.6 km at 4:26/k
+ m\, avg HR 160\n\n• Your dress rehearsal: full race kit and shoes\, race
+  breakfast 3 h before\, gels on schedule\n• Run it as a controlled train
+ ing run\, not a race. Two weeks out is too close to race a half\n• First
+  16 km at 4:15/km\n• Last 5 km easy to steady\, 4:45–5:15/km. Don't sp
+ eed up\n• If HR goes past 170 before 16 km\, ease off. That tells you so
+ mething useful\, it isn't a failure\n• Note your average pace and HR ove
+ r the first 16 km\, and whether you could have kept going\n\nWhy: The best
+  guide to your race pace you'll get before race day\, without taking so mu
+ ch out of you that it hurts the marathon.\n\nFuel: Race-day routine: break
+ fast 3 h before\, a gel 10–15 min before the start\, then gels at about 
+ km 6\, 11 and 17\, each with water.\n\nHeart rate guide (estimated from yo
+ ur recent runs\, may be off):\n• 4:13–4:17/km: HR about 158–170\n•
+  4:45–5:15/km: steady\, HR about 140–158\n\nRUN GUIDE\n\nHow it should
+  feel: 4:15 should feel controlled and rhythmic\, like marathon effort\, n
+ ot half-marathon effort. The first 10 km should feel almost easy.\n\nHow t
+ o run it:\n• Dress rehearsal: full race kit and shoes\, race breakfast 3
+  h before\, ideally at the time you'd eat it on race day\n• 1–2 km eas
+ y warm-up and a few strides\n• Km 1–16 at 4:13–4:17. Lock in by km 2
+  and don't bank time\n• Km 17–21 at 4:45–5:15. Don't speed up even i
+ f you feel great\n\nHeart rate:\n• At 4:15 expect about 158–170\, drif
+ ting up slowly\n• Your 33 km had the last 8 km at 4:15 at HR 167–181\,
+  but that was on tired legs. Fresh\, it should be lower\n\nElevation: If y
+ ou're picking the route\, aim for about 80–150 m of climbing. That's abo
+ ut the race's climbing per km (roughly 5 m/km\, plus a bit for the bridge)
+ \, so the test is honest. Put one longer climb in the first half\, like th
+ e bridge. Run hills by effort\, not pace.\n\nBack off if:\n• HR past 170
+  before 16 km: ease off and note when it happened\n• 4:15 feels forced b
+ y km 8: drop to 4:30 and finish as the 4:30 test\n• Any sharp pain: stop
+ . A missed test beats a missed race\n\nAfterwards: Write down your average
+  pace and HR over the first 16 km\, and whether you could have kept going.
+  Carbs and protein within an hour. Then pick your target on the Decisions 
+ tab.\n\nhttps://joshuamorley.github.io/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-10-20@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART;VALUE=DATE:20261020
+DTEND;VALUE=DATE:20261021
+SUMMARY:✓ Tuesday 5k · last sharp one · 5 km
+DESCRIPTION:Strava: 7.1 km at 4:24/km\, avg HR 156\n\n• Race it if you wa
+ nt. Twelve days out is fine. Otherwise run it at threshold.\n\nWhy: One la
+ st effort to stay sharp\, with 12 days left to recover.\n\nFuel: None duri
+ ng. Have carbs and protein within an hour afterwards.\n\nHeart rate guide 
+ (estimated from your recent runs\, may be off):\n• Race effort: HR climb
+ s past 180 (your 5k averaged 184). Run it by feel\n\nRUN GUIDE\n\nHow it s
+ hould feel: If you race it: hard\, like the 29 Sep 5k. If not: threshold\,
+  comfortably hard and even.\n\nHow to run it:\n• Jog 1–2 km and do 3
+ –4 strides\n• Racing: km 1 no faster than 3:35\, then hold. Your 17:44
+  averaged 3:33\n• Threshold: 3:50–4:00/km the whole way\n\nHeart rate:
+ \n• Racing: expect 180+ by km 3\n• Threshold: about 172–180\n\nEleva
+ tion: Flat. Under 20 m of climbing\, like the Good George course (+5 m) or
+  your usual morning loop.\n\nBack off if:\n• Any niggle from Sunday: run
+  it easy. Twelve days out\, nothing is gained by forcing it\n\nAfterwards:
+  Carbs and protein within an hour. Rest tomorrow.\n\nhttps://joshuamorley.
+ github.io/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-10-22@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART;VALUE=DATE:20261022
+DTEND;VALUE=DATE:20261023
+SUMMARY:✓ Morning intervals · pace + speed · 10 km
+DESCRIPTION:Strava: 10.1 km at 4:45/km\, avg HR 155\n\n• 2 km easy warm-u
+ p\n• 4 km at 4:15/km\n• 4 × 400 m at 3:35/km\, 200 m jog between\n•
+  1.5 km easy cool-down\n• Race shoes and race kit. This replaces the Sun
+ day race practice\n\nWhy: Your last proper race-pace run before race week\
+ , so it takes a little of the dropped race practice. The 400s keep some po
+ p in your legs.\n\nFuel: None during. Have carbs and protein within an hou
+ r afterwards.\n\nHeart rate guide (estimated from your recent runs\, may b
+ e off):\n• 5:20–5:45/km: easy\, HR 125–150. Over 150 means slow down
+ \n• 4:13–4:17/km: HR about 158–170\n• 3:32–3:38/km: too short fo
+ r HR to settle. Run these by pace\n\nRUN GUIDE\n\nHow it should feel: The 
+ 4 km at race pace should feel smooth and easy enough to hold for 42 km. Th
+ e 400s feel quick and springy\, not a sprint.\n\nHow to run it:\n• Race 
+ shoes and race kit\n• 2 km easy\n• 4 km at 4:13–4:17/km. Practise ex
+ actly how race pace feels\n• 4 × 400 m at 3:32–3:38/km\, 200 m jog be
+ tween\n• 1.5 km easy cool-down\n\nHeart rate:\n• At race pace expect a
+ bout 158–170 by the end of the 4 km. Note it\, it's your race-day number
+ \n• 400s are too short for HR to mean much. Run by pace\n\nElevation: Fl
+ at. Under 20 m of climbing\, like the Good George course (+5 m) or your us
+ ual morning loop. Race pace on the flat is what you're memorising.\n\nBack
+  off if:\n• If race pace feels hard today\, skip the 400s. You need rest
+ \, not more work\n\nAfterwards: Carbs and protein within an hour. Note any
+ thing that rubbed or annoyed you in your race kit\, and fix it before race
+  week.\n\nhttps://joshuamorley.github.io/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-10-26@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART;VALUE=DATE:20261026
+DTEND;VALUE=DATE:20261027
+SUMMARY:Easy evening run · 5 km
+DESCRIPTION:• 5:30–5:45/km. Moved from Friday. Keep it short.\n\nWhy: L
+ oosens the legs after four days off\, ahead of Tuesday's 5k.\n\nFuel: None
+  needed. Eat a normal carb-based meal afterwards.\n\nHeart rate guide (est
+ imated from your recent runs\, may be off):\n• 5:30–5:45/km: easy\, HR
+  125–150. Over 150 means slow down\n\nRUN GUIDE\n\nHow it should feel: E
+ asy and relaxed. Full sentences the whole way. Legs may feel stale after t
+ he weekend off. That's normal.\n\nHow to run it:\n• 5:30–5:45/km from 
+ the first step\n• 25–30 minutes is plenty\n\nElevation: Anything gentl
+ e\, up to about 50 m.\n\nBack off if:\n• HR over 150: slow down\n• Any
+ thing tight: cut it to 3 km\n\nAfterwards: Nothing special. Easy 5k tomorr
+ ow.\n\nhttps://joshuamorley.github.io/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-10-27@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART;VALUE=DATE:20261027
+DTEND;VALUE=DATE:20261028
+SUMMARY:✓ Tuesday 5k · easy · 5 km
+DESCRIPTION:Strava: 5 km at 5:58/km\, avg HR 134\n\n• 5:00–5:15/km. Don
+ 't race it this week.\n\nWhy: Keeps the legs moving. Your fitness is alrea
+ dy built.\n\nFuel: None needed. Eat a normal carb-based meal afterwards.\n
+ \nHeart rate guide (estimated from your recent runs\, may be off):\n• 5:
+ 00–5:15/km: easy\, HR 125–150. Over 150 means slow down\n\nRUN GUIDE\n
+ \nHow it should feel: Easy. You'll feel restless with the taper. That's no
+ rmal. Don't race it.\n\nHow to run it:\n• 5:00–5:15/km the whole way\n
+ • Let the racers go\n\nElevation: Flat. Under 20 m of climbing\, like th
+ e Good George course (+5 m) or your usual morning loop.\n\nBack off if:\n
+ • If you find yourself under 5:00\, back off\n\nAfterwards: Normal dinne
+ r. Early night.\n\nhttps://joshuamorley.github.io/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-10-29@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART;VALUE=DATE:20261029
+DTEND;VALUE=DATE:20261030
+SUMMARY:✓ Morning pace check · 6.5 km
+DESCRIPTION:Strava: 8.3 km at 5:14/km\, avg HR 141\n\n• 2 km easy\n• 3 
+ × 1 km at 4:15/km\, 1 min jog between\n• 1 km easy\n\nWhy: Reminds your
+  legs what race pace feels like.\n\nFuel: None needed. Eat a normal carb-b
+ ased meal afterwards.\n\nHeart rate guide (estimated from your recent runs
+ \, may be off):\n• 5:20–5:45/km: easy\, HR 125–150. Over 150 means s
+ low down\n• 4:13–4:17/km: HR about 158–170\n\nRUN GUIDE\n\nHow it sh
+ ould feel: Race pace should feel easy and automatic. The legs may feel fla
+ t in the taper. That's normal.\n\nHow to run it:\n• 2 km easy\n• 3 × 
+ 1 km at 4:13–4:17/km\, 1 min jog between\n• 1 km easy\n\nElevation: Fl
+ at. Under 20 m of climbing\, like the Good George course (+5 m) or your us
+ ual morning loop.\n\nBack off if:\n• Don't add reps\, however good you f
+ eel\n\nAfterwards: Normal meals. Carb loading starts tomorrow.\n\nhttps://
+ joshuamorley.github.io/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-10-31@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART;VALUE=DATE:20261031
+DTEND;VALUE=DATE:20261101
+SUMMARY:✓ Shakeout · 5 km
+DESCRIPTION:Strava: 4.5 km at 6:19/km\, avg HR 133\n\n• Very easy\, 5:45/
+ km or slower\, plus 3 strides. Lay out your kit\, pin your bib\, count you
+ r gels\, and plan the trip to Devonport.\n\nWhy: Settles the nerves and lo
+ osens the legs.\n\nFuel: Keep carb loading: your carb-load amount (see the
+  Fuel tab). Have an early dinner you've eaten before.\n\nHeart rate guide 
+ (estimated from your recent runs\, may be off):\n• 5:45–6:30/km: easy\
+ , HR 125–150. Over 150 means slow down\n\nRUN GUIDE\n\nHow it should fee
+ l: Very easy and short\, just shaking the legs out.\n\nHow to run it:\n•
+  5:45/km or slower\n• 3 × 20 s relaxed strides near the end\n\nElevatio
+ n: Flat. Near Devonport is ideal if you're staying close to the start.\n\n
+ Back off if:\n• Anything tight: skip the strides\n\nAfterwards: Lay out 
+ your kit\, pin your bib\, count your gels\, and plan the trip to Devonport
+ . Early dinner you've eaten before.\n\nhttps://joshuamorley.github.io/runn
+ ing-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-11-01@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART;VALUE=DATE:20261101
+DTEND;VALUE=DATE:20261102
+SUMMARY:✓ Auckland Marathon · 42.2 km
+DESCRIPTION:Strava: 43.4 km at 5:24/km\, avg HR 161\n\n• Target 2:59:20 a
+ t 4:15/km. See the Race day tab for splits and checks.\n\nFuel: Breakfast 
+ 3 h before\, gel 1 10–15 min before the start\, then your race gel sched
+ ule.\n\nHeart rate guide (estimated from your recent runs\, may be off):\n
+ • 4:12–4:18/km: HR about 158–170\n\nRUN GUIDE\n\nHow it should feel:
+  The first 10 km should feel too easy. The race starts at 32 km.\n\nHow to
+  run it:\n• Target 2:59:20 at 4:15/km\n• Halfway about 25 s behind eve
+ n pace\, because the hills and the bridge come first\n• Bridge: keep the
+  effort level\, let it cost 10–20 s/km\n• After 32 km: hold form\, tak
+ e your last gels\, and race the people in front\n\nHeart rate:\n• About 
+ 158–170 through halfway. Over 175 at halfway: ease to 4:25\n• HR drift
+ s up late\, so judge by effort after 32 km\n\nElevation: About 217 m of cl
+ imbing\, though estimates vary (the course GPX gives anywhere from about 1
+ 10 to 345 m depending on smoothing\, and it has no bridge height). The har
+ dest of it is in the first half: the North Shore hills\, then the bridge f
+ rom about km 15 to 17. The second half\, out along Tamaki Drive and back\,
+  is mostly flat with a few small bumps.\n\nBack off if:\n• See the check
+ s on the Race day tab\n\nAfterwards: Walk\, eat and drink. Then celebrate.
+ \n\nhttps://joshuamorley.github.io/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-11-05@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART;VALUE=DATE:20261105
+DTEND;VALUE=DATE:20261106
+SUMMARY:Recovery jog · 4 km
+DESCRIPTION:• 5:45–6:15/km\, slower is fine\n• Stop and walk home if 
+ anything feels sore rather than stiff\n\nWhy: Gets blood moving through ti
+ red legs without adding damage.\n\nFuel: None needed. Eat a normal carb-ba
+ sed meal afterwards.\n\nHeart rate guide (estimated from your recent runs\
+ , may be off):\n• 5:45–6:15/km: easy\, HR 125–150. Over 150 means sl
+ ow down\n\nRUN GUIDE\n\nHow it should feel: Shuffly and slow. Stiff is nor
+ mal. Sharp or one-sided pain is not.\n\nHow to run it:\n• 5:45–6:15/km
+ \, or slower if that's what your legs give you\n• Walking breaks are fin
+ e\n\nElevation: Flat. Downhills load the quads that the marathon damaged m
+ ost.\n\nBack off if:\n• Sore rather than stiff\, or limping: walk home a
+ nd try again Saturday\n\nAfterwards: Nothing special. Keep eating well. Mu
+ scle repair needs protein.\n\nhttps://joshuamorley.github.io/running-plan/
+ #plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-11-07@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART;VALUE=DATE:20261107
+DTEND;VALUE=DATE:20261108
+SUMMARY:✓ Saturday parkrun · easy · 5 km
+DESCRIPTION:Strava: 5.2 km at 6:07/km\, avg HR 141\n\n• 6:10–6:45/km\, 
+ HR under 145\n• Relaxed and comfortable\, with Mia\n\nWhy: Checks how th
+ e legs are coming back.\n\nFuel: None needed. Eat a normal carb-based meal
+  afterwards.\n\nHeart rate guide (estimated from your recent runs\, may be
+  off):\n• 6:10–6:45/km: easy\, HR 125–150. Over 150 means slow down\
+ n\nRUN GUIDE\n\nHow it should feel: Easy and relaxed. Probably still a bit
+  flat. That's normal a week out from a marathon.\n\nHow to run it:\n• 6:
+ 10–6:45/km from the first step\n• Run it with Mia\, relaxed the whole 
+ way\n\nElevation: Flat. Under 20 m of climbing\, like the Good George cour
+ se (+5 m) or your usual morning loop.\n\nBack off if:\n• HR over 145 at 
+ easy pace: slow down. Your body is still recovering\n\nAfterwards: Normal 
+ meals.\n\nhttps://joshuamorley.github.io/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-11-10@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART;VALUE=DATE:20261110
+DTEND;VALUE=DATE:20261111
+SUMMARY:✓ Tuesday 5k · easy · 5 km
+DESCRIPTION:Strava: 5 km at 4:43/km\, avg HR 143\n\n• 6:00–6:15/km\, re
+ laxed and smooth.\n\nWhy: Back into the Tuesday routine without the effort
+ .\n\nFuel: None needed. Eat a normal carb-based meal afterwards.\n\nHeart 
+ rate guide (estimated from your recent runs\, may be off):\n• 6:00–6:1
+ 5/km: easy\, HR 125–150. Over 150 means slow down\n\nRUN GUIDE\n\nHow it
+  should feel: Easy. You may feel ready to race. It's too early\, so let th
+ em go.\n\nHow to run it:\n• 6:00–6:15/km the whole way\n\nElevation: F
+ lat. Under 20 m of climbing\, like the Good George course (+5 m) or your u
+ sual morning loop.\n\nBack off if:\n• Anything sore: drop to 5:30 or jog
+  it\n\nAfterwards: Normal dinner.\n\nhttps://joshuamorley.github.io/runnin
+ g-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-11-12@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART;VALUE=DATE:20261112
+DTEND;VALUE=DATE:20261113
+SUMMARY:✓ Easy run · readiness check · 6 km
+DESCRIPTION:Strava: 6.4 km at 6:12/km\, avg HR 129\n\n• 6:10–6:45/km\n
+ • The check: HR under 150 at about 6:15/km\, and stairs and hills feel n
+ ormal\n• Both yes: run Kerikeri at 1:49. Either no: jog it slower\, or s
+ kip it\n\nWhy: The simplest honest test of whether the marathon has worn o
+ ff.\n\nFuel: None needed. Eat a normal carb-based meal afterwards.\n\nHear
+ t rate guide (estimated from your recent runs\, may be off):\n• 6:10–6
+ :45/km: easy\, HR 125–150. Over 150 means slow down\n\nRUN GUIDE\n\nHow 
+ it should feel: Easy and normal. This run is the check for whether you rac
+ e Kerikeri.\n\nHow to run it:\n• 6:10–6:45/km\n• Note your average H
+ R over km 2–5 at about 6:15/km\n• Go up a flight of stairs afterwards 
+ and notice whether your quads complain\n\nHeart rate:\n• Under 150 at ab
+ out 6:15: recovered\n• Over 150\, or it feels like work: not yet. Run Ke
+ rikeri steady\n\nElevation: Flat. Under 20 m of climbing\, like the Good G
+ eorge course (+5 m) or your usual morning loop.\n\nBack off if:\n• Anyth
+ ing sharp: stop. Kerikeri is optional\, the next season isn't\n\nAfterward
+ s: Pick your Kerikeri target on the Kerikeri tab.\n\nhttps://joshuamorley.
+ github.io/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-11-14@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART;VALUE=DATE:20261114
+DTEND;VALUE=DATE:20261115
+SUMMARY:✓ Saturday parkrun · easy + strides · 5 km
+DESCRIPTION:Strava: 5 km at 4:40/km\, avg HR 157\n\n• 6:10–6:45/km\, re
+ laxed and comfortable\n• Then 4 × 20 s relaxed strides\n\nWhy: The stri
+ des remind your legs how to run fast again.\n\nFuel: None needed. Eat a no
+ rmal carb-based meal afterwards.\n\nHeart rate guide (estimated from your 
+ recent runs\, may be off):\n• 6:10–6:45/km: easy\, HR 125–150. Over 
+ 150 means slow down\n\nRUN GUIDE\n\nHow it should feel: Easy\, with the st
+ rides feeling quick and light. Your legs should feel like yours again.\n\n
+ How to run it:\n• 5 km parkrun at 6:10–6:45/km\n• 4 × 20 s strides:
+  build to about 3:30/km pace\, stay tall and relaxed\n• 60 s walk or jog
+  between strides\n\nElevation: Flat. Under 20 m of climbing\, like the Goo
+ d George course (+5 m) or your usual morning loop.\n\nBack off if:\n• An
+ ything tight: skip the strides\n\nAfterwards: Normal meals.\n\nhttps://jos
+ huamorley.github.io/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-11-15@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART;VALUE=DATE:20261115
+DTEND;VALUE=DATE:20261116
+SUMMARY:✓ Easy long-ish run · 10 km
+DESCRIPTION:Strava: 12 km at 5:38/km\, avg HR 143\n\n• 6:15–6:45/km\, H
+ R under 150\n• Include some gentle downhill if you can. Kerikeri drops a
+ bout 275 m\n\nWhy: Your longest run since Auckland. The downhill gets your
+  quads ready for the course.\n\nFuel: None needed. Eat a normal carb-based
+  meal afterwards.\n\nHeart rate guide (estimated from your recent runs\, m
+ ay be off):\n• 6:15–6:45/km: easy\, HR 125–150. Over 150 means slow 
+ down\n\nRUN GUIDE\n\nHow it should feel: Easy and comfortable. Full senten
+ ces the whole way.\n\nHow to run it:\n• 6:15–6:45/km\n• If your rout
+ e has a gentle downhill\, run it at the same easy effort with quick\, ligh
+ t steps\n\nElevation: Some gentle downhill is useful: 50–100 m of descen
+ t gets your quads used to it before Kerikeri. Avoid anything steep.\n\nBac
+ k off if:\n• HR over 150: slow down\n• Sore quads on the downhill: run
+  the rest flat\n\nAfterwards: Carbs and protein within an hour.\n\nhttps:/
+ /joshuamorley.github.io/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-11-17@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART;VALUE=DATE:20261117
+DTEND;VALUE=DATE:20261118
+SUMMARY:✓ Tuesday 5k · Kerikeri pace · 5 km
+DESCRIPTION:Strava: 5.1 km at 5:02/km\, avg HR 182\n\n• About 5:10/km\, y
+ our pace for 1:49. Not a race\n• Race shoes\, to check they still feel r
+ ight\n\nWhy: A feel for Kerikeri pace\, four days out\, without any hard e
+ ffort.\n\nFuel: None needed. Eat a normal carb-based meal afterwards.\n\nH
+ eart rate guide (estimated from your recent runs\, may be off):\n• 5:05
+ –5:15/km: easy\, HR 125–150. Over 150 means slow down\n\nRUN GUIDE\n\n
+ How it should feel: Smooth and controlled. You should finish feeling you c
+ ould keep going.\n\nHow to run it:\n• 5 km at about 5:10/km\, your pace 
+ for 1:49\n• Race shoes\n\nHeart rate:\n• Expect about 140–150\n• O
+ ver 155: slow down. It's too early after Auckland to push\n\nElevation: Fl
+ at. Under 20 m of climbing\, like the Good George course (+5 m) or your us
+ ual morning loop.\n\nBack off if:\n• Dizziness\, chest pain\, palpitatio
+ ns or unusual breathlessness: stop and see a doctor\n\nAfterwards: Carbs a
+ nd protein within an hour. Rest tomorrow.\n\nhttps://joshuamorley.github.i
+ o/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-11-19@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART;VALUE=DATE:20261119
+DTEND;VALUE=DATE:20261120
+SUMMARY:Easy run + strides · 5 km
+DESCRIPTION:• 6:15/km easy\, then 4 × 20 s relaxed strides.\n\nWhy: Keep
+ s the legs loose before Saturday.\n\nFuel: None needed. Eat a normal carb-
+ based meal afterwards.\n\nHeart rate guide (estimated from your recent run
+ s\, may be off):\n• 6:10–6:30/km: easy\, HR 125–150. Over 150 means 
+ slow down\n\nRUN GUIDE\n\nHow it should feel: Loose and easy\, with the st
+ rides feeling quick and light.\n\nHow to run it:\n• 4.5 km at about 6:15
+ /km\n• 4 × 20 s strides\, 60 s easy between\n\nElevation: Flat. Under 2
+ 0 m of climbing\, like the Good George course (+5 m) or your usual morning
+  loop.\n\nBack off if:\n• Anything tight: skip the strides\n\nAfterwards
+ : Pack for Kerikeri: race kit and shoes\, 2 gels\, breakfast\, and warm cl
+ othes for the start.\n\nhttps://joshuamorley.github.io/running-plan/#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-2026-11-21@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART;VALUE=DATE:20261121
+DTEND;VALUE=DATE:20261122
+SUMMARY:✓ Kerikeri Half Marathon · 21.1 km
+DESCRIPTION:Strava: 21.1 km at 5:07/km\, avg HR 157\n\n• Okaihau to Kerik
+ eri\, point to point. Climbs about 95 m in the first 7 km\, then drops abo
+ ut 275 m to the finish\n• 1:49\, not a race. Splits are on the Kerikeri 
+ tab\n• Last year: 1:37:54\n\nWhy: A run to finish the season on\, three 
+ weeks after Auckland.\n\nFuel: Breakfast 2.5–3 h before\, a gel 10–15 
+ min before the start\, and one more at about km 9\, after the top of the c
+ limb.\n\nHeart rate guide (estimated from your recent runs\, may be off):\
+ n• 5:15–5:25/km: easy\, HR 125–150. Over 150 means slow down\n• 5:
+ 00–5:10/km: easy\, HR 125–150. Over 150 means slow down\n\nRUN GUIDE\n
+ \nHow it should feel: Controlled the whole way. 1:49\, three weeks after A
+ uckland. Not a race.\n\nHow to run it:\n• 5 min jog to warm up\n• Km 0
+ –7.3\, the climb out of Okaihau: about 5:15–5:25/km\, by effort\n• K
+ m 7.3–9.6\, the steep drop: quick\, light steps. Let gravity do it rathe
+ r than braking or bounding\n• Km 9.6–21.1: about 5:00–5:10/km. No fa
+ st finish\n• Carry electrolytes and drink at every station\, more if it'
+ s sunny and warm\n\nHeart rate:\n• Climb: under about 155\n• Descent a
+ nd flat: under about 160. Over that\, slow down\, even if it costs you 1:4
+ 9\n• Your HR will drift up if it warms up. Slow down rather than hold pa
+ ce\n\nElevation: About 95 m of climbing in the first 7.3 km\, then about 2
+ 75 m of descent to the finish\, steepest from km 7.3 to 9.6. Numbers come 
+ from your 2025 GPS and may be a little off.\n\nBack off if:\n• Dizziness
+ \, chest pain\, palpitations\, confusion or unusual breathlessness: stop a
+ nd get help from the medics\n• Quads cramping or sore on the descent: ea
+ se to a jog\n• Any sharp pain: stop\n\nAfterwards: Walk\, eat and drink.
+  Then celebrate the season.\n\nhttps://joshuamorley.github.io/running-plan
+ /#plan
+URL:https://joshuamorley.github.io/running-plan/#plan
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-meal-2026-10-09-1730@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART:20261009T043000Z
+DTEND:20261009T051500Z
+SUMMARY:🍽 Carb-heavy dinner before the 33 km
+DESCRIPTION:Chicken and tomato pasta · about 150 g of carbs · 25 min\n\n
+ • 150 g dry spaghetti or penne (about 110 g carbs)\n• 150 g skinless c
+ hicken breast\, sliced thin\n• ½ jar (about 250 g) plain tomato pasta s
+ auce\n• 1 garlic clove\, a pinch of salt\, a little olive oil\n• 2 sli
+ ces white bread or a small white roll on the side (about 30 g carbs)\n\n1.
+  Boil the pasta in well-salted water.\n2. Brown the chicken in a little oi
+ l\, add the garlic\, then the sauce. Simmer 5 min.\n3. Toss through the dr
+ ained pasta. Skip the cheese and keep the veg light tonight.\n\nhttps://jo
+ shuamorley.github.io/running-plan/#fuel
+URL:https://joshuamorley.github.io/running-plan/#fuel
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Carb-heavy dinner before the 33 km
+TRIGGER:-PT30M
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-meal-2026-10-10-0500@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART:20261009T160000Z
+DTEND:20261009T164500Z
+SUMMARY:🍽 Race breakfast before the 33 km
+DESCRIPTION:Adjust to 3 hours before you start running.\n\nRace breakfast 
+ · about 160 g of carbs · 5 min\n\n• 1 white bagel with 2 tbsp honey (a
+ bout 85 g)\n• 1 slice white toast with jam (about 30 g)\n• 1 banana (a
+ bout 25 g)\n• 250 ml juice (about 25 g)\n• About 500 ml water or elect
+ rolyte drink\n\n1. Eat it 3 hours before the start\, then sip until 30 min
+  before.\n2. Same breakfast as the 33 km and the half. Nothing new on race
+  day.\n\nhttps://joshuamorley.github.io/running-plan/#fuel
+URL:https://joshuamorley.github.io/running-plan/#fuel
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Race breakfast before the 33 km
+TRIGGER:-PT30M
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-meal-2026-10-17-1730@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART:20261017T043000Z
+DTEND:20261017T051500Z
+SUMMARY:🍽 Carb-heavy dinner before the half
+DESCRIPTION:Teriyaki chicken rice bowl · about 150 g of carbs · 25 min\n\
+ n• 1 cup (about 185 g) dry white rice\, about 2.5 cups cooked (about 110
+  g carbs)\n• 150 g skinless chicken breast or thigh\, diced\n• 3 tbsp 
+ teriyaki sauce (about 15 g carbs)\n• 1 small carrot\, grated\n• 250 ml
+  apple or orange juice with it (about 25 g carbs)\n\n1. Cook the rice.\n2.
+  Brown the chicken\, add the teriyaki and a splash of water\, and cook unt
+ il sticky.\n3. Pile on the rice with the carrot. White rice\, not brown\, 
+ the night before a big run.\n\nhttps://joshuamorley.github.io/running-plan
+ /#fuel
+URL:https://joshuamorley.github.io/running-plan/#fuel
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Carb-heavy dinner before the half
+TRIGGER:-PT30M
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-meal-2026-10-18-0500@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART:20261017T160000Z
+DTEND:20261017T164500Z
+SUMMARY:🍽 Race breakfast before the half
+DESCRIPTION:Adjust to 3 hours before you start running.\n\nRace breakfast 
+ · about 160 g of carbs · 5 min\n\n• 1 white bagel with 2 tbsp honey (a
+ bout 85 g)\n• 1 slice white toast with jam (about 30 g)\n• 1 banana (a
+ bout 25 g)\n• 250 ml juice (about 25 g)\n• About 500 ml water or elect
+ rolyte drink\n\n1. Eat it 3 hours before the start\, then sip until 30 min
+  before.\n2. Same breakfast as the 33 km and the half. Nothing new on race
+  day.\n\nhttps://joshuamorley.github.io/running-plan/#fuel
+URL:https://joshuamorley.github.io/running-plan/#fuel
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Race breakfast before the half
+TRIGGER:-PT30M
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-meal-2026-10-30-0700@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART:20261029T180000Z
+DTEND:20261029T184500Z
+SUMMARY:🍽 Carb load day 1
+DESCRIPTION:Carb-load day menu · about 700 g of carbs\n\n• Breakfast: 2 
+ bagels with jam and 500 ml juice (about 170 g)\n• Morning: a banana and 
+ 2 rice cakes with honey (about 55 g)\n• Lunch: white-bread ham sandwich 
+ (4 slices)\, 50 g pretzels\, 500 ml sports drink (about 130 g)\n• Aftern
+ oon: 3 crumpets with golden syrup and a glass of juice (about 100 g)\n• 
+ Dinner: the chicken and tomato pasta or the rice bowl (about 150 g)\n• E
+ vening: a pot of rice pudding and a handful of lollies (about 90 g)\n\n1. 
+ Spread it across the day. Graze\, don't stuff.\n2. Swap in anything from t
+ he carbs table on the Fuel tab\, keeping fibre and fat low.\n3. Sip water 
+ or electrolyte drink all day. Pale yellow urine is the goal.\n\nhttps://jo
+ shuamorley.github.io/running-plan/#fuel
+URL:https://joshuamorley.github.io/running-plan/#fuel
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Carb load day 1
+TRIGGER:-PT30M
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-meal-2026-10-31-0700@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART:20261030T180000Z
+DTEND:20261030T184500Z
+SUMMARY:🍽 Carb load day 2
+DESCRIPTION:Carb-load day menu · about 700 g of carbs\n\n• Breakfast: 2 
+ bagels with jam and 500 ml juice (about 170 g)\n• Morning: a banana and 
+ 2 rice cakes with honey (about 55 g)\n• Lunch: white-bread ham sandwich 
+ (4 slices)\, 50 g pretzels\, 500 ml sports drink (about 130 g)\n• Aftern
+ oon: 3 crumpets with golden syrup and a glass of juice (about 100 g)\n• 
+ Dinner: the chicken and tomato pasta or the rice bowl (about 150 g)\n• E
+ vening: a pot of rice pudding and a handful of lollies (about 90 g)\n\n1. 
+ Spread it across the day. Graze\, don't stuff.\n2. Swap in anything from t
+ he carbs table on the Fuel tab\, keeping fibre and fat low.\n3. Sip water 
+ or electrolyte drink all day. Pale yellow urine is the goal.\n\nhttps://jo
+ shuamorley.github.io/running-plan/#fuel
+URL:https://joshuamorley.github.io/running-plan/#fuel
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Carb load day 2
+TRIGGER:-PT30M
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-meal-2026-10-31-1700@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART:20261031T040000Z
+DTEND:20261031T044500Z
+SUMMARY:🍽 Early race-eve dinner
+DESCRIPTION:Done by 6pm\, so it's settled by bedtime.\n\nTeriyaki chicken r
+ ice bowl · about 150 g of carbs · 25 min\n\n• 1 cup (about 185 g) dry 
+ white rice\, about 2.5 cups cooked (about 110 g carbs)\n• 150 g skinless
+  chicken breast or thigh\, diced\n• 3 tbsp teriyaki sauce (about 15 g ca
+ rbs)\n• 1 small carrot\, grated\n• 250 ml apple or orange juice with i
+ t (about 25 g carbs)\n\n1. Cook the rice.\n2. Brown the chicken\, add the 
+ teriyaki and a splash of water\, and cook until sticky.\n3. Pile on the ri
+ ce with the carrot. White rice\, not brown\, the night before a big run.\n
+ \nhttps://joshuamorley.github.io/running-plan/#fuel
+URL:https://joshuamorley.github.io/running-plan/#fuel
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Early race-eve dinner
+TRIGGER:-PT30M
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-meal-2026-11-01-0300@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART:20261031T140000Z
+DTEND:20261031T144500Z
+SUMMARY:🍽 Race breakfast
+DESCRIPTION:3 hours before the 6am start. Check your start time.\n\nRace br
+ eakfast · about 160 g of carbs · 5 min\n\n• 1 white bagel with 2 tbsp 
+ honey (about 85 g)\n• 1 slice white toast with jam (about 30 g)\n• 1 b
+ anana (about 25 g)\n• 250 ml juice (about 25 g)\n• About 500 ml water 
+ or electrolyte drink\n\n1. Eat it 3 hours before the start\, then sip unti
+ l 30 min before.\n2. Same breakfast as the 33 km and the half. Nothing new
+  on race day.\n\nhttps://joshuamorley.github.io/running-plan/#fuel
+URL:https://joshuamorley.github.io/running-plan/#fuel
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Race breakfast
+TRIGGER:-PT30M
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-meal-2026-11-20-1730@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART:20261120T043000Z
+DTEND:20261120T051500Z
+SUMMARY:🍽 Carb-heavy dinner before Kerikeri
+DESCRIPTION:Teriyaki chicken rice bowl · about 150 g of carbs · 25 min\n\
+ n• 1 cup (about 185 g) dry white rice\, about 2.5 cups cooked (about 110
+  g carbs)\n• 150 g skinless chicken breast or thigh\, diced\n• 3 tbsp 
+ teriyaki sauce (about 15 g carbs)\n• 1 small carrot\, grated\n• 250 ml
+  apple or orange juice with it (about 25 g carbs)\n\n1. Cook the rice.\n2.
+  Brown the chicken\, add the teriyaki and a splash of water\, and cook unt
+ il sticky.\n3. Pile on the rice with the carrot. White rice\, not brown\, 
+ the night before a big run.\n\nhttps://joshuamorley.github.io/running-plan
+ /#fuel
+URL:https://joshuamorley.github.io/running-plan/#fuel
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Carb-heavy dinner before Kerikeri
+TRIGGER:-PT30M
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:akl-meal-2026-11-21-0400@joshuamorley.github.io
+DTSTAMP:20261123T141620Z
+DTSTART:20261120T150000Z
+DTEND:20261120T154500Z
+SUMMARY:🍽 Race breakfast before Kerikeri
+DESCRIPTION:3 hours before a 7am start. Only one listing gives that start t
+ ime\, so check it on your bib or the race website.\n\nRace breakfast · ab
+ out 160 g of carbs · 5 min\n\n• 1 white bagel with 2 tbsp honey (about 
+ 85 g)\n• 1 slice white toast with jam (about 30 g)\n• 1 banana (about 
+ 25 g)\n• 250 ml juice (about 25 g)\n• About 500 ml water or electrolyt
+ e drink\n\n1. Eat it 3 hours before the start\, then sip until 30 min befo
+ re.\n2. Same breakfast as the 33 km and the half. Nothing new on race day.
+ \n\nhttps://joshuamorley.github.io/running-plan/#fuel
+URL:https://joshuamorley.github.io/running-plan/#fuel
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Race breakfast before Kerikeri
+TRIGGER:-PT30M
+END:VALARM
+END:VEVENT
+END:VCALENDAR

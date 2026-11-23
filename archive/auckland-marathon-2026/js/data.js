@@ -1,0 +1,438 @@
+/* Plan content. Days with an `alt` block change on the sub-3 build; `altBy: "half"` means the change depends on Test 1 instead. */
+window.PLAN = (function () {
+  var FUEL_NONE = "None needed. Eat a normal carb-based meal afterwards.";
+  var FUEL_HARD = "None during. Have carbs and protein within an hour afterwards.";
+
+  var WEEKS = [
+    { n: 1, range: "28 Sep – 4 Oct", focus: "Endurance. Recover from Tuesday's race, then an easy 29 km on hills.", decBefore: "d0", days: [
+      { d: "2026-09-28", t: "rest", title: "Rest" },
+      { d: "2026-09-29", t: "race", title: "Tuesday 5k race", km: 5, detail: "Good George 5k.", result: "Done: 17:44, 3rd place, avg HR 184", done: true },
+      { d: "2026-09-30", t: "rest", title: "Rest or optional easy 30 min", optKm: 5,
+        alt: { t: "easy", title: "Easy run", km: 6, optKm: 0, detail: ["5:20–5:45/km, HR under 150", "You should be able to talk in full sentences the whole way"], why: "Adds the extra easy volume a sub-3 attempt needs without adding stress.", fuel: FUEL_NONE } },
+      { d: "2026-10-01", t: "int", title: "Morning intervals · threshold", km: 10.5,
+        detail: ["2 km easy warm-up", "5 × 1 km at 3:45–3:50/km, 90 s jog between", "2 km easy cool-down", "Reps should feel hard but even. If the last rep is more than 5 s slower than the first, stop there"],
+        why: "Raises your threshold so marathon pace feels easier. Kept below 5k pace because you raced two days ago.", fuel: FUEL_HARD },
+      { d: "2026-10-02", t: "rest", title: "Rest" },
+      { d: "2026-10-03", t: "easy", title: "Easy run", km: 6, detail: ["5:20–5:45/km, conversational", "A parkrun jogged easy counts"], result: "Done: 6.0 km parkrun jogged at 5:20/km, avg HR 145", done: true, why: "Loosens the legs before Sunday.", fuel: FUEL_NONE },
+      { d: "2026-10-04", t: "long", title: "Long run · 29 km rolling hills", km: 29,
+        result: "Done: 29.0 km in 2:37:48, +219 m. 24 km at 5:35/km (avg HR about 130), then 5 km at 4:18/km, quickening from 4:24 to 4:13 (HR 153–168). 5 gels, stomach fine. Felt really good", done: true,
+        detail: ["5:30–5:45/km the whole way, HR under 150", "Run the hills by effort, not pace. Walk a steep pinch if HR goes past 155"],
+        why: "Builds time on your feet and starts training your gut to take race fuel.",
+        fuel: "Gut training starts here. Eat your planned race breakfast 2.5–3 h before. Take a gel every 25 min from 25 min in (about 6), each with water. That's about 60 g of carbs per hour.",
+        alt: { detail: ["5:30–5:45/km for the first 24 km, HR under 150", "Last 5 km at 4:20/km only if your legs have recovered from Tuesday. Otherwise stay easy", "Run the hills by effort, not pace"] } }
+    ]},
+    { n: 2, range: "5 – 11 Oct", focus: "Peak week. Your longest run ever.", decAfter: "d1", days: [
+      { d: "2026-10-05", t: "rest", title: "Rest", fuel: "Recovery day. Eat well and top up carbs after Sunday." },
+      { d: "2026-10-06", t: "int", title: "Morning intervals · threshold", km: 11, shoes: true,
+        result: "Done instead: 7 × 1 min hard, 1 min walk recovery (2:44–3:33/km, max HR 183), 7.5 km total. The 3 × 3 km is dropped, not made up", done: true,
+        detail: ["Moved from Thursday. No evening 5k this week", "2 km easy warm-up", "3 × 2 km at 3:55/km, 2 min jog between", "2 km easy cool-down"],
+        why: "Longer threshold reps build the ability to hold a hard effort.", fuel: FUEL_HARD,
+        alt: { title: "Morning intervals · faster than race pace", km: 13, detail: ["Moved from Thursday. No evening 5k this week", "1.5 km easy warm-up", "3 × 3 km at 4:05/km, 2 min jog between", "1.5 km easy cool-down", "If you can't hold 4:05 on rep 3, stop. That means you need recovery, not more work"], why: "Faster than sub-3 pace, so 4:15 feels comfortable by comparison." } },
+      { d: "2026-10-07", t: "rest", title: "Rest or optional easy 30 min", optKm: 5,
+        result: "Done: 5.0 km at 5:27/km, avg HR about 140", done: true,
+        alt: { t: "easy", title: "Easy run", km: 5, optKm: 0, detail: "5:20–5:45/km, HR under 150.", why: "Easy volume. Keep it genuinely easy.", fuel: FUEL_NONE } },
+      { d: "2026-10-08", t: "easy", title: "Easy run", km: 6, detail: "5:30–5:45/km. Fresh legs for Saturday matter more than pace.", why: "Keeps the legs moving before your biggest run.", fuel: FUEL_NONE,
+        alt: { km: 5 } },
+      { d: "2026-10-09", t: "rest", title: "Rest", fuel: "Carb-heavy dinner tonight, such as pasta or rice." },
+      { d: "2026-10-10", t: "long", title: "Long run · 33 km rolling hills", km: 33, shoes: true,
+        result: "Done: 33.0 km in 2:54:07, +35 m. 25 km at 5:36/km (avg HR about 144), then 8 km at 4:15/km, last 2 km at 4:11 (HR 167–181, max 185). 6 gels about every 22 min, caffeine in the last 2. A little sloshing that settled quickly", done: true,
+        detail: ["First 27 km easy at 5:30–5:45/km", "Last 5–6 km at 4:35/km if you feel good, otherwise stay easy"],
+        why: "Your longest run ever. It proves you can go past 30 km.",
+        fuel: "Full race rehearsal. Race breakfast 3 h before, a gel 10–15 min before you start, then gels on your race schedule (see the Fuel tab), each with water. Use your race-day flavour mix: non-caffeine early, caffeine gels from about km 18.",
+        alt: { t: "test", title: "Long run · 33 km · Test 1", detail: ["First 25 km easy at 5:30–5:45/km", "Last 8 km at 4:15/km, your sub-3 race pace", "Note your average pace and HR over the last 8 km, and whether the final 2–3 km slowed", "If you slow by more than 10 s/km, ease back to easy and jog it home. That's your answer for Decision 2"], why: "Sub-3 pace on tired legs is the closest you can get to the last 10 km of the race." } },
+      { d: "2026-10-11", t: "rest", title: "Rest", fuel: "Recovery day. Eat well, top up carbs and rehydrate after Saturday." }
+    ]},
+    { n: 3, range: "12 – 18 Oct", focus: "Test week. The half marathon sets your race target.", decAfter: "d2", days: [
+      { d: "2026-10-12", t: "rest", title: "Rest", fuel: "Normal meals." },
+      { d: "2026-10-13", t: "easy", title: "Tuesday 5k · steady", km: 5, detail: ["Around 4:00–4:10/km. Controlled, not a race", "Expect HR about 165–175, creeping up in the last km or two", "If HR is past 178 before 4 km, ease off. That's race effort, and Sunday matters more"], why: "Keeps your legs sharp without taking anything out of them for Sunday.", fuel: FUEL_NONE },
+      { d: "2026-10-14", t: "rest", title: "Rest or optional easy 30 min", optKm: 5,
+        alt: { t: "easy", title: "Easy run", km: 5, optKm: 0, detail: "5:20–5:45/km. Keep it short before Sunday.", why: "Easy volume, nothing more.", fuel: FUEL_NONE } },
+      { d: "2026-10-15", t: "int", title: "Morning intervals · light", km: 9.5, detail: ["2 km easy warm-up", "4 × 1 km at 3:50/km, 2 min jog between", "2 km easy cool-down"], why: "Sharpens you up without tiring you before the test.", fuel: FUEL_HARD },
+      { d: "2026-10-16", t: "rest", title: "Rest", fuel: "Normal meals." },
+      { d: "2026-10-17", t: "easy", title: "Easy run + strides", km: 5, detail: "5:30/km easy, then 4 × 20 s relaxed strides.", why: "Strides wake your legs up for tomorrow.", fuel: "Carb-heavy dinner tonight." },
+      { d: "2026-10-18", t: "test", title: "Half marathon · pace test", km: 21.1, altBy: "half", shoes: true,
+        result: "Done: 21.1 km in 1:31:16, a half marathon best. 16 km at 4:14/km (every km 4:12–4:17), avg HR 164, max 171, settling from 167 to about 164 after km 8. Then 5 km at 4:35/km (HR 153–159). Felt comfortable and fuelling was fine. Sub-3 stays the target", done: true,
+        detail: ["Your dress rehearsal: full race kit and shoes, race breakfast 3 h before, gels on schedule", "Run it as a controlled training run, not a race. Two weeks out is too close to race a half", "First 14 km at 4:30/km, your marathon target pace", "Last 7 km easy to steady, 4:45–5:15/km. Don't speed up", "If HR goes past 170 before 14 km, ease off. That tells you something useful, it isn't a failure", "Note your average pace and HR over the first 14 km, and whether you could have kept going"],
+        why: "The best guide to your race pace you'll get before race day, without taking so much out of you that it hurts the marathon.",
+        fuel: "Race-day routine: breakfast 3 h before, a gel 10–15 min before the start, then gels at about km 6, 11 and 17, each with water.",
+        alt: { title: "Half marathon · Test 2", detail: ["Your dress rehearsal: full race kit and shoes, race breakfast 3 h before, gels on schedule", "Run it as a controlled training run, not a race. Two weeks out is too close to race a half", "First 16 km at 4:15/km", "Last 5 km easy to steady, 4:45–5:15/km. Don't speed up", "If HR goes past 170 before 16 km, ease off. That tells you something useful, it isn't a failure", "Note your average pace and HR over the first 16 km, and whether you could have kept going"] } }
+    ]},
+    { n: 4, range: "19 – 25 Oct", focus: "Taper starts. Less volume, same sharpness, then a weekend off for diving.", days: [
+      { d: "2026-10-19", t: "rest", title: "Rest", fuel: "Recovery day. Eat well after Sunday's test." },
+      { d: "2026-10-20", t: "race", title: "Tuesday 5k · last sharp one", km: 5, detail: "Race it if you want. Twelve days out is fine. Otherwise run it at threshold.", why: "One last effort to stay sharp, with 12 days left to recover.", fuel: FUEL_HARD },
+      { d: "2026-10-21", t: "rest", title: "Rest" },
+      { d: "2026-10-22", t: "int", title: "Morning intervals · pace + speed", km: 10, shoes: true, detail: ["2 km easy warm-up", "4 km at {mp}/km", "4 × 400 m at 3:35/km, 200 m jog between", "1.5 km easy cool-down", "Race shoes and race kit. This replaces the Sunday race practice"], why: "Your last proper race-pace run before race week, so it takes a little of the dropped race practice. The 400s keep some pop in your legs.", fuel: FUEL_HARD },
+      { d: "2026-10-23", t: "rest", title: "Rest · run moved to Monday" },
+      { d: "2026-10-24", t: "rest", title: "Rest · diving 🤿",fuel: "No running. Drink plenty, since diving dries you out. Normal meals." },
+      { d: "2026-10-25", t: "rest", title: "Rest · diving 🤿",fuel: "No running. Drink plenty and eat normally. A weekend off a week out costs you nothing." }
+    ]},
+    { n: 5, range: "26 Oct – 1 Nov", focus: "Race week. Stay loose, sleep well, fuel up.", days: [
+      { d: "2026-10-26", t: "easy", title: "Easy evening run", km: 5, detail: "5:30–5:45/km. Moved from Friday. Keep it short.", why: "Loosens the legs after four days off, ahead of Tuesday's 5k.", fuel: FUEL_NONE },
+      { d: "2026-10-27", t: "easy", title: "Tuesday 5k · easy", km: 5, detail: "5:00–5:15/km. Don't race it this week.", why: "Keeps the legs moving. Your fitness is already built.", fuel: FUEL_NONE },
+      { d: "2026-10-28", t: "rest", title: "Rest" },
+      { d: "2026-10-29", t: "int", title: "Morning pace check", km: 6.5, shoes: true, detail: ["2 km easy", "3 × 1 km at {mp}/km, 1 min jog between", "1 km easy"], why: "Reminds your legs what race pace feels like.", fuel: FUEL_NONE },
+      { d: "2026-10-30", t: "rest", title: "Rest · carb load starts", fuel: "Carb load: {load} today. Low fibre, low fat. See the Fuel tab." },
+      { d: "2026-10-31", t: "easy", title: "Shakeout", km: 5, detail: "Very easy, 5:45/km or slower, plus 3 strides. Lay out your kit, pin your bib, count your gels, and plan the trip to Devonport.", why: "Settles the nerves and loosens the legs.", fuel: "Keep carb loading: {load}. Have an early dinner you've eaten before." },
+      { d: "2026-11-01", t: "race", title: "Auckland Marathon", km: 42.2, shoes: true, detail: "Target {full} at {mp}/km. See the Race day tab for splits and checks.", fuel: "Breakfast 3 h before, gel 1 10–15 min before the start, then your race gel schedule." }
+    ]},
+    { n: 6, range: "2 – 8 Nov", focus: "Recovery. Keep it short and very easy, and stop if you feel dizzy, breathless or your heart races.", days: [
+      { d: "2026-11-02", t: "rest", title: "Rest · walk 20–30 min", fuel: "Recovery day. Eat well, top up carbs and protein, and rehydrate." },
+      { d: "2026-11-03", t: "rest", title: "Rest", fuel: "Normal meals with plenty of protein." },
+      { d: "2026-11-04", t: "rest", title: "Rest or optional jog 20 min", optKm: 3 },
+      { d: "2026-11-05", t: "easy", title: "Recovery jog", km: 4, detail: ["5:45–6:15/km, slower is fine", "Stop and walk home if anything feels sore rather than stiff"], why: "Gets blood moving through tired legs without adding damage.", fuel: FUEL_NONE },
+      { d: "2026-11-06", t: "rest", title: "Rest" },
+      { d: "2026-11-07", t: "easy", title: "Saturday parkrun · easy", km: 5, detail: ["6:10–6:45/km, HR under 145", "Relaxed and comfortable, with Mia"], why: "Checks how the legs are coming back.", fuel: FUEL_NONE },
+      { d: "2026-11-08", t: "rest", title: "Rest" }
+    ]},
+    { n: 7, range: "9 – 15 Nov", focus: "Easy rebuild. Easy running only, with strides at the end of the week. Thursday is the check for whether to race Kerikeri.", days: [
+      { d: "2026-11-09", t: "rest", title: "Rest" },
+      { d: "2026-11-10", t: "easy", title: "Tuesday 5k · easy", km: 5, detail: "6:00–6:15/km, relaxed and smooth.", why: "Back into the Tuesday routine without the effort.", fuel: FUEL_NONE },
+      { d: "2026-11-11", t: "rest", title: "Rest" },
+      { d: "2026-11-12", t: "easy", title: "Easy run · readiness check", km: 6, detail: ["6:10–6:45/km", "The check: HR under 150 at about 6:15/km, and stairs and hills feel normal", "Both yes: run Kerikeri at 1:49. Either no: jog it slower, or skip it"], why: "The simplest honest test of whether the marathon has worn off.", fuel: FUEL_NONE },
+      { d: "2026-11-13", t: "rest", title: "Rest" },
+      { d: "2026-11-14", t: "easy", title: "Saturday parkrun · easy + strides", km: 5, detail: ["6:10–6:45/km, relaxed and comfortable", "Then 4 × 20 s relaxed strides"], why: "The strides remind your legs how to run fast again.", fuel: FUEL_NONE },
+      { d: "2026-11-15", t: "long", title: "Easy long-ish run", km: 10, detail: ["6:15–6:45/km, HR under 150", "Include some gentle downhill if you can. Kerikeri drops about 275 m"], why: "Your longest run since Auckland. The downhill gets your quads ready for the course.", fuel: FUEL_NONE }
+    ]},
+    { n: 8, range: "16 – 22 Nov", focus: "Keep it light, then run the Kerikeri Half at 1:49 on Saturday. Not a race.", days: [
+      { d: "2026-11-16", t: "rest", title: "Rest" },
+      { d: "2026-11-17", t: "pace", title: "Tuesday 5k · Kerikeri pace", km: 5, shoes: true, detail: ["About 5:10/km, your pace for 1:49. Not a race", "Race shoes, to check they still feel right"], why: "A feel for Kerikeri pace, four days out, without any hard effort.", fuel: FUEL_NONE },
+      { d: "2026-11-18", t: "rest", title: "Rest" },
+      { d: "2026-11-19", t: "easy", title: "Easy run + strides", km: 5, detail: "6:15/km easy, then 4 × 20 s relaxed strides.", why: "Keeps the legs loose before Saturday.", fuel: FUEL_NONE },
+      { d: "2026-11-20", t: "rest", title: "Rest", fuel: "Carb-heavy dinner tonight, such as the rice bowl. No need for a full carb load before a half." },
+      { d: "2026-11-21", t: "race", title: "Kerikeri Half Marathon", km: 21.1, shoes: true, detail: ["Okaihau to Kerikeri, point to point. Climbs about 95 m in the first 7 km, then drops about 275 m to the finish", "1:49, not a race. Splits are on the Kerikeri tab", "Last year: 1:37:54"], why: "A run to finish the season on, three weeks after Auckland.", fuel: "Breakfast 2.5–3 h before, a gel 10–15 min before the start, and one more at about km 9, after the top of the climb." },
+      { d: "2026-11-22", t: "rest", title: "Rest", fuel: "Recovery day. Eat well and celebrate." }
+    ]}
+  ];
+
+  var DEC = {
+    d0: { n: 1, when: "Today · Wed 30 Sep", q: "Go after sub-3?" },
+    d1: { n: 2, when: "After the 33 km · Sat 10 Oct", q: "Did the last 8 km at 4:15 hold?" },
+    d2: { n: 3, when: "After the half · Sun 18 Oct", q: "Pick your race target" }
+  };
+  var OPTS = {
+    d0: [
+      { v: "A", b: "Sub-3 build", s: "Key sessions at 4:15/km, an extra easy run each week, 60–90 g of carbs per hour. You can drop back at either test." },
+      { v: "S", b: "3:10 build", s: "Key sessions at 4:30/km, the same weekly rhythm as now, less risk." }
+    ],
+    d1: [
+      { v: "pass", b: "Held it", s: "4:15/km for all 8 km, HR at or below about 170, no slowdown in the last 2–3 km. Run the half at 4:15." },
+      { v: "fail", b: "Not yet", s: "You slowed, HR went past 170, or you were hanging on. Run the half as the 4:30 test instead." }
+    ],
+    d2A: [
+      { v: "259", b: "Sub-3 · 4:15/km", s: "16 km at 4:15 felt controlled, HR stayed at or below about 170, and you could have kept going comfortably." },
+      { v: "305", b: "3:05 · 4:23/km", s: "You held 4:15 for 16 km, but it was hard work by the end." },
+      { v: "310", b: "3:10 · 4:30/km", s: "4:15 felt forced from early on." }
+    ],
+    d2S: [
+      { v: "305", b: "3:05 · 4:23/km", s: "4:30/km felt controlled, HR stayed around 165 or lower, and you could have kept going comfortably." },
+      { v: "310", b: "3:10 · 4:30/km", s: "4:30/km felt steady, but you were ready to stop by the end." },
+      { v: "315", b: "3:15 · 4:37/km", s: "4:30/km felt like work early, or HR drifted past 170. Still a big debut." }
+    ]
+  };
+
+  var NODES = {
+    root: { c: 0, y: 170, t: "Today", s: "Pick a build", cls: "root" },
+    A: { c: 1, y: 105, t: "Sub-3 build", s: "Sessions at 4:15/km" },
+    S: { c: 1, y: 255, t: "3:10 build", s: "Sessions at 4:30/km" },
+    A1: { c: 2, y: 70, t: "33 km held 4:15", s: "Half at 4:15" },
+    A2: { c: 2, y: 170, t: "33 km faded", s: "Half at 4:30" },
+    S1: { c: 2, y: 265, t: "33 km, easy finish", s: "Half at 4:30" },
+    T259: { c: 3, y: 50, t: "2:59:20", s: "4:15/km", cls: "target" },
+    T305: { c: 3, y: 130, t: "3:05", s: "4:23/km", cls: "target" },
+    T310: { c: 3, y: 210, t: "3:10", s: "4:30/km", cls: "target" },
+    T315: { c: 3, y: 290, t: "3:15", s: "4:37/km", cls: "target" }
+  };
+  var EDGES = [["root", "A"], ["root", "S"], ["A", "A1"], ["A", "A2"], ["S", "S1"],
+    ["A1", "T259"], ["A1", "T305"], ["A1", "T310"], ["A2", "T305"], ["A2", "T310"], ["A2", "T315"],
+    ["S1", "T305"], ["S1", "T310"], ["S1", "T315"]];
+
+  var TRAIN_FUEL = [
+    ["Easy runs and intervals", "Nothing during. Carbs and protein within an hour after hard sessions."],
+    ["29 km · Sun 4 Oct", "Race breakfast 2.5–3 h before. A gel every 25 min from 25 min in, about 60 g of carbs per hour."],
+    ["33 km · Sat 10 Oct", "Full race rehearsal: breakfast 3 h before, gel 10–15 min before, then your race schedule. Try your race-day caffeine gel mix."],
+    ["Half · Sun 18 Oct", "Your dress rehearsal. Breakfast 3 h before, gel 10–15 min before, then gels at about km 6, 11 and 17."],
+    ["Fri 30 and Sat 31 Oct", "Carb load, low fibre, low fat. Early dinner on Saturday."],
+    ["Kerikeri Half · Sat 21 Nov", "Carb-heavy dinner the night before, no full carb load. Breakfast 2.5–3 h before, a gel 10–15 min before the start, one more at about km 9."]
+  ];
+
+  /* Structured workouts for intervals.icu / Garmin (scripts/push-intervals.mjs), in intervals.icu workout-builder syntax.
+     `s` is the base session, `alt` replaces it on the same branch as the day's `alt` block. "m" means minutes, "mtr" metres. */
+  var EASY = "5:20-5:45/km Pace";
+  function ez(km, pace) { return ["- " + km + "km " + (pace || EASY)]; }
+  function wu(km) { return ["Warmup", "- " + km + "km " + EASY, ""]; }
+  function cd(km) { return ["", "Cooldown", "- " + km + "km " + EASY]; }
+  function reps(n, lines) { return [n + "x"].concat(lines); }
+  var STEPS = {
+    "2026-09-29": { s: ["- 5km"] },
+    "2026-09-30": { alt: ez(6) },
+    "2026-10-01": { s: wu(2).concat(reps(5, ["- 1km 3:45-3:50/km Pace", "- 90s"]), cd(2)) },
+    "2026-10-03": { s: ez(6) },
+    "2026-10-04": { s: ez(29, "5:30-5:45/km Pace"), alt: ez(24, "5:30-5:45/km Pace").concat(["- 5km 4:17-4:23/km Pace"]) },
+    "2026-10-06": { s: wu(2).concat(reps(3, ["- 2km 3:53-3:57/km Pace", "- 2m"]), cd(2)),
+      alt: wu(1.5).concat(reps(3, ["- 3km 4:03-4:07/km Pace", "- 2m"]), cd(1.5)) },
+    "2026-10-07": { alt: ez(5) },
+    "2026-10-08": { s: ez(6, "5:30-5:45/km Pace"), alt: ez(5, "5:30-5:45/km Pace") },
+    "2026-10-10": { s: ez(27, "5:30-5:45/km Pace").concat(["- 6km 4:32-4:38/km Pace"]),
+      alt: ez(25, "5:30-5:45/km Pace").concat(["- 8km 4:13-4:17/km Pace"]) },
+    "2026-10-13": { s: ez(5, "4:00-4:10/km Pace") },
+    "2026-10-14": { alt: ez(5) },
+    "2026-10-15": { s: wu(2).concat(reps(4, ["- 1km 3:48-3:52/km Pace", "- 2m"]), cd(2)) },
+    "2026-10-17": { s: ez(4.5, "5:25-5:35/km Pace").concat(["", "Strides"], reps(4, ["- 20s", "- 60s"])) },
+    "2026-10-18": { s: ["- 14km 4:28-4:32/km Pace", "- 7.1km 4:45-5:15/km Pace"],
+      alt: ["- 16km 4:13-4:17/km Pace", "- 5.1km 4:45-5:15/km Pace"] },
+    "2026-10-20": { s: ["- 5km"] },
+    "2026-10-22": { s: wu(2).concat(["- 4km {mp-2}-{mp+2}/km Pace", ""], reps(4, ["- 400mtr 3:32-3:38/km Pace", "- 200mtr"]), cd(1.5)) },
+    "2026-10-26": { s: ez(5, "5:30-5:45/km Pace") },
+    "2026-10-27": { s: ez(5, "5:00-5:15/km Pace") },
+    "2026-10-29": { s: wu(2).concat(reps(3, ["- 1km {mp-2}-{mp+2}/km Pace", "- 1m"]), cd(1)) },
+    "2026-10-31": { s: ez(4.5, "5:45-6:30/km Pace").concat(["", "Strides"], reps(3, ["- 20s", "- 60s"])) },
+    "2026-11-01": { s: ["- 42.2km {mp-3}-{mp+3}/km Pace"] },
+    "2026-11-05": { s: ez(4, "5:45-6:15/km Pace") },
+    "2026-11-07": { s: ez(5, "6:10-6:45/km Pace") },
+    "2026-11-10": { s: ez(5, "6:00-6:15/km Pace") },
+    "2026-11-12": { s: ez(6, "6:10-6:45/km Pace") },
+    "2026-11-14": { s: ez(5, "6:10-6:45/km Pace").concat(["", "Strides"], reps(4, ["- 20s", "- 60s"])) },
+    "2026-11-15": { s: ez(10, "6:15-6:45/km Pace") },
+    "2026-11-17": { s: ["- 5km 5:05-5:15/km Pace"] },
+    "2026-11-19": { s: ez(4.5, "6:10-6:30/km Pace").concat(["", "Strides"], reps(4, ["- 20s", "- 60s"])) },
+    /* Paced for 1:49: slower up the climb, faster down the long descent. Other targets are on the Kerikeri tab. */
+    "2026-11-21": { s: ["- 7.3km 5:15-5:25/km Pace", "- 13.8km 5:00-5:10/km Pace"] }
+  };
+  /* Heart rate guide shown with each run on the site, in the calendar and in Garmin notes: [fastest pace in seconds/km
+     at or above this, text]. Garmin only takes one target type per workout, so the steps keep pace targets and these go in the notes.
+     Estimates from the 4 Oct long run (4:13–4:19/km at HR 153–168) and the 29 Sep 5k (avg HR 184). */
+  var HR_BANDS = [
+    [300, "easy, HR 125–150. Over 150 means slow down"],
+    [285, "steady, HR about 140–158"],
+    [260, "HR about 150–162"],
+    [250, "HR about 158–170"],
+    [237, "HR about 165–175"],
+    [220, "HR about 172–182"],
+    [0, "too short for HR to settle. Run these by pace"]
+  ];
+  var HR_RACE = "Race effort: HR climbs past 180 (your 5k averaged 184). Run it by feel";
+
+  /* The Run guide popup on the site, by date. `alt` replaces it on the same branch as the day's `alt` block.
+     feel: what it should feel like. how: pacing, step by step. hr: extra HR notes (the pace bands above are added for you).
+     elev: how hilly the route should be. stop: when to back off. after: what to do afterwards.
+     Elevation numbers come from your Strava runs and the course (about 217 m of climbing per the site header; the plotaroute GPX gives 110–345 m depending on smoothing and has no bridge height). */
+  var FLAT = "Flat. Under 20 m of climbing, like the Good George course (+5 m) or your usual morning loop.";
+  var GUIDES = {
+    "2026-10-13": {
+      feel: "Comfortably hard. You can say a few words but wouldn't want to chat. Smooth and in control, never straining.",
+      how: ["Jog 1–2 km beforehand and do 2–3 strides", "Km 1 at 4:10. Don't go out with the racers", "Km 2–4 settle at 4:00–4:05", "Km 5 hold the pace. No sprint finish"],
+      hr: ["Expect about 165–175, creeping up in the last km or two", "The 33 km may still be in your legs, and a warm evening adds 3–5 bpm"],
+      elev: FLAT,
+      stop: ["HR past 178 before 4 km: ease to 4:15", "Any niggle from Saturday: jog it easy and call it a recovery run"],
+      after: "Jog 1 km to cool down. Normal dinner. Tomorrow is rest or an easy 30 min."
+    },
+    "2026-10-14": {
+      alt: {
+        feel: "Very easy. Full sentences the whole way. This only adds volume, so it should feel like nothing.",
+        how: ["5:20–5:45/km from the first step", "Skip it if your legs are heavy after last night"],
+        elev: "Anything gentle, up to about 40 m. Walk any steep pinch rather than pushing.",
+        stop: ["HR over 150: slow down", "Tight calves or hamstrings: stop and walk home. Sunday matters more"],
+        after: "Nothing special. Normal meals."
+      }
+    },
+    "2026-10-15": {
+      feel: "Reps feel strong and quick but relaxed, like the middle of a 10k race. You finish wanting one more.",
+      how: ["2 km easy, then 3–4 strides", "4 × 1 km at 3:48–3:52/km. Rep 1 at 3:52, then settle", "2 min easy jog between, not a walk", "2 km easy cool-down"],
+      hr: ["HR won't settle in a 1 km rep. Run by pace and breathing", "Expect the end of each rep around 170–178"],
+      elev: FLAT + " Do the reps on the flattest stretch you have, so the paces mean something.",
+      stop: ["If a rep is more than 5 s slower than rep 1, stop there", "Three days before the test, so leave something in the tank"],
+      after: "Carbs and protein within an hour. Rest tomorrow."
+    },
+    "2026-10-17": {
+      feel: "Loose and easy, with the strides feeling quick and light, not sprinting.",
+      how: ["4.5 km at about 5:30/km", "4 × 20 s strides: build to about 3:30/km pace, stay tall and relaxed", "60 s walk or jog between strides"],
+      elev: FLAT,
+      stop: ["Anything tight: skip the strides"],
+      after: "Carb-heavy dinner. Lay out your kit and gels for tomorrow. Early night."
+    },
+    "2026-10-18": {
+      feel: "4:30 should feel steady and almost too easy for the first 10 km. If it feels like work early, that's the answer, not a failure.",
+      how: ["Dress rehearsal: full race kit and shoes, race breakfast 3 h before, ideally at the time you'd eat it on race day", "1–2 km easy warm-up and a few strides", "Km 1–14 at 4:28–4:32. Lock in by km 2 and don't bank time", "Km 15–21 at 4:45–5:15. Don't speed up even if you feel great"],
+      hr: ["At 4:30 expect about 150–162, drifting up slowly", "HR past 170 before 14 km: ease off and note when it happened"],
+      elev: "If you're picking the route, aim for about 80–150 m of climbing. That's about the race's climbing per km (roughly 5 m/km, plus a bit for the bridge), so the test is honest. Put one longer climb in the first half, like the bridge. Run hills by effort, not pace.",
+      stop: ["HR past 170 early, or 4:30 feels forced by km 8: drop to 4:45 and jog it in", "Any sharp pain: stop. A missed test beats a missed race"],
+      after: "Write down your average pace and HR over the first 14 km, and how you felt. Carbs and protein within an hour. Then pick your target on the Decisions tab.",
+      alt: {
+        feel: "4:15 should feel controlled and rhythmic, like marathon effort, not half-marathon effort. The first 10 km should feel almost easy.",
+        how: ["Dress rehearsal: full race kit and shoes, race breakfast 3 h before, ideally at the time you'd eat it on race day", "1–2 km easy warm-up and a few strides", "Km 1–16 at 4:13–4:17. Lock in by km 2 and don't bank time", "Km 17–21 at 4:45–5:15. Don't speed up even if you feel great"],
+        hr: ["At 4:15 expect about 158–170, drifting up slowly", "Your 33 km had the last 8 km at 4:15 at HR 167–181, but that was on tired legs. Fresh, it should be lower"],
+        elev: "If you're picking the route, aim for about 80–150 m of climbing. That's about the race's climbing per km (roughly 5 m/km, plus a bit for the bridge), so the test is honest. Put one longer climb in the first half, like the bridge. Run hills by effort, not pace.",
+        stop: ["HR past 170 before 16 km: ease off and note when it happened", "4:15 feels forced by km 8: drop to 4:30 and finish as the 4:30 test", "Any sharp pain: stop. A missed test beats a missed race"],
+        after: "Write down your average pace and HR over the first 16 km, and whether you could have kept going. Carbs and protein within an hour. Then pick your target on the Decisions tab."
+      }
+    },
+    "2026-10-20": {
+      feel: "If you race it: hard, like the 29 Sep 5k. If not: threshold, comfortably hard and even.",
+      how: ["Jog 1–2 km and do 3–4 strides", "Racing: km 1 no faster than 3:35, then hold. Your 17:44 averaged 3:33", "Threshold: 3:50–4:00/km the whole way"],
+      hr: ["Racing: expect 180+ by km 3", "Threshold: about 172–180"],
+      elev: FLAT,
+      stop: ["Any niggle from Sunday: run it easy. Twelve days out, nothing is gained by forcing it"],
+      after: "Carbs and protein within an hour. Rest tomorrow."
+    },
+    "2026-10-22": {
+      feel: "The 4 km at race pace should feel smooth and easy enough to hold for 42 km. The 400s feel quick and springy, not a sprint.",
+      how: ["Race shoes and race kit", "2 km easy", "4 km at {mp-2}–{mp+2}/km. Practise exactly how race pace feels", "4 × 400 m at 3:32–3:38/km, 200 m jog between", "1.5 km easy cool-down"],
+      hr: ["At race pace expect about 158–170 by the end of the 4 km. Note it, it's your race-day number", "400s are too short for HR to mean much. Run by pace"],
+      elev: FLAT + " Race pace on the flat is what you're memorising.",
+      stop: ["If race pace feels hard today, skip the 400s. You need rest, not more work"],
+      after: "Carbs and protein within an hour. Note anything that rubbed or annoyed you in your race kit, and fix it before race week."
+    },
+    "2026-10-26": {
+      feel: "Easy and relaxed. Full sentences the whole way. Legs may feel stale after the weekend off. That's normal.",
+      how: ["5:30–5:45/km from the first step", "25–30 minutes is plenty"],
+      elev: "Anything gentle, up to about 50 m.",
+      stop: ["HR over 150: slow down", "Anything tight: cut it to 3 km"],
+      after: "Nothing special. Easy 5k tomorrow."
+    },
+    "2026-10-27": {
+      feel: "Easy. You'll feel restless with the taper. That's normal. Don't race it.",
+      how: ["5:00–5:15/km the whole way", "Let the racers go"],
+      elev: FLAT,
+      stop: ["If you find yourself under 5:00, back off"],
+      after: "Normal dinner. Early night."
+    },
+    "2026-10-29": {
+      feel: "Race pace should feel easy and automatic. The legs may feel flat in the taper. That's normal.",
+      how: ["2 km easy", "3 × 1 km at {mp-2}–{mp+2}/km, 1 min jog between", "1 km easy"],
+      elev: FLAT,
+      stop: ["Don't add reps, however good you feel"],
+      after: "Normal meals. Carb loading starts tomorrow."
+    },
+    "2026-10-31": {
+      feel: "Very easy and short, just shaking the legs out.",
+      how: ["5:45/km or slower", "3 × 20 s relaxed strides near the end"],
+      elev: "Flat. Near Devonport is ideal if you're staying close to the start.",
+      stop: ["Anything tight: skip the strides"],
+      after: "Lay out your kit, pin your bib, count your gels, and plan the trip to Devonport. Early dinner you've eaten before."
+    },
+    "2026-11-01": {
+      feel: "The first 10 km should feel too easy. The race starts at 32 km.",
+      how: ["Target {full} at {mp}/km", "Halfway about 25 s behind even pace, because the hills and the bridge come first", "Bridge: keep the effort level, let it cost 10–20 s/km", "After 32 km: hold form, take your last gels, and race the people in front"],
+      hr: ["About 158–170 through halfway. Over 175 at halfway: ease to {mp+10}", "HR drifts up late, so judge by effort after 32 km"],
+      elev: "About 217 m of climbing, though estimates vary (the course GPX gives anywhere from about 110 to 345 m depending on smoothing, and it has no bridge height). The hardest of it is in the first half: the North Shore hills, then the bridge from about km 15 to 17. The second half, out along Tamaki Drive and back, is mostly flat with a few small bumps.",
+      stop: ["See the checks on the Race day tab"],
+      after: "Walk, eat and drink. Then celebrate."
+    },
+    "2026-11-05": {
+      feel: "Shuffly and slow. Stiff is normal. Sharp or one-sided pain is not.",
+      how: ["5:45–6:15/km, or slower if that's what your legs give you", "Walking breaks are fine"],
+      elev: "Flat. Downhills load the quads that the marathon damaged most.",
+      stop: ["Sore rather than stiff, or limping: walk home and try again Saturday"],
+      after: "Nothing special. Keep eating well. Muscle repair needs protein."
+    },
+    "2026-11-07": {
+      feel: "Easy and relaxed. Probably still a bit flat. That's normal a week out from a marathon.",
+      how: ["6:10–6:45/km from the first step", "Run it with Mia, relaxed the whole way"],
+      elev: FLAT,
+      stop: ["HR over 145 at easy pace: slow down. Your body is still recovering"],
+      after: "Normal meals."
+    },
+    "2026-11-10": {
+      feel: "Easy. You may feel ready to race. It's too early, so let them go.",
+      how: ["6:00–6:15/km the whole way"],
+      elev: FLAT,
+      stop: ["Anything sore: drop to 5:30 or jog it"],
+      after: "Normal dinner."
+    },
+    "2026-11-12": {
+      feel: "Easy and normal. This run is the check for whether you race Kerikeri.",
+      how: ["6:10–6:45/km", "Note your average HR over km 2–5 at about 6:15/km", "Go up a flight of stairs afterwards and notice whether your quads complain"],
+      hr: ["Under 150 at about 6:15: recovered", "Over 150, or it feels like work: not yet. Run Kerikeri steady"],
+      elev: FLAT,
+      stop: ["Anything sharp: stop. Kerikeri is optional, the next season isn't"],
+      after: "Pick your Kerikeri target on the Kerikeri tab."
+    },
+    "2026-11-14": {
+      feel: "Easy, with the strides feeling quick and light. Your legs should feel like yours again.",
+      how: ["5 km parkrun at 6:10–6:45/km", "4 × 20 s strides: build to about 3:30/km pace, stay tall and relaxed", "60 s walk or jog between strides"],
+      elev: FLAT,
+      stop: ["Anything tight: skip the strides"],
+      after: "Normal meals."
+    },
+    "2026-11-15": {
+      feel: "Easy and comfortable. Full sentences the whole way.",
+      how: ["6:15–6:45/km", "If your route has a gentle downhill, run it at the same easy effort with quick, light steps"],
+      elev: "Some gentle downhill is useful: 50–100 m of descent gets your quads used to it before Kerikeri. Avoid anything steep.",
+      stop: ["HR over 150: slow down", "Sore quads on the downhill: run the rest flat"],
+      after: "Carbs and protein within an hour."
+    },
+    "2026-11-17": {
+      feel: "Smooth and controlled. You should finish feeling you could keep going.",
+      how: ["5 km at about 5:10/km, your pace for 1:49", "Race shoes"],
+      hr: ["Expect about 140–150", "Over 155: slow down. It's too early after Auckland to push"],
+      elev: FLAT,
+      stop: ["Dizziness, chest pain, palpitations or unusual breathlessness: stop and see a doctor"],
+      after: "Carbs and protein within an hour. Rest tomorrow."
+    },
+    "2026-11-19": {
+      feel: "Loose and easy, with the strides feeling quick and light.",
+      how: ["4.5 km at about 6:15/km", "4 × 20 s strides, 60 s easy between"],
+      elev: FLAT,
+      stop: ["Anything tight: skip the strides"],
+      after: "Pack for Kerikeri: race kit and shoes, 2 gels, breakfast, and warm clothes for the start."
+    },
+    "2026-11-21": {
+      feel: "Controlled the whole way. 1:49, three weeks after Auckland. Not a race.",
+      how: ["5 min jog to warm up", "Km 0–7.3, the climb out of Okaihau: about 5:15–5:25/km, by effort", "Km 7.3–9.6, the steep drop: quick, light steps. Let gravity do it rather than braking or bounding", "Km 9.6–21.1: about 5:00–5:10/km. No fast finish", "Carry electrolytes and drink at every station, more if it's sunny and warm"],
+      hr: ["Climb: under about 155", "Descent and flat: under about 160. Over that, slow down, even if it costs you 1:49", "Your HR will drift up if it warms up. Slow down rather than hold pace"],
+      elev: "About 95 m of climbing in the first 7.3 km, then about 275 m of descent to the finish, steepest from km 7.3 to 9.6. Numbers come from your 2025 GPS and may be a little off.",
+      stop: ["Dizziness, chest pain, palpitations, confusion or unusual breathlessness: stop and get help from the medics", "Quads cramping or sore on the descent: ease to a jog", "Any sharp pain: stop"],
+      after: "Walk, eat and drink. Then celebrate the season."
+    }
+  };
+
+  WEEKS.forEach(function (w) {
+    w.days.forEach(function (day) {
+      var g = GUIDES[day.d];
+      if (g) {
+        if (g.feel) day.guide = g;
+        if (g.alt && day.alt) day.alt.guide = g.alt;
+      }
+      var x = STEPS[day.d];
+      if (!x) return;
+      if (x.s) day.steps = x.s;
+      if (x.alt && day.alt) day.alt.steps = x.alt;
+    });
+  });
+
+  /* Recipes for the big-carb meals, sized for an 80 kg runner. Carb counts are rough, so check labels. Shown on the
+     Fuel tab and in the calendar reminders. Low fibre and low fat so they sit light before a long run. */
+  var MEALS = {
+    pasta: { name: "Chicken and tomato pasta", carbs: "about 150 g", time: "25 min",
+      items: ["150 g dry spaghetti or penne (about 110 g carbs)", "150 g skinless chicken breast, sliced thin", "½ jar (about 250 g) plain tomato pasta sauce", "1 garlic clove, a pinch of salt, a little olive oil", "2 slices white bread or a small white roll on the side (about 30 g carbs)"],
+      steps: ["Boil the pasta in well-salted water.", "Brown the chicken in a little oil, add the garlic, then the sauce. Simmer 5 min.", "Toss through the drained pasta. Skip the cheese and keep the veg light tonight."] },
+    rice: { name: "Teriyaki chicken rice bowl", carbs: "about 150 g", time: "25 min",
+      items: ["1 cup (about 185 g) dry white rice, about 2.5 cups cooked (about 110 g carbs)", "150 g skinless chicken breast or thigh, diced", "3 tbsp teriyaki sauce (about 15 g carbs)", "1 small carrot, grated", "250 ml apple or orange juice with it (about 25 g carbs)"],
+      steps: ["Cook the rice.", "Brown the chicken, add the teriyaki and a splash of water, and cook until sticky.", "Pile on the rice with the carrot. White rice, not brown, the night before a big run."] },
+    load: { name: "Carb-load day menu", carbs: "about 700 g",
+      items: ["Breakfast: 2 bagels with jam and 500 ml juice (about 170 g)", "Morning: a banana and 2 rice cakes with honey (about 55 g)", "Lunch: white-bread ham sandwich (4 slices), 50 g pretzels, 500 ml sports drink (about 130 g)", "Afternoon: 3 crumpets with golden syrup and a glass of juice (about 100 g)", "Dinner: the chicken and tomato pasta or the rice bowl (about 150 g)", "Evening: a pot of rice pudding and a handful of lollies (about 90 g)"],
+      steps: ["Spread it across the day. Graze, don't stuff.", "Swap in anything from the carbs table on the Fuel tab, keeping fibre and fat low.", "Sip water or electrolyte drink all day. Pale yellow urine is the goal."] },
+    breakfast: { name: "Race breakfast", carbs: "about 160 g", time: "5 min",
+      items: ["1 white bagel with 2 tbsp honey (about 85 g)", "1 slice white toast with jam (about 30 g)", "1 banana (about 25 g)", "250 ml juice (about 25 g)", "About 500 ml water or electrolyte drink"],
+      steps: ["Eat it 3 hours before the start, then sip until 30 min before.", "Same breakfast as the 33 km and the half. Nothing new on race day."] }
+  };
+
+  /* Timed calendar events for meals (scripts/build-ics.mjs). Times are NZ local. */
+  var REMINDERS = [
+    { d: "2026-10-09", at: "17:30", title: "Carb-heavy dinner before the 33 km", meal: "pasta" },
+    { d: "2026-10-10", at: "05:00", title: "Race breakfast before the 33 km", meal: "breakfast", note: "Adjust to 3 hours before you start running." },
+    { d: "2026-10-17", at: "17:30", title: "Carb-heavy dinner before the half", meal: "rice" },
+    { d: "2026-10-18", at: "05:00", title: "Race breakfast before the half", meal: "breakfast", note: "Adjust to 3 hours before you start running." },
+    { d: "2026-10-30", at: "07:00", title: "Carb load day 1", meal: "load" },
+    { d: "2026-10-31", at: "07:00", title: "Carb load day 2", meal: "load" },
+    { d: "2026-10-31", at: "17:00", title: "Early race-eve dinner", meal: "rice", note: "Done by 6pm, so it's settled by bedtime." },
+    { d: "2026-11-01", at: "03:00", title: "Race breakfast", meal: "breakfast", note: "3 hours before the 6am start. Check your start time." },
+    { d: "2026-11-20", at: "17:30", title: "Carb-heavy dinner before Kerikeri", meal: "rice" },
+    { d: "2026-11-21", at: "04:00", title: "Race breakfast before Kerikeri", meal: "breakfast", note: "3 hours before a 7am start. Only one listing gives that start time, so check it on your bib or the race website." }
+  ];
+
+  /* Other all-day calendar events (scripts/build-ics.mjs). `to` is the last day, inclusive. */
+  var EVENTS = [];
+
+  return { WEEKS: WEEKS, DEC: DEC, OPTS: OPTS, NODES: NODES, EDGES: EDGES, TRAIN_FUEL: TRAIN_FUEL, MEALS: MEALS, REMINDERS: REMINDERS, EVENTS: EVENTS, HR_BANDS: HR_BANDS, HR_RACE: HR_RACE };
+})();

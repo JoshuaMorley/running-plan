@@ -1,0 +1,802 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Auckland Marathon Build · Archive</title>
+<meta name="description" content="Five-week branching training plan to the Auckland Marathon on 1 November 2026, with decision tests, gel plans and race-day tools.">
+<meta name="theme-color" content="#FBFCFD" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#151922" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232C46C9'/%3E%3Ctext x='32' y='43' font-family='Arial Narrow,Arial,sans-serif' font-size='30' font-weight='700' fill='%23FBFCFD' text-anchor='middle'%3E42%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="../../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Marathon">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,600..800&family=Geist:wght@400..700&family=Geist+Mono:wght@500..600&display=swap">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<p class="archive-bar">Archived plan, frozen on 24 November 2026: Auckland Marathon in 3:12:16 and Kerikeri Half in 1:48:14. <a href="../../">Back to the main page</a></p>
+<header class="top">
+  <div class="top-in">
+    <div class="brand">
+      <span class="eyebrow">Race A · Devonport to the city</span>
+      <h1>Auckland Marathon</h1>
+      <span class="meta">Sunday 1 November 2026 · 42.2 km · about 217 m of climbing</span>
+    </div>
+    <div class="top-right">
+      <div class="count">
+        <b class="num" id="countdown">32</b>
+        <span class="eyebrow" id="countdown-label">days to go</span>
+      </div>
+      <button type="button" class="theme-btn" id="theme-btn" aria-label="Change colour theme">Theme: auto</button>
+    </div>
+    <div class="route-bar">
+      <span class="lbl">Your route</span>
+      <span id="route" class="route-steps"></span>
+      <span class="lbl end">Target</span>
+      <strong class="num" id="target-read">2:59:20 · 4:15/km</strong>
+    </div>
+  </div>
+</header>
+
+<!-- One nav, three layouts: top tab bar on tablets, bottom bar with a More sheet on phones, floating sidebar on desktop. -->
+<nav class="tabs" id="tabs" aria-label="Sections">
+  <div class="side-brand" aria-hidden="true"><span class="side-mark">42</span><span><b>Auckland</b><small>Marathon build</small></span></div>
+  <div class="tabs-in" role="tablist" id="tablist">
+    <button type="button" class="tab" role="tab" id="tab-overview" aria-controls="p-overview" data-tab="overview"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg><span>Overview</span></button>
+    <button type="button" class="tab" role="tab" id="tab-plan" aria-controls="p-plan" data-tab="plan"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span>Plan</span></button>
+    <button type="button" class="tab more-item" role="tab" id="tab-decisions" hidden aria-controls="p-decisions" data-tab="decisions"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="5" r="2"/><circle cx="6" cy="19" r="2"/><circle cx="18" cy="7" r="2"/><path d="M6 7v10M18 9v1a5 5 0 0 1-5 5H8"/></svg><span>Decisions</span></button>
+    <button type="button" class="tab more-item" role="tab" id="tab-stats" aria-controls="p-stats" data-tab="stats"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M7 16v-4M12 16V6M17 16V9"/></svg><span>Stats</span></button>
+    <button type="button" class="tab more-item" role="tab" id="tab-fivek" aria-controls="p-fivek" data-tab="fivek"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13.5" r="7"/><path d="M12 13.5V10M10 3h4M12 3v3.5"/></svg><span>5k races</span></button>
+    <button type="button" class="tab more-item" role="tab" id="tab-course" aria-controls="p-course" data-tab="course"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.8-6.5-11a6.5 6.5 0 0 1 13 0c0 5.2-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.2"/></svg><span>Course</span></button>
+    <button type="button" class="tab" role="tab" id="tab-fuel" aria-controls="p-fuel" data-tab="fuel"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 3L5 14h6.5L10.5 21 19 10h-6.5z"/></svg><span>Fuel</span></button>
+    <button type="button" class="tab" role="tab" id="tab-race" aria-controls="p-race" data-tab="race"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4M5 4h12l-2.5 4.5L17 13H5"/></svg><span>Race day</span></button>
+    <button type="button" class="tab more-item" role="tab" id="tab-kerikeri" aria-controls="p-kerikeri" data-tab="kerikeri"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18l5-8 3 4 3-6 7 10z"/><path d="M3 21h18"/></svg><span>Kerikeri</span></button>
+    <button type="button" class="tab more-item" role="tab" id="tab-rules" aria-controls="p-rules" data-tab="rules"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-8.5-5.3-8.5-11A4.5 4.5 0 0 1 12 6.6 4.5 4.5 0 0 1 20.5 9c0 5.7-8.5 11-8.5 11z"/></svg><span>Stay healthy</span></button>
+  </div>
+  <button type="button" class="tab more-btn" id="more-btn" aria-expanded="false" aria-controls="tablist"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18.5" cy="12" r="1.4"/></svg><span id="more-label">More</span></button>
+</nav>
+
+<main class="wrap" id="main" tabindex="-1">
+
+  <!-- OVERVIEW -->
+  <section class="panel" id="p-overview" role="tabpanel" aria-labelledby="tab-overview">
+    <div class="grid2" id="today-cards"></div>
+
+    <div class="block" hidden>
+      <div class="sec-head">
+        <h2>Decision map</h2>
+        <span class="focus">Three decisions between now and race day. Tap a box to try a different route. Every session in the plan follows the highlighted one.</span>
+      </div>
+      <div class="card tree-box"><svg id="tree" viewBox="0 0 862 332" role="group" aria-label="Decision map"></svg></div>
+      <p class="swipe-hint">Swipe sideways on the map to see every branch.</p>
+    </div>
+
+    <div class="grid2">
+      <div class="block">
+        <div class="sec-head"><h2>Weekly volume</h2></div>
+        <div class="card vol" id="volume"></div>
+      </div>
+      <div class="block">
+        <div class="sec-head"><h2>Key dates</h2></div>
+        <div class="card dates" id="dates"></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Easy-run heart rate drift</h2>
+        <span class="focus">How much your heart rate creeps up at the same easy pace from the first half of a run to the second. Lower means fitter.</span>
+      </div>
+      <div class="card vol" id="drift"></div>
+    </div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>How your long runs finish</h2>
+        <span class="focus">Your last 5 km against km 2–10 of every long run. It's the closest thing you have to a preview of km 35–42 on race day.</span>
+      </div>
+      <div class="card vol" id="fade"></div>
+    </div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Calendar</h2>
+        <span class="focus">A copy of the calendar as it was when the plan finished.</span>
+      </div>
+      <div class="card cal">
+        <div class="cal-links">
+          <a class="link-btn" href="plan.ics" download>Download .ics</a>
+        </div>
+        <p class="muted">This plan is finished, so its calendar feed no longer updates.</p>
+        <p class="muted" id="cal-route" hidden></p>
+      </div>
+    </div>
+
+    <div class="block">
+      <span class="eyebrow">Pace zones · from your 17:44 5k and recent runs</span>
+      <div class="zones">
+        <div class="zone" style="--zc: var(--c-easy)"><span class="eyebrow">Easy</span><span class="z-pace num">5:20–5:45</span><span class="z-sub">per km · HR under 150</span></div>
+        <div class="zone" style="--zc: var(--accent)"><span class="eyebrow">Marathon</span><span class="z-pace num" data-tpl="{mp}">4:15</span><span class="z-sub">per km · HR 165–172</span></div>
+        <div class="zone" style="--zc: var(--c-int)"><span class="eyebrow">Threshold</span><span class="z-pace num">3:50–4:05</span><span class="z-sub">per km · hard but steady</span></div>
+        <div class="zone" style="--zc: var(--key)"><span class="eyebrow">Interval · 5k</span><span class="z-pace num">3:32–3:45</span><span class="z-sub">per km · short reps only</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLAN -->
+  <section class="panel" id="p-plan" role="tabpanel" aria-labelledby="tab-plan" hidden>
+    <div class="week-pick" id="week-pick" role="group" aria-label="Choose a week"></div>
+    <div id="week-view" class="block"></div>
+    <div class="week-nav">
+      <button type="button" class="nav-btn" id="wk-prev">← Previous week</button>
+      <button type="button" class="nav-btn" id="wk-next">Next week →</button>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="panel" id="p-stats" role="tabpanel" aria-labelledby="tab-stats" hidden>
+    <div class="stats" id="st-totals"></div>
+
+    <nav class="st-jump" aria-label="Jump to a group of stats">
+      <button type="button" class="link-btn" data-jump="stg-train">Training</button>
+      <button type="button" class="link-btn" data-jump="stg-race">Race fitness</button>
+      <button type="button" class="link-btn" data-jump="stg-form">Form</button>
+      <button type="button" class="link-btn" data-jump="stg-habits">Habits and records</button>
+    </nav>
+
+    <h2 class="st-group" id="stg-train">Training</h2>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Fitness and freshness</h2>
+        <span class="focus">Each run's training load from your heart rate, rolled into fitness (the last six weeks) and fatigue (the last week). The taper drops fatigue faster than fitness, so freshness should climb towards race day. Tap or hover over a day to see it.</span>
+      </div>
+      <div class="card chart-card">
+        <div id="st-load-head"></div>
+        <div id="st-load"></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Monthly distance</h2>
+        <span class="focus">Every run since 2025, added up by month, with the longest run of each month. Tap or hover over a month for the numbers.</span>
+      </div>
+      <div class="card chart-card">
+        <div id="st-month-head"></div>
+        <div id="st-month"></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Easy heart rate</h2>
+        <span class="focus">Your heart rate on easy runs, adjusted to the same 5:30/km pace so runs at different speeds compare. When it falls, your aerobic engine is getting stronger, and that's what carries you through km 30–42.</span>
+      </div>
+      <div class="card chart-card">
+        <div id="st-ehr-head"></div>
+        <div id="st-ehr"></div>
+      </div>
+    </div>
+
+    <h2 class="st-group" id="stg-race">Race fitness</h2>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Marathon predictor</h2>
+        <span class="focus">Every km split from your steady runs, plotted as heart rate against pace. The trend line reads off the pace your heart supports at marathon effort, HR 165–172. Interval days are left out.</span>
+      </div>
+      <div class="card chart-card">
+        <div id="st-predict-head"></div>
+        <div id="st-predict"></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Threshold finder</h2>
+        <span class="focus">Heart rate climbs in a straight line with speed until around your lactate threshold, then bends away and flattens. Every steady km from runs of 5 km or more, plotted as HR against pace. The bend is where the two fitted lines meet.</span>
+      </div>
+      <div class="card chart-card">
+        <div id="st-th-head"></div>
+        <div id="st-th"></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Does your HR settle?</h2>
+        <span class="focus">At a pace you can hold, heart rate climbs for the first few minutes and then levels out. Go faster than that and it keeps climbing until you slow down. Every steady stretch from runs of 30 minutes or more, one line per pace.</span>
+      </div>
+      <div class="card chart-card">
+        <div id="st-se-head"></div>
+        <div id="st-se"></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Heartbeats per km</h2>
+        <span class="focus">Average heart rate × minutes per km. How many beats each km costs you. Lower is more efficient. Compare similar runs: easy with easy.</span>
+      </div>
+      <div class="card vol" id="st-beats"></div>
+    </div>
+
+    <h2 class="st-group" id="stg-form">Form</h2>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Stride or cadence?</h2>
+        <span class="focus">How you run faster: longer strides, quicker steps, or both. Each dot is a watch lap: auto km laps, plus each rep on interval days.</span>
+      </div>
+      <div class="card chart-card"><div id="st-stride-head"></div></div>
+      <div class="grid2">
+        <div class="card chart-card"><h3>Stride length</h3><div id="st-stride"></div></div>
+        <div class="card chart-card"><h3>Cadence</h3><div id="st-cadence"></div></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Cadence over time</h2>
+        <span class="focus">Average steps a minute for every run since 2025, easy and fast runs kept apart because cadence rises with speed.</span>
+      </div>
+      <div class="card chart-card">
+        <div id="st-cad-head"></div>
+        <div id="st-cad"></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Hills</h2>
+        <span class="focus">Your hilliest runs against the marathon's climbing, and what hills cost you in heartbeats.</span>
+      </div>
+      <div class="card chart-card">
+        <div id="st-hill-head"></div>
+        <div class="vol" id="st-hill"></div>
+      </div>
+    </div>
+
+    <h2 class="st-group" id="stg-habits">Habits and records</h2>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Morning or evening</h2>
+        <span class="focus">When you run, and whether your heart works harder at the same pace early in the day. The marathon starts early.</span>
+      </div>
+      <div class="card chart-card">
+        <div id="st-tod-head"></div>
+        <div id="st-tod"></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Records</h2>
+        <span class="focus">Your bests since 2025, from every run synced from Strava.</span>
+      </div>
+      <div class="records" id="st-records"></div>
+    </div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>All of it, added up</h2>
+        <span class="focus">Every run since 2025 in more familiar units.</span>
+      </div>
+      <div class="stats" id="st-fun"></div>
+      <p class="vol-legend">Landmark distances are approximate.</p>
+    </div>
+  </section>
+
+  <!-- 5K RACES -->
+  <section class="panel" id="p-fivek" role="tabpanel" aria-labelledby="tab-fivek" hidden>
+    <div class="sec-head">
+      <h2>5k races</h2>
+      <span class="focus">Your Tuesday evening Good George runs and Saturday morning parkruns, from Strava. Hover over or tap a dot to see the run.</span>
+    </div>
+    <div class="stats" id="fk-stats"></div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Every 5k</h2>
+        <span class="focus">Faster times are higher up. Filled dots are runs you pushed, hollow ones you jogged. The stepped lines show your best so far on each day.</span>
+      </div>
+      <div class="card chart-card" id="fk-times"></div>
+    </div>
+
+    <div class="grid2">
+      <div class="block">
+        <div class="sec-head"><h2>Best-ever times</h2></div>
+        <div class="card table-box">
+          <table>
+            <thead><tr><th>Date</th><th>Run</th><th class="r">Time</th><th class="r">Gain</th></tr></thead>
+            <tbody id="fk-pbs"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="block">
+        <div class="sec-head"><h2>Same beats, more distance</h2></div>
+        <div class="card chart-card">
+          <div id="fk-eff-head"></div>
+          <div id="fk-eff"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Speed vs endurance</h2>
+        <span class="focus">How much of your 5k speed you've carried over longer distances. Your best 5k predicts a pace for every distance; the dots show what you actually ran.</span>
+      </div>
+      <div class="card chart-card">
+        <div id="fk-end-head"></div>
+        <div id="fk-end"></div>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="block">
+        <div class="sec-head"><h2>How you pace a 5k</h2></div>
+        <div class="card chart-card">
+          <div id="fk-pace-head"></div>
+          <div id="fk-pace"></div>
+        </div>
+      </div>
+      <div class="block">
+        <div class="sec-head"><h2>Temperature</h2></div>
+        <div class="card chart-card">
+          <div id="fk-heat-head"></div>
+          <div id="fk-heat"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Turning up</h2>
+        <span class="focus">Every Tuesday and Saturday since your first raced Good George. Hover over or tap a square to see the run.</span>
+      </div>
+      <div class="card chart-card">
+        <div id="fk-streak-head"></div>
+        <div id="fk-streak"></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Your courses</h2>
+        <span class="focus">Runs grouped by where they started, named from your Strava run names. Best times count runs faster than 4:50/km.</span>
+      </div>
+      <div class="card table-box">
+        <table>
+          <thead><tr><th>Course</th><th class="r">Runs</th><th class="r">Best</th><th class="r">Last run</th></tr></thead>
+          <tbody id="fk-courses"></tbody>
+        </table>
+      </div>
+      <p class="vol-legend" id="fk-courses-note"></p>
+    </div>
+
+    <details class="card fk-all">
+      <summary>All 5ks</summary>
+      <div class="table-box">
+        <table>
+          <thead><tr><th>Date</th><th>Run</th><th class="r">Distance</th><th class="r">5k time</th><th class="r">Pace</th><th class="r">HR</th></tr></thead>
+          <tbody id="fk-table"></tbody>
+        </table>
+      </div>
+      <p class="vol-legend" style="padding:0 16px 14px">★ best so far on that day of the week. Times for courses under 5 km are scaled up to 5 km.</p>
+    </details>
+  </section>
+
+  <!-- DECISIONS -->
+  <section class="panel" id="p-decisions" role="tabpanel" aria-labelledby="tab-decisions" hidden>
+    <div class="sec-head">
+      <h2>Decisions</h2>
+      <span class="focus">Enter your numbers after each test and the checker suggests a branch. It's a guide. You make the call.</span>
+    </div>
+    <div id="decision-list" class="block" style="gap:20px"></div>
+    <div class="block">
+      <div class="sec-head">
+        <h2>What changes on each build</h2>
+        <span class="focus">Everything else in the plan is the same on both builds.</span>
+      </div>
+      <div class="card table-box">
+        <table>
+          <thead><tr><th>Day</th><th>Sub-3 build</th><th>3:10 build</th></tr></thead>
+          <tbody>
+            <tr><td>Wednesdays, weeks 1–3</td><td>Easy 5–6 km, every week</td><td class="muted">Rest or optional easy 30 min</td></tr>
+            <tr><td>Sun 4 Oct · 29 km</td><td>Last 5 km at 4:20/km if recovered</td><td class="muted">All easy</td></tr>
+            <tr><td>Tue 6 Oct · AM intervals</td><td>3 × 3 km at 4:05/km</td><td class="muted">3 × 2 km at 3:55/km</td></tr>
+            <tr><td>Sat 10 Oct · 33 km</td><td>Last 8 km at 4:15/km (Test 1)</td><td class="muted">Last 5–6 km at 4:35/km if good</td></tr>
+            <tr><td>Sun 18 Oct · half</td><td>16 km at 4:15/km (if Test 1 held)</td><td class="muted">14 km at 4:30/km</td></tr>
+            <tr><td>Weeks 1 and 2 total</td><td>55.5 km and 56 km</td><td class="muted">49.5 km and 49 km</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- COURSE -->
+  <section class="panel" id="p-course" role="tabpanel" aria-labelledby="tab-course" hidden>
+    <div class="sec-head">
+      <h2>Course</h2>
+      <span class="focus">From a plotaroute.com GPX of the route. Hover over or tap the profile to see where that point is on the map.</span>
+    </div>
+    <div class="stats" id="course-stats"></div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Elevation and pace</h2>
+        <span class="focus">Planned pace for each km at your target, run by effort: a little slower up the hills, a little faster down them. The pace line is higher where you run slower, so it follows the hills.</span>
+      </div>
+      <div class="card prof-card">
+        <div class="legend">
+          <span><i class="sw sw-ele"></i>Elevation (left axis, m)</span>
+          <span><i class="sw sw-pace"></i>Planned pace (right axis, min/km)</span>
+          <span><i class="sw sw-avg"></i>Target average</span>
+          <span><i class="sw sw-bridge"></i>Harbour Bridge allowance</span>
+        </div>
+        <svg id="profile" viewBox="0 0 900 300" role="img" aria-label="Elevation and planned pace along the course"></svg>
+        <p class="prof-read num" id="prof-read">Hover over or tap the chart to see a km.</p>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Pace for each km</h2>
+        <span class="focus">Orange: slower than your average. Blue: faster. The clock shows planned time at the end of each km.</span>
+      </div>
+      <div class="kmgrid" id="kmgrid"></div>
+    </div>
+
+    <div class="grid2">
+      <div class="card map-card">
+        <svg id="map" viewBox="0 0 400 400" role="img" aria-label="Course map"></svg>
+        <p class="vol-legend" style="padding:0 16px 14px">North is up. The orange section is the Harbour Bridge. The Tamaki Drive section is out and back, so it overlaps on the map.</p>
+        <p class="m-credit">Map tiles © <a href="https://www.esri.com" target="_blank" rel="noopener">Esri</a>. Sources: Esri, HERE, Garmin, © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors.</p>
+      </div>
+      <div class="card" id="sections"></div>
+    </div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Watch pace</h2>
+        <span class="focus">GPS watches usually read long over a marathon. If you run your target pace on the watch, you'll finish slower than your target.</span>
+      </div>
+      <div class="card pad">
+        <div class="fields">
+          <div class="field"><label for="f-watch">Watch distance at the finish: <span id="f-watch-out" class="num">42.8</span> km</label><input type="range" id="f-watch" min="42.2" max="43.4" step="0.1" value="42.8" data-inp="watch"></div>
+        </div>
+        <div class="table-box">
+          <table>
+            <thead><tr><th>Target</th><th>Official pace</th><th>Pace to run on your watch</th><th class="r">Finish if you run official pace on the watch</th></tr></thead>
+            <tbody id="watch-table"></tbody>
+          </table>
+        </div>
+        <p class="vol-legend">The plotted route measures 43.06 km. A watch reading 42.6–43.0 km is common. Use the clock at the official km markers as your real check.</p>
+      </div>
+    </div>
+
+    <div class="card pad">
+      <h3>About this data</h3>
+      <ul>
+        <li><b>Distances are scaled</b> from the plotted 43.06 km to the official 42.2 km, so km markers line up with the plan.</li>
+        <li><b>The Harbour Bridge shows as 0 m.</b> The file took its heights from ground level, which is the water under the bridge. The real climb and descent are bigger.</li>
+        <li><b>Climbing totals don't agree.</b> The file adds up to about 382 m, while the race listing used for this plan says 217 m. Small bumps along the waterfront look like measurement noise, so trust the shape more than the totals.</li>
+        <li>Check the official course map and profile at <a href="https://aucklandmarathon.co.nz" target="_blank" rel="noopener">aucklandmarathon.co.nz</a>.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- FUEL -->
+  <section class="panel" id="p-fuel" role="tabpanel" aria-labelledby="tab-fuel" hidden>
+    <div class="sec-head">
+      <h2>Gel calculator</h2>
+      <span class="focus">At marathon pace you burn through your stored carbs in about 90–120 minutes. Set your gel and your carb target, and the race schedule updates.</span>
+    </div>
+    <div class="card pad">
+      <div class="fields">
+        <div class="field"><label for="f-gel">Carbs per gel (g)</label><input type="number" id="f-gel" min="10" max="50" step="1" value="26" data-inp="gel"></div>
+        <div class="field"><label for="f-gph">Carbs per hour: <span id="f-gph-out">70</span> g</label><input type="range" id="f-gph" min="50" max="90" step="5" value="70" data-inp="gph"></div>
+        <div class="field"><label for="f-kg">Body weight (kg)</label><input type="number" id="f-kg" min="40" max="130" step="1" value="80" data-inp="kg"></div>
+      </div>
+      <div class="stats" id="fuel-stats"></div>
+    </div>
+    <div class="grid2">
+      <div class="card table-box">
+        <table>
+          <thead><tr><th>Race gel plan</th><th>Where</th><th class="r">Clock</th></tr></thead>
+          <tbody id="gel-table"></tbody>
+        </table>
+      </div>
+      <div class="card pad">
+        <h3>How to take gels</h3>
+        <ul>
+          <li><b>Take each gel with water,</b> a few mouthfuls. Don't take a gel with sports drink as well, because the extra sugar can upset your stomach.</li>
+          <li><b>Open it a minute before</b> the aid station or your km mark and take it over 20–30 seconds. Don't slow down to take it.</li>
+          <li><b>Build up in training:</b> about 60 g per hour in the 29 km, then your race amount in the 33 km. Your gut adapts with practice.</li>
+          <li><b>Caffeine gels:</b> PeakFuel Berry, Cola and Espresso have 30 mg each, Lime has none (check the packet). Use non-caffeine gels early, then caffeine ones from about km 18, when it does the most good. Keep the total to about 3–6 mg per kg of body weight, counting your morning coffee. Use the same mix in the 33 km first.</li>
+          <li><b>Carry your own.</b> Check <a href="https://aucklandmarathon.co.nz" target="_blank" rel="noopener">aucklandmarathon.co.nz</a> for what is handed out on course, and don't rely on a brand you haven't tried.</li>
+          <li><b>Stomach trouble in training?</b> Space gels out more and use more water. Don't give up on them. This is exactly what the practice runs are for.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="card pad">
+        <h3>Carb load · Fri 30 &amp; Sat 31 Oct</h3>
+        <p id="carb-load" class="muted"></p>
+        <ul>
+          <li>Rice, pasta, bread, bagels, potatoes, pancakes, juice, lollies.</li>
+          <li>Cut back on fibre, fat and big salads, so your stomach feels light.</li>
+          <li>You'll put on 1–2 kg of water with the stored carbs. That's normal, and it's fuel.</li>
+        </ul>
+      </div>
+      <div class="card pad">
+        <h3>Race breakfast</h3>
+        <p id="breakfast" class="muted"></p>
+        <ul>
+          <li>Something you've tested, such as white toast or a bagel with honey or jam, a banana, and juice.</li>
+          <li>About 500 ml of water or electrolyte drink with it, then sip until 30 min before the start.</li>
+          <li>Eat exactly the same breakfast before the 33 km and the half.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="block">
+      <div class="sec-head"><h2>Recipes</h2><span class="focus">For the big-carb meals before the 33 km, the half and race day, sized for 80 kg. The calendar reminds you on the day. Carb counts are rough, so check labels.</span></div>
+      <div class="grid2" id="recipes"></div>
+    </div>
+    <div class="block">
+      <div class="sec-head"><h2>Carbs in common foods</h2><span class="focus">Rough amounts. Check labels for your own brands.</span></div>
+      <div class="card table-box">
+        <table>
+          <thead><tr><th>Food</th><th class="r">Carbs</th></tr></thead>
+          <tbody>
+            <tr><td>1 plain bagel</td><td class="r">about 50 g</td></tr>
+            <tr><td>1 cup cooked white rice</td><td class="r">about 45 g</td></tr>
+            <tr><td>1 cup cooked pasta</td><td class="r">about 40 g</td></tr>
+            <tr><td>500 ml fruit juice</td><td class="r">about 50 g</td></tr>
+            <tr><td>1 banana</td><td class="r">about 25 g</td></tr>
+            <tr><td>1 slice white bread</td><td class="r">about 15 g</td></tr>
+            <tr><td>1 tablespoon honey</td><td class="r">about 17 g</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="block">
+      <div class="sec-head"><h2>Fuel in training</h2></div>
+      <div class="card table-box">
+        <table>
+          <thead><tr><th>Session</th><th>What to take</th></tr></thead>
+          <tbody id="train-fuel"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- RACE DAY -->
+  <section class="panel" id="p-race" role="tabpanel" aria-labelledby="tab-race" hidden>
+    <div class="sec-head">
+      <h2>Race day</h2>
+      <span class="focus">A slightly slower first half for the North Shore hills and the Harbour Bridge, then a slightly faster second half. Two checkpoints tell you whether to push on or ease off.</span>
+    </div>
+    <div class="race-cols">
+      <div class="card table-box">
+        <table>
+          <thead><tr><th>Checkpoint</th><th>Pace</th><th class="r">Clock</th></tr></thead>
+          <tbody id="splits"></tbody>
+        </table>
+      </div>
+      <div class="notes" id="race-notes"></div>
+    </div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Checkpoint calculator</h2>
+        <span class="focus">Enter your clock at a checkpoint to see where you stand and what pace you need from there.</span>
+      </div>
+      <div class="card pad">
+        <div class="fields">
+          <div class="field"><label for="f-cpkm">Checkpoint</label>
+            <select id="f-cpkm" data-inp="cpkm">
+              <option value="5">5 km</option><option value="10">10 km</option><option value="15">15 km</option><option value="20">20 km</option>
+              <option value="21.0975">Halfway</option><option value="25">25 km</option><option value="30">30 km</option><option value="35">35 km</option><option value="40">40 km</option>
+            </select>
+          </div>
+          <div class="field"><label for="f-cpt">Your clock (h:mm:ss)</label><input type="text" id="f-cpt" inputmode="numeric" placeholder="1:30:10" value="1:30:10" data-inp="cpt"></div>
+        </div>
+        <div id="cp-out"></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Race morning</h2>
+        <span class="focus">Set your start time. Check the official time on your bib or at aucklandmarathon.co.nz.</span>
+      </div>
+      <div class="card pad" style="gap:0;padding:0">
+        <div class="fields" style="padding:14px 18px"><div class="field"><label for="f-start">Start time</label><input type="time" id="f-start" value="06:00" data-inp="start"></div></div>
+        <div class="timeline" id="timeline"></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Race shoes</h2>
+        <span class="focus">Wear them for the sessions that rehearse race day, and train in your everyday shoes the rest of the time. You'll find any rubbing early and still have fresh foam on 1 November.</span>
+      </div>
+      <div class="grid2">
+        <div class="card table-box">
+          <table>
+            <thead><tr><th>When</th><th>Session</th><th class="r">km</th></tr></thead>
+            <tbody>
+              <tr><td class="nw">Tue 6 Oct</td><td>Morning intervals. First run at pace in them</td><td class="r">13</td></tr>
+              <tr><td class="nw">Sat 10 Oct</td><td>33 km. Checks fit, blisters and calves over a long distance</td><td class="r">33</td></tr>
+              <tr><td class="nw">Sun 18 Oct</td><td>Half marathon test</td><td class="r">21</td></tr>
+              <tr><td class="nw">Thu 22 Oct</td><td>Morning intervals, in full race kit</td><td class="r">10</td></tr>
+              <tr><td class="nw">Thu 29 Oct</td><td>Pace check. Last run in them before the race</td><td class="r">6.5</td></tr>
+              <tr><td class="nw">Sun 1 Nov</td><td>Auckland Marathon</td><td class="r">42.2</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card pad">
+          <h3>How to use them</h3>
+          <ul>
+            <li><b>Everyday shoes for everything else:</b> easy runs, the Tuesday 5ks, the 29 km and the shakeout. Those runs only wear the shoes down.</li>
+            <li><b>About 80 km before race day</b> is enough to bed them in. Most race shoes are made to last a few hundred km, so there's plenty left for the marathon.</li>
+            <li><b>New pair?</b> Run an easy 5–8 km in them before 6 Oct to check the fit, then follow the table.</li>
+            <li><b>Use the 33 km to sort out your kit:</b> socks, how you lace them, and where you need tape or anti-chafe. Then don't change anything.</li>
+            <li><b>Sore calves or Achilles</b> after the 33 km? Stiff, plated shoes load them harder. Wear everyday shoes for the next few days, then go back to the table.</li>
+            <li><b>Nothing new on race day:</b> same shoes, socks and laces as the half and the 22 Oct intervals.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- KERIKERI -->
+  <section class="panel" id="p-kerikeri" role="tabpanel" aria-labelledby="tab-kerikeri" hidden>
+    <div class="sec-head">
+      <h2>Kerikeri Half Marathon</h2>
+      <span class="focus">Saturday 21 November 2026, 20 days after Auckland. Point to point from Okaihau to the Kerikeri Domain: a climb for the first 7 km, then mostly downhill. The course here comes from your Strava GPS of last year's race.</span>
+    </div>
+    <div class="stats" id="kk-stats"></div>
+
+    <div class="block" hidden>
+      <div class="sec-head">
+        <h2>Your target</h2>
+        <span class="focus">Decide after the readiness check on Thu 12 Nov and Tuesday's goal-pace 5k on 17 Nov. The splits below follow your pick. Garmin gets the 1:49 plan.</span>
+      </div>
+      <div class="decide-grid" id="kk-goals" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr))"></div>
+    </div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Elevation and pace</h2>
+        <span class="focus">Planned pace for each km, run by effort: slower up the climb out of Okaihau, faster down the long descent. The pace line is higher where you run slower.</span>
+      </div>
+      <div class="card prof-card">
+        <div class="legend">
+          <span><i class="sw sw-ele"></i>Elevation (left axis, m)</span>
+          <span><i class="sw sw-pace"></i>Planned pace (right axis)</span>
+          <span><i class="sw sw-last"></i>Your 2025 pace</span>
+          <span><i class="sw sw-avg"></i>Target average</span>
+        </div>
+        <svg id="kk-profile" viewBox="0 0 900 300" role="img" aria-label="Kerikeri elevation, planned pace and last year's pace"></svg>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card table-box">
+        <table>
+          <thead><tr><th>Km</th><th class="r">Up / down</th><th class="r">2025</th><th class="r">Plan</th><th class="r">Clock</th></tr></thead>
+          <tbody id="kk-splits"></tbody>
+        </table>
+      </div>
+      <div class="block" style="gap:16px;align-content:start">
+        <div class="card map-card">
+          <svg id="kk-map" viewBox="0 0 400 400" role="img" aria-label="Kerikeri course map"></svg>
+          <p class="vol-legend" style="padding:0 16px 14px">North is up. Okaihau is at the left, Kerikeri at the right. The orange stretch is the steep drop after the high point.</p>
+          <p class="m-credit">Map tiles © <a href="https://www.esri.com" target="_blank" rel="noopener">Esri</a>. Sources: Esri, HERE, Garmin, © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors.</p>
+        </div>
+        <div class="card" id="kk-sections"></div>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card pad">
+        <h3>Should you race it?</h3>
+        <ul>
+          <li><b>After Auckland:</b> the plan is a 1:49 run, not a race.</li>
+          <li><b>Thu 12 Nov:</b> HR under 150 at 5:20–5:30/km and stairs feel normal. Either no: jog it slower than 1:49, or skip it.</li>
+          <li><b>Tue 17 Nov:</b> 5 km at 1:49 pace (about 5:10/km) should feel comfortable, with HR under about 150.</li>
+          <li><b>Dizziness, chest pain, palpitations or unusual breathlessness</b> at any point: stop, and don't start Kerikeri until a doctor has seen you.</li>
+          <li><b>Any sore spot</b> that's still there on 17 Nov: run it steady or skip it. Three weeks after a marathon is when overuse injuries show up.</li>
+          <li><b>The descent is hard on quads,</b> and those take longest to recover from a marathon. If they still ache on stairs, don't race the downhill.</li>
+        </ul>
+      </div>
+      <div class="card pad">
+        <h3>How the targets compare</h3>
+        <ul>
+          <li><b>Last year:</b> 1:37:54 at an average HR of 170, with km 1–4 at 4:55–5:30 and the last 6 km at about 4:20.</li>
+          <li><b>Fresh, your 17:44 5k suggests about 1:21–1:22</b> on a flat course. The downhill could make it faster, the climb and the marathon slower.</li>
+          <li><b>Three weeks after Auckland, 1:23–1:27 is realistic.</b> It depends on how hard the marathon was and how you've recovered.</li>
+          <li>These are estimates from your runs and common rules of thumb, not a prediction you can count on.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="sec-head">
+        <h2>Race morning</h2>
+        <span class="focus">Set your start time. One listing gives 7:00 am, but it's the only source, so check your bib or the official race page before you plan around it.</span>
+      </div>
+      <div class="card pad" style="gap:0;padding:0">
+        <div class="fields" style="padding:14px 18px"><div class="field"><label for="f-kkstart">Start time</label><input type="time" id="f-kkstart" value="07:00" data-inp="kkstart"></div></div>
+        <div class="timeline" id="kk-timeline"></div>
+      </div>
+      <p class="vol-legend">Race information: <a href="https://raceroster.com/events/2026/119293/northland-waste-kerikeri-half-marathon-2026" target="_blank" rel="noopener">Race Roster</a> and <a href="https://www.runningcalendar.co.nz/event/kerikeri-half-marathon/" target="_blank" rel="noopener">Running Calendar</a>.</p>
+    </div>
+  </section>
+
+  <!-- RULES -->
+  <section class="panel" id="p-rules" role="tabpanel" aria-labelledby="tab-rules" hidden>
+    <div class="sec-head">
+      <h2>Stay in one piece</h2>
+      <span class="focus">Being fit won't help if you're injured on race day. These rules come before any session in the plan.</span>
+    </div>
+    <div class="grid2">
+      <div class="card pad">
+        <h3>Every week</h3>
+        <ol>
+          <li><b>Easy days are easy.</b> HR under 150, and you can talk in full sentences. Easy days run too fast are the usual cause of breakdowns.</li>
+          <li><b>Three hard days at most:</b> Tuesday, Thursday and Sunday. If you race on Tuesday, keep Thursday controlled.</li>
+          <li><b>Monday is always rest.</b> It follows your biggest day of the week.</li>
+          <li><b>After long runs and hard sessions,</b> have carbs and protein within an hour, such as chocolate milk or a sandwich. Aim for 8 hours of sleep.</li>
+          <li><b>Weekly volume goes up by no more than 10%.</b> That's a common limit for building mileage safely, and the sub-3 build stays just inside it.</li>
+        </ol>
+      </div>
+      <div class="card pad">
+        <h3>When something feels off</h3>
+        <ol>
+          <li><b>Pain rule.</b> Soreness that eases as you warm up is normal. Pain that gets worse, changes your stride, or stays sharp means stop, take 2 days off, and only come back when you can jog without pain.</li>
+          <li><b>Tired signs:</b> resting HR 5 or more beats above normal, heavy legs for 2 days or more, or poor sleep. Swap your next hard session for an easy one.</li>
+          <li><b>Missed a session? Skip it.</b> Never double up to make one up.</li>
+          <li><b>Sick?</b> Symptoms above the neck only: an easy run is OK. Fever, chest symptoms or aches: rest until you're clear.</li>
+          <li><b>A test that doesn't go well is still useful.</b> Switching routes is the plan doing its job.</li>
+        </ol>
+      </div>
+    </div>
+    <div class="card pad">
+      <h3>Taper feelings are normal</h3>
+      <p class="muted">From 19 Oct, volume drops and you may feel flat, sluggish or restless, with phantom niggles. That's your body absorbing the training. Don't add extra runs to feel better. The freshness shows up on race day.</p>
+    </div>
+  </section>
+
+  <footer class="fine">
+    <p>These paces are estimates from your recent races and Strava runs and standard race-equivalence formulas, not guarantees. Weekly volume, not speed, is the limit right now, which is why the sub-3 route has two tests before you commit.</p>
+    <p>Gel carb amounts vary by brand, so check your packets. Carb-load, breakfast and recipe amounts are general sports-nutrition guides. The course climbing figure is a rough one, since sources disagree. Check the bridge location, aid stations and start time at <a href="https://aucklandmarathon.co.nz" target="_blank" rel="noopener">aucklandmarathon.co.nz</a>.</p>
+    <p>Not coaching or medical advice. Runs here stop at 24 November 2026. Route choices, ticks and calculator values are saved in this browser only.</p>
+  </footer>
+</main>
+
+<div class="chart-tip" id="chart-tip" hidden></div>
+<dialog id="guide" class="guide" aria-label="Run guide">
+  <div class="guide-in">
+    <button type="button" id="guide-close" class="guide-x" aria-label="Close">×</button>
+    <div id="guide-body"></div>
+  </div>
+</dialog>
+<script src="js/data.js"></script>
+<script src="js/results.js"></script>
+<script src="js/course.js"></script>
+<script src="js/kerikeri.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

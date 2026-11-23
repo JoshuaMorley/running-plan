@@ -1,4 +1,10 @@
-# Auckland Marathon Build
+# Running Plans
+
+The site is between plans. Its home page links to finished plans, and the scheduled Strava sync is off until the next plan starts (see [Automatic sync](#automatic-sync-github-actions)). The scripts and setup notes below are kept so they can be reused.
+
+The Auckland Marathon and Kerikeri Half plan is archived at [`archive/auckland-marathon-2026/`](archive/auckland-marathon-2026/), frozen as it was on 24 November 2026 with its own copy of the runs and calendar: Auckland Marathon in 3:12:16 and Kerikeri Half in 1:48:14. Its choices are still in local storage under the same keys. The rest of this README describes that plan.
+
+## Auckland Marathon Build (archived)
 
 A five-week branching training plan for the Auckland Marathon on Sunday 1 November 2026, then three weeks of recovery and rebuilding to the Kerikeri Half Marathon on Saturday 21 November.
 
@@ -43,7 +49,7 @@ Re-run after each decision. Workouts are matched by date, so they're updated, no
 
 ## Automatic sync (GitHub Actions)
 
-`.github/workflows/sync.yml` runs about every 30 minutes (GitHub delays or skips scheduled runs when it's busy, so gaps of a few hours happen), when `route.json` or `js/data.js` changes, and on demand from the **Actions** tab. Each run:
+`.github/workflows/sync.yml` runs when `route.json` or `js/data.js` changes, and on demand from the **Actions** tab. Its 30-minute schedule is off between plans; the workflow file says how to turn it back on. (GitHub delays or skips scheduled runs when it's busy, so gaps of a few hours happen.) Each run:
 
 1. Pulls your runs from Strava into `js/results.js` (`scripts/sync-strava.mjs`). The site uses them for the planned vs actual pills, run volume, heart rate drift and the test checkers.
 2. Rebuilds `plan.ics` for the calendar, with Strava results and the meal reminders.
